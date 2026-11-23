@@ -3,44 +3,324 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shushawaty Maily</title>
+  <title>Shushawaty Maily | شووشەواتی مەیلی</title>
   <style>
-    body { margin:0; font-family:Tahoma,Arial,sans-serif; background:#0f3d4c; color:#0f172a; padding:16px 16px 85px; }
-    .box { max-width:600px; margin:0 auto 14px; background:rgba(255,255,255,0.92); border-radius:20px; padding:16px; box-shadow:0 8px 24px rgba(0,0,0,0.2); }
-    .hero { text-align:center; color:#fff; background:rgba(255,255,255,0.16); border:1px solid rgba(255,255,255,0.35); }
-    input, textarea { width:100%; box-sizing:border-box; padding:11px; margin-bottom:10px; border-radius:12px; border:1px solid #cbd5e1; font-size:14px; }
-    button { width:100%; padding:11px; border:none; border-radius:12px; font-weight:bold; font-size:14px; cursor:pointer; }
-    .btn1 { background:#0f4c5c; color:#fff; }
-    .btn2 { background:#f5c84c; color:#0f172a; }
-    .btn3 { background:#e2e8f0; color:#0f172a; margin-top:8px; }
-    .del { background:#fee2e2; color:#991b1b; width:auto; padding:7px 12px; margin-top:8px; }
-    .otp { background:#e0f2fe; padding:10px; border-radius:10px; text-align:center; font-weight:bold; margin-bottom:10px; }
-    .err { color:#b91c1c; font-weight:bold; font-size:13px; margin-bottom:8px; }
-    .img { width:100%; height:200px; object-fit:cover; border-radius:14px; margin-bottom:8px; }
-    .nav { position:fixed; bottom:10px; left:14px; right:14px; max-width:600px; margin:0 auto; background:#fff; border-radius:16px; padding:6px; display:flex; gap:8px; box-shadow:0 8px 20px rgba(0,0,0,0.25); }
-    .nav button { background:#f1f5f9; color:#0f172a; }
-    .nav button.on { background:#0f4c5c; color:#fff; }
-    .hide { display:none; }
+    :root {
+      --gold: #ffd15c;
+      --gold-deep: #d49b1a;
+      --ink: #0f172a;
+      --muted: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Tahoma, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      padding: 16px 14px 98px;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(255, 209, 92, 0.52), transparent 40%),
+        radial-gradient(circle at 88% 18%, rgba(45, 212, 191, 0.42), transparent 44%),
+        radial-gradient(circle at 20% 82%, rgba(56, 189, 248, 0.38), transparent 46%),
+        radial-gradient(circle at 85% 86%, rgba(168, 85, 247, 0.25), transparent 45%),
+        linear-gradient(150deg, #071e28 0%, #0e4656 50%, #172742 100%);
+      background-attachment: fixed;
+    }
+
+    .box {
+      max-width: 620px;
+      margin: 0 auto 15px;
+      border-radius: 26px;
+      padding: 18px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.64));
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.92);
+      box-shadow:
+        0 14px 32px rgba(3, 12, 24, 0.24),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.95);
+    }
+
+    .hero {
+      text-align: center;
+      color: #ffffff;
+      padding: 22px 18px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.08));
+      border: 1px solid rgba(255, 255, 255, 0.48);
+      box-shadow:
+        0 18px 38px rgba(0, 0, 0, 0.34),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.55);
+    }
+
+    .logo-ring {
+      width: 78px;
+      height: 78px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.72), rgba(255, 209, 92, 0.35) 58%, rgba(14, 70, 86, 0.8) 100%);
+      border: 2px solid rgba(255, 232, 150, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 10px 24px rgba(0, 0, 0, 0.3),
+        0 0 22px rgba(255, 209, 92, 0.35),
+        inset 0 2px 6px rgba(255, 255, 255, 0.8);
+    }
+
+    .account-pill {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #fff8dc;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 11px;
+      border-radius: 16px;
+      border: 1px solid rgba(15, 23, 42, 0.14);
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-size: 14px;
+      color: var(--ink);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      background: rgba(255, 255, 255, 0.98);
+      border-color: var(--gold-deep);
+      box-shadow: 0 0 0 4px rgba(255, 209, 92, 0.28);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 16px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.14s ease, box-shadow 0.2s ease;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .btn1 {
+      background: linear-gradient(135deg, #0f5c70, #16829b);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 0 8px 20px rgba(15, 92, 112, 0.35);
+    }
+
+    .btn2 {
+      background: linear-gradient(135deg, #ffe38a, var(--gold), var(--gold-deep));
+      color: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      box-shadow: 0 8px 20px rgba(212, 155, 26, 0.35);
+    }
+
+    .btn3 {
+      background: rgba(255, 255, 255, 0.72);
+      color: #0f4c5c;
+      border: 1px solid rgba(15, 76, 92, 0.25);
+      margin-top: 8px;
+    }
+
+    .del {
+      background: linear-gradient(135deg, rgba(254, 202, 202, 0.95), rgba(254, 226, 226, 0.9));
+      color: #991b1b;
+      border: 1px solid rgba(185, 28, 28, 0.28);
+      width: auto;
+      padding: 8px 16px;
+      border-radius: 13px;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+
+    .otp {
+      background: linear-gradient(135deg, rgba(224, 242, 254, 0.9), rgba(240, 249, 255, 0.85));
+      border: 1.5px dashed rgba(14, 116, 144, 0.45);
+      color: #0c4a6e;
+      padding: 12px;
+      border-radius: 16px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .err {
+      color: #b91c1c;
+      font-weight: bold;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .img {
+      width: 100%;
+      height: 215px;
+      object-fit: cover;
+      border-radius: 18px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14);
+    }
+
+    .price-tag {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 13px;
+      color: #78350f;
+      background: rgba(255, 209, 92, 0.35);
+      border: 1px solid rgba(212, 155, 26, 0.4);
+      margin-bottom: 8px;
+    }
+
+    .info-row {
+      padding: 10px 12px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.82);
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .social-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 14px 8px;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #0f172a;
+      font-weight: bold;
+      font-size: 13px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.52));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.92);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+      transition: transform 0.16s ease, box-shadow 0.2s ease;
+    }
+
+    .social-card:active {
+      transform: scale(0.96);
+    }
+
+    .s-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+    }
+
+    .s-snap {
+      background: linear-gradient(135deg, #fff04d, #facc15);
+      color: #111827;
+    }
+
+    .s-fb {
+      background: linear-gradient(135deg, #2589ff, #1266d8);
+      color: #ffffff;
+    }
+
+    .s-tt {
+      background: linear-gradient(135deg, #18181b, #27272a);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .nav {
+      position: fixed;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      max-width: 620px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 22px;
+      padding: 6px;
+      display: flex;
+      gap: 8px;
+      box-shadow: 0 14px 28px rgba(2, 12, 27, 0.32);
+      z-index: 40;
+    }
+
+    .nav button {
+      background: transparent;
+      color: #334155;
+      border-radius: 16px;
+      padding: 11px 8px;
+    }
+
+    .nav button.on {
+      background: linear-gradient(135deg, #0f5c70, #16829b);
+      color: #ffffff;
+      box-shadow: 0 6px 14px rgba(15, 92, 112, 0.32);
+    }
+
+    .hide {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
 
   <div id="loginBox">
     <div class="box hero">
-      <h2 style="margin:0 0 6px;">Shushawaty Maily</h2>
-      <div style="font-size:13px;">شووشەواتی مەیلی</div>
+      <div class="logo-ring" aria-hidden="true">
+        <svg width="38" height="38" viewBox="0 0 64 64" fill="none">
+          <path d="M18 11H30V21C30 26.2 26.8 29.8 24 31.2V47H30V51H18V47H22V31.2C19.2 29.8 18 26.2 18 21V11Z" fill="#FFF4C2" stroke="#FFD15C" stroke-width="1.6"/>
+          <path d="M34 15H46V24C46 28.6 43.2 31.8 40.5 33.1V47H46V51H34V47H38.5V33.1C35.8 31.8 34 28.6 34 24V15Z" fill="#FFE07D" stroke="#D49B1A" stroke-width="1.6"/>
+          <circle cx="32" cy="11" r="2.2" fill="#FFFFFF"/>
+        </svg>
+      </div>
+      <h2 style="margin:0 0 4px;">Shushawaty Maily</h2>
+      <div style="font-size:13px;opacity:0.92;">شووشەواتی مەیلی — جیهانی شووشە و کریستاڵ</div>
     </div>
 
     <div id="step1" class="box">
-      <h3>چوونەژوورەوە بە ئیمەیڵ</h3>
-      <input id="mailInp" type="email" placeholder="ئیمەیڵ بنووسە" />
+      <h3 style="margin-top:0;">چوونەژوورەوە بە ئیمەیڵ</h3>
+      <input id="mailInp" type="email" placeholder="ئیمەیڵ / Gmail بنووسە" />
       <div id="err1" class="err hide"></div>
       <button type="button" class="btn1" onclick="sendCode()">ناردنی کۆدی OTP</button>
     </div>
 
     <div id="step2" class="box hide">
-      <h3>پشتڕاستکردنەوەی OTP</h3>
-      <div id="whoMail" style="font-size:13px;margin-bottom:8px;"></div>
+      <h3 style="margin-top:0;">پشتڕاستکردنەوەی OTP</h3>
+      <div id="whoMail" style="font-size:13px;color:#334155;margin-bottom:8px;"></div>
       <div id="codeShow" class="otp"></div>
       <input id="codeInp" type="text" placeholder="کۆدەکە بنووسە" />
       <div id="err2" class="err hide"></div>
@@ -51,21 +331,28 @@
 
   <div id="mainBox" class="hide">
     <div class="box hero">
+      <div class="logo-ring" style="width:62px;height:62px;" aria-hidden="true">
+        <svg width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M18 11H30V21C30 26.2 26.8 29.8 24 31.2V47H30V51H18V47H22V31.2C19.2 29.8 18 26.2 18 21V11Z" fill="#FFF4C2" stroke="#FFD15C" stroke-width="1.6"/>
+          <path d="M34 15H46V24C46 28.6 43.2 31.8 40.5 33.1V47H46V51H34V47H38.5V33.1C35.8 31.8 34 28.6 34 24V15Z" fill="#FFE07D" stroke="#D49B1A" stroke-width="1.6"/>
+          <circle cx="32" cy="11" r="2.2" fill="#FFFFFF"/>
+        </svg>
+      </div>
       <h3 style="margin:0 0 4px;">Shushawaty Maily</h3>
-      <div id="userShow" style="font-size:12px;"></div>
-      <button type="button" class="del" onclick="logOut()">چوونەدەرەوە</button>
+      <div id="userShow" class="account-pill"></div>
+      <div><button type="button" class="del" onclick="logOut()">چوونەدەرەوە</button></div>
     </div>
 
     <div id="tabShop">
-      <div class="box">
-        <input id="srch" type="text" placeholder="گەڕان..." oninput="drawPosts()" style="margin-bottom:0;" />
+      <div class="box" style="padding:12px 16px;">
+        <input id="srch" type="text" placeholder="🔍 گەڕان بە دوای کاڵا یان نرخ..." oninput="drawPosts()" style="margin-bottom:0;" />
       </div>
 
       <div id="adminBox" class="box hide">
         <h4 style="margin-top:0;">زیادکردنی کاڵا</h4>
         <input id="pName" type="text" placeholder="ناوی کاڵا" />
         <textarea id="pDesc" rows="2" placeholder="زانیاری"></textarea>
-        <input id="pPrice" type="text" placeholder="نرخ" />
+        <input id="pPrice" type="text" placeholder="نرخ (بۆ نموونە: 35,000 د.ع)" />
         <input id="pImg" type="file" accept="image/*" />
         <button type="button" class="btn2" onclick="addPost()">بڵاوکردنەوە</button>
       </div>
@@ -75,11 +362,37 @@
 
     <div id="tabInfo" class="box hide">
       <h3 style="margin-top:0;">ئینفۆرمەیشن</h3>
-      <p><b>ناونیشان:</b> سۆران ڕواندز تەنیشت پیزای مییر</p>
-      <p><b>پەیوەندی:</b> <span dir="ltr">07824463372</span> / <span dir="ltr">07504619938</span></p>
-      <p><a href="https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US" target="_blank">Snapchat</a></p>
-      <p><a href="https://www.facebook.com/share/19sUWyg8bB/" target="_blank">Facebook</a></p>
-      <p><a href="https://www.tiktok.com/" target="_blank">TikTok</a></p>
+      <div class="info-row"><b>ناونیشان:</b> سۆران ڕواندز تەنیشت پیزای مییر[span_4](start_span)[span_4](end_span)</div>
+      <div class="info-row"><b>پەیوەندی:</b> <span dir="ltr">07824463372</span> / <span dir="ltr">07504619938</span>[span_5](start_span)[span_5](end_span)</div>
+
+      <div class="social-grid">
+        <a class="social-card" href="https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US" target="_blank" rel="noopener noreferrer">
+          <span class="s-icon s-snap" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2.5c-3.3 0-5.4 2.2-5.4 5.2 0 1 .2 2 .4 2.7-.4.2-.9.3-1.4.2-.6-.1-1.1.2-1.2.7-.1.5.2 1 .7 1.2.9.4 1.8.8 2 1.5.2.8-.6 2.1-2.5 3.1-.5.3-.7.9-.4 1.4.3.5.9.7 1.4.5 1.1-.4 2-.5 2.7 0 .6.4 1.1 1.2 1.8 1.5.8.3 1.7.2 2.2.2s1.4.1 2.2-.2c.7-.3 1.2-1.1 1.8-1.5.7-.5 1.6-.4 2.7 0 .5.2 1.1 0 1.4-.5.3-.5.1-1.1-.4-1.4-1.9-1-2.7-2.3-2.5-3.1.2-.7 1.1-1.1 2-1.5.5-.2.8-.7.7-1.2-.1-.5-.6-.8-1.2-.7-.5.1-1 0-1.4-.2.2-.7.4-1.7.4-2.7 0-3-2.1-5.2-5.4-5.2z"/>
+            </svg>
+          </span>
+          <span>Snapchat</span>
+        </a>
+
+        <a class="social-card" href="https://www.facebook.com/share/19sUWyg8bB/" target="_blank" rel="noopener noreferrer">
+          <span class="s-icon s-fb" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M13.5 21v-8.2h2.8l.4-3.2h-3.2V7.5c0-.9.3-1.6 1.6-1.6h1.7V3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H6v3.2h2.7V21h4.8z"/>
+            </svg>
+          </span>
+          <span>Facebook</span>
+        </a>
+
+        <a class="social-card" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">
+          <span class="s-icon s-tt" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16.6 3c.5 1.7 1.8 3 3.4 3.5V9.8c-1.3 0-2.5-.4-3.5-1.1v6.6c0 3.1-2.5 5.7-5.7 5.7-3.1 0-5.7-2.5-5.7-5.7 0-3.1 2.5-5.7 5.7-5.7.3 0 .6 0 .9.1v3.4c-.3-.1-.6-.2-.9-.2-1.3 0-2.4 1.1-2.4 2.4s1.1 2.4 2.4 2.4 2.5-1.1 2.5-2.5V3h3.3z"/>
+            </svg>
+          </span>
+          <span>TikTok</span>
+        </a>
+      </div>
     </div>
 
     <div class="nav">
@@ -206,8 +519,8 @@
         var p = list[i];
         html += '<div class="box">' +
           '<img class="img" src="' + p.img + '" alt="" />' +
-          '<h4 style="margin:4px 0;">' + p.name + '</h4>' +
-          '<div style="font-weight:bold;color:#92400e;margin-bottom:6px;">نرخ: ' + p.price + '</div>' +
+          '<h4 style="margin:4px 0 6px;">' + p.name + '</h4>' +
+          '<div class="price-tag">نرخ: ' + p.price + '</div>' +
           '<div style="color:#334155;">' + p.desc + '</div>' +
           (mailNow === ADMIN ? '<button type="button" class="del" onclick="delPost(' + p.id + ')">سڕینەوە</button>' : '') +
           '</div>';
@@ -222,3 +535,4 @@
   </script>
 </body>
 </html>
+a
