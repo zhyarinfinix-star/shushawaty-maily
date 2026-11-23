@@ -5,7 +5,7 @@ index.html
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shushawaty Maily | شووشەواتی مەیلی</title>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     :root {
       --glass-bg: rgba(255, 255, 255, 0.22);
@@ -366,7 +366,7 @@ index.html
         <h4 style="margin-top:0;">چوونەژوورەوە بە ئیمەیڵ (Email OTP)</h4>
         <input id="emailInput" type="email" placeholder="ئیمەیڵ / Gmail بنووسە" />
         <div id="step1Err" class="err-msg hidden"></div>
-        <button id="sendOtpBtn" class="btn-glass" onclick="requestEmailOtp()">ناردنی کۆدی OTP بۆ ئیمەیڵ</button>
+        <button id="sendOtpBtn" type="button" class="btn-glass">ناردنی کۆدی OTP بۆ ئیمەیڵ</button>
       </div>
 
       <div id="stepOtpCard" class="card hidden">
@@ -375,8 +375,8 @@ index.html
         <div id="otpStatusBox" class="otp-box"></div>
         <input id="otpInput" type="text" maxlength="12" inputmode="numeric" placeholder="کۆدی ٦ ڕەقەمی OTP لێرە بنووسە" />
         <div id="step2Err" class="err-msg hidden"></div>
-        <button class="btn-gold" onclick="verifyOtpAndEnter()">پشتڕاستکردنەوە و چوونەژوورەوە</button>
-        <button class="btn-outline" onclick="backToEmail()">گۆڕینی ئیمەیڵ</button>
+        <button id="verifyOtpBtn" type="button" class="btn-gold">پشتڕاستکردنەوە و چوونەژوورەوە</button>
+        <button id="backEmailBtn" type="button" class="btn-outline">گۆڕینی ئیمەیڵ</button>
       </div>
     </div>
   </div>
@@ -396,7 +396,7 @@ index.html
       <h3 style="margin:4px 0;">Shushawaty Maily</h3>
       <small id="activeAccountLabel"></small>
       <div><span id="roleBadge" class="admin-badge hidden">ئەدمینی دوکان</span></div>
-      <div><button class="btn-logout" onclick="logoutSession()">چوونەدەرەوە</button></div>
+      <div><button id="logoutBtn" type="button" class="btn-logout">چوونەدەرەوە</button></div>
     </div>
 
     <div class="container">
@@ -408,7 +408,6 @@ index.html
             type="text"
             style="margin-bottom:0;"
             placeholder="🔍 گەڕان بە دوای کاڵا یان زانیاریدا..."
-            oninput="renderProducts()"
           />
         </div>
 
@@ -418,8 +417,8 @@ index.html
           <textarea id="prodDesc" rows="2" placeholder="زانیاری لەسەر کاڵاکە"></textarea>
           <input id="prodPrice" type="text" placeholder="نرخ (بۆ نموونە: 35,000 د.ع)" />
           <input id="prodImage" type="file" accept="image/*" />
-          <button id="savePostBtn" class="btn-gold" onclick="saveProduct()">بڵاوکردنەوەی پۆست</button>
-          <button id="cancelEditBtn" class="btn-outline hidden" onclick="cancelEdit()">هەڵوەشاندنەوەی دەستکاری</button>
+          <button id="savePostBtn" type="button" class="btn-gold">بڵاوکردنەوەی پۆست</button>
+          <button id="cancelEditBtn" type="button" class="btn-outline hidden">هەڵوەشاندنەوەی دەستکاری</button>
         </div>
 
         <div id="productsList"></div>
@@ -473,32 +472,24 @@ index.html
     </div>
 
     <div class="bottom-nav">
-      <button id="navShop" class="nav-item active" onclick="switchTab('shop')">کاڵاکان</button>
-      <button id="navInfo" class="nav-item" onclick="switchTab('info')">ئینفۆرمەیشن</button>
+      <button id="navShop" type="button" class="nav-item active">کاڵاکان</button>
+      <button id="navInfo" type="button" class="nav-item">ئینفۆرمەیشن</button>
     </div>
   </div>
 
   <script>
-    // کلیلەکانی EmailJS (بۆ ناردنی ڕاستەقینەی کۆدی OTP بۆ ئیمەیڵ بە بێبەرامبەر)
     const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
     const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
     const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
-
-    if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
-      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-    }
 
     const SNAPCHAT_URL = 'https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US';
     const FACEBOOK_URL = 'https://www.facebook.com/share/19sUWyg8bB/';
     const TIKTOK_URL = 'https://www.tiktok.com/';
 
-    document.getElementById('snapLink').href = SNAPCHAT_URL;
-    document.getElementById('fbLink').href = FACEBOOK_URL;
-    document.getElementById('ttLink').href = TIKTOK_URL;
-
     const ADMIN_EMAIL = 'zhyarinfinix@gmail.com';
     const STORAGE_KEY = 'shushawaty_maily_posts_v1';
     const SESSION_KEY = 'shushawaty_maily_session_v1';
+    const OTP_TEMP_KEY = 'shushawaty_maily_otp_v1';
 
     let isAdmin = false;
     let pendingEmail = '';
@@ -555,11 +546,31 @@ index.html
     function clearSession() {
       try {
         localStorage.removeItem(SESSION_KEY);
+        sessionStorage.removeItem(OTP_TEMP_KEY);
       } catch (e) {}
     }
 
+    function storeOtpTemp(email, code) {
+      try {
+        sessionStorage.setItem(OTP_TEMP_KEY, JSON.stringify({ email, code }));
+      } catch (e) {}
+    }
+
+    function readOtpTemp() {
+      if (generatedOtp && pendingEmail) {
+        return { email: pendingEmail, code: generatedOtp };
+      }
+      try {
+        const raw = sessionStorage.getItem(OTP_TEMP_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (e) {
+        return null;
+      }
+    }
+
     function enterAppForEmail(email) {
-      pendingEmail = email.toLowerCase();
+      pendingEmail = String(email || '').trim().toLowerCase();
       isAdmin = (pendingEmail === ADMIN_EMAIL);
 
       document.getElementById('activeAccountLabel').textContent = 'هەژمار: ' + pendingEmail;
@@ -596,15 +607,11 @@ index.html
       el.classList.add('hidden');
     }
 
-    async function requestEmailOtp() {
-      const mail = document.getElementById('emailInput').value.trim().toLowerCase();
-      if (!mail || !mail.includes('@')) {
-        showErr('step1Err', 'تکایە ئیمەیڵێکی دروست بنووسە.');
-        return;
-      }
-
-      hideErr('step1Err');
-      pendingEmail = mail;
-      generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
-
-      const btn = 
+    function initEmailJsSafe() {
+      try {
+        if (
+          window.emailjs &&
+          EMAILJS_PUBLIC_KEY &&
+          EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY'
+        ) {
+          window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY }
