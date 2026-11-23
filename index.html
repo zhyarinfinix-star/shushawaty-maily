@@ -3,63 +3,596 @@ index.html
 <html lang="ckb" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Shushawaty Maily | شووشەواتی مەیلی</title>
-        <style>
-            :root {
-                  --teal: #0f4c5c;
-                        --teal-dark: #09323d;
-                              --gold: #d4af37;
-                                    --bg: #f4f8f9;
-                                          --card: #ffffff;
-                                              }
-                                                  * { box-sizing: border-box; font-family: Tahoma, Arial, sans-serif; }
-                                                      body { margin: 0; background: var(--bg); color: #1b262c; padding-bottom: 84px; }
-                                                          .hero {
-                                                                background: linear-gradient(135deg, var(--teal-dark), var(--teal));
-                                                                      color: #fff; padding: 24px 16px; text-align: center;
-                                                                            border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
-                                                                                }
-                                                                                    .logo {
-                                                                                          width: 76px; height: 76px; margin: 0 auto 10px; border-radius: 50%;
-                                                                                                background: linear-gradient(135deg, var(--teal), #1f7a8c, var(--gold));
-                                                                                                      border: 3px solid #fff; display: flex; align-items: center; justify-content: center;
-                                                                                                            font-size: 32px; box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-                                                                                                                }
-                                                                                                                    .container { max-width: 640px; margin: 16px auto; padding: 0 14px; }
-                                                                                                                        .card {
-                                                                                                                              background: var(--card); border-radius: 18px; padding: 16px;
-                                                                                                                                    margin-bottom: 16px; box-shadow: 0 4px 14px rgba(15,76,92,0.08);
-                                                                                                                                        }
-                                                                                                                                            .row { display: flex; gap: 8px; margin-bottom: 12px; }
-                                                                                                                                                .tab-btn {
-                                                                                                                                                      flex: 1; padding: 10px; border: 1px solid var(--teal); border-radius: 12px;
-                                                                                                                                                            background: #fff; color: var(--teal); font-weight: bold; cursor: pointer;
-                                                                                                                                                                }
-                                                                                                                                                                    .tab-btn.active { background: var(--teal); color: #fff; }
-                                                                                                                                                                        input, textarea {
-                                                                                                                                                                              width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 12px;
-                                                                                                                                                                                    margin-bottom: 10px; font-size: 14px;
-                                                                                                                                                                                        }
-                                                                                                                                                                                            .btn-gold {
-                                                                                                                                                                                                  width: 100%; padding: 12px; border: none; border-radius: 12px;
-                                                                                                                                                                                                        background: var(--gold); color: #111; font-weight: bold; font-size: 15px; cursor: pointer;
-                                                                                                                                                                                                            }
-                                                                                                                                                                                                                .btn-teal {
-                                                                                                                                                                                                                      width: 100%; padding: 12px; border: none; border-radius: 12px;
-                                                                                                                                                                                                                            background: var(--teal); color: #fff; font-weight: bold; font-size: 15px; cursor: pointer;
-                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                    .product-img {
-                                                                                                                                                                                                                                          width: 100%; height: 210px; object-fit: cover; border-radius: 14px; margin-bottom: 10px;
-                                                                                                                                                                                                                                                background: #e2e8f0;
-                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                        .price-badge {
-                                                                                                                                                                                                                                                              display: inline-block; background: rgba(212,175,55,0.2); color: var(--teal-dark);
-                                                                                                                                                                                                                                                                    padding: 6px 12px; border-radius: 10px; font-weight: bold; margin-bottom: 8px;
-                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                            .bottom-nav {
-                                                                                                                                                                                                                                                                                  position: fixed; bottom: 0; left: 0; right: 0; background: #fff;
-                                                                                                                                                                                                                                                                                        display: flex; border-top: 1px solid #e2e8f0; padding: 8px 0;
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shushawaty Maily | شووشەواتی مەیلی</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.22);
+      --glass-card: rgba(255, 255, 255, 0.34);
+      --glass-border: rgba(255, 255, 255, 0.55);
+      --gold: #f5c84c;
+      --gold-deep: #c9971a;
+      --ink: #0f172a;
+      --muted: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Tahoma, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      padding-bottom: 92px;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(245, 200, 76, 0.55), transparent 42%),
+        radial-gradient(circle at 85% 20%, rgba(20, 184, 166, 0.45), transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.45), transparent 50%),
+        linear-gradient(145deg, #0b2530 0%, #134e5e 52%, #1d2b44 100%);
+      background-attachment: fixed;
+    }
+
+    .hero {
+      margin: 14px auto 0;
+      max-width: 660px;
+      padding: 22px 16px;
+      text-align: center;
+      border-radius: 28px;
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08));
+      backdrop-filter: blur(22px) saturate(170%);
+      -webkit-backdrop-filter: blur(22px) saturate(170%);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+    }
+
+    .logo {
+      width: 78px;
+      height: 78px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.45), rgba(245,200,76,0.55));
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.28), inset 0 2px 6px rgba(255,255,255,0.8);
+    }
+
+    .container {
+      max-width: 660px;
+      margin: 16px auto;
+      padding: 0 14px;
+    }
+
+    .card {
+      border-radius: 24px;
+      padding: 16px;
+      margin-bottom: 16px;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.14);
+    }
+
+    .num-ltr {
+      direction: ltr;
+      unicode-bidi: isolate;
+      font-variant-numeric: tabular-nums;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(15, 23, 42, 0.16);
+      background: rgba(255, 255, 255, 0.85);
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--ink);
+      outline: none;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--gold-deep);
+      box-shadow: 0 0 0 3px rgba(245, 200, 76, 0.25);
+    }
+
+    .btn-gold {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #ffe07d, var(--gold), var(--gold-deep));
+      color: #0f172a;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(201, 151, 26, 0.35);
+    }
+
+    .btn-glass {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 16px;
+      background: linear-gradient(135deg, #0f4c5c, #18778c);
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .btn-outline {
+      width: 100%;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(15, 76, 92, 0.35);
+      background: rgba(255, 255, 255, 0.55);
+      color: #0f4c5c;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn-edit {
+      flex: 1;
+      padding: 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(15, 76, 92, 0.35);
+      background: rgba(255, 255, 255, 0.8);
+      color: #0f4c5c;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-del {
+      flex: 1;
+      padding: 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(185, 28, 28, 0.35);
+      background: rgba(254, 226, 226, 0.85);
+      color: #991b1b;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .otp-box {
+      background: rgba(224, 242, 254, 0.75);
+      border: 1px dashed rgba(15, 76, 92, 0.45);
+      color: #0c4a6e;
+      padding: 10px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .err-msg {
+      color: #b91c1c;
+      font-size: 13px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .product-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 18px;
+      margin-bottom: 10px;
+      background: rgba(226, 232, 240, 0.7);
+    }
+
+    .price-badge {
+      display: inline-block;
+      background: rgba(245, 200, 76, 0.35);
+      border: 1px solid rgba(201, 151, 26, 0.45);
+      color: #0f172a;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .admin-badge {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ffe07d, #d4af37);
+      color: #0f172a;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 28px);
+      max-width: 632px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(20px) saturate(170%);
+      -webkit-backdrop-filter: blur(20px) saturate(170%);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 12px 28px rgba(2, 12, 27, 0.22);
+      display: flex;
+      padding: 6px;
+      z-index: 20;
+    }
+
+    .nav-item {
+      flex: 1;
+      text-align: center;
+      background: transparent;
+      border: none;
+      border-radius: 16px;
+      font-weight: bold;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 10px 6px;
+    }
+
+    .nav-item.active {
+      background: rgba(15, 76, 92, 0.14);
+      color: #0f4c5c;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- چوونەژوورەوە تەنها بە ئیمەیڵ -->
+  <div id="loginView">
+    <div class="hero">
+      <div class="logo">🥂</div>
+      <h2 style="margin:4px 0;">Shushawaty Maily</h2>
+      <p style="margin:0;font-size:13px;opacity:0.92;">شووشەواتی مەیلی — جیهانی شووشە و کریستاڵی مۆدێرن</p>
+    </div>
+
+    <div class="container">
+      <div id="stepEmailCard" class="card">
+        <h4 style="margin-top:0;">چوونەژوورەوە بە ئیمەیڵ (Email OTP)</h4>
+        <input id="emailInput" type="email" placeholder="ئیمەیڵ / Gmail بنووسە" />
+        <div id="step1Err" class="err-msg hidden"></div>
+        <button id="sendOtpBtn" class="btn-glass" onclick="requestEmailOtp()">ناردنی کۆدی OTP بۆ ئیمەیڵ</button>
+      </div>
+
+      <div id="stepOtpCard" class="card hidden">
+        <h4 style="margin-top:0;">پشتڕاستکردنەوەی کۆدی OTP</h4>
+        <p id="otpTargetLabel" style="font-size:13px;color:#334155;"></p>
+        <div id="otpStatusBox" class="otp-box"></div>
+        <input id="otpInput" type="text" maxlength="6" placeholder="کۆدی ٦ ڕەقەمی OTP لێرە بنووسە" />
+        <div id="step2Err" class="err-msg hidden"></div>
+        <button class="btn-gold" onclick="verifyOtpAndEnter()">پشتڕاستکردنەوە و چوونەژوورەوە</button>
+        <button class="btn-outline" onclick="backToEmail()">گۆڕینی ئیمەیڵ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ناو ئەپ -->
+  <div id="appView" class="hidden">
+    <div class="hero">
+      <div class="logo" style="width:58px;height:58px;font-size:24px;">🥂</div>
+      <h3 style="margin:4px 0;">Shushawaty Maily</h3>
+      <small id="activeAccountLabel"></small>
+      <div><span id="roleBadge" class="admin-badge hidden">ئەدمینی دوکان</span></div>
+    </div>
+
+    <div class="container">
+      <!-- تاب ١: گەڕان + فۆڕمی ئەدمین + پۆستەکان -->
+      <div id="shopTab">
+        <div class="card">
+          <input
+            id="searchInput"
+            type="text"
+            style="margin-bottom:0;"
+            placeholder="🔍 گەڕان بە دوای کاڵا یان زانیاریدا..."
+            oninput="renderProducts()"
+          />
+        </div>
+
+        <div id="adminEditorBox" class="card hidden">
+          <h4 id="editorTitle" style="margin-top:0;">زیادکردنی پۆستی نوێ (تایبەت بە ئەدمین)</h4>
+          <input id="prodTitle" type="text" placeholder="ناوی کاڵا" />
+          <textarea id="prodDesc" rows="2" placeholder="زانیاری لەسەر کاڵاکە"></textarea>
+          <input id="prodPrice" type="text" placeholder="نرخ (بۆ نموونە: 35,000 د.ع)" />
+          <input id="prodImage" type="file" accept="image/*" />
+          <button id="savePostBtn" class="btn-gold" onclick="saveProduct()">بڵاوکردنەوەی پۆست</button>
+          <button id="cancelEditBtn" class="btn-outline hidden" onclick="cancelEdit()">هەڵوەشاندنەوەی دەستکاری</button>
+        </div>
+
+        <div id="productsList"></div>
+      </div>
+
+      <!-- تاب ٢: ئینفۆرمەیشن -->
+      <div id="infoTab" class="hidden">
+        <div class="card">
+          <h3 style="margin-top:0;">زانیاریی دوکان (Information)</h3>
+          <p><strong>ناونیشان:</strong> سۆران ڕواندز تەنیشت پیزای مییر</p>
+          <p>
+            <strong>بۆ پەیوەندیکردن:</strong>
+            <span class="num-ltr">07824463372</span>
+            <span>یان</span>
+            <span class="num-ltr">07504619938</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button id="navShop" class="nav-item active" onclick="switchTab('shop')">کاڵاکان</button>
+      <button id="navInfo" class="nav-item" onclick="switchTab('info')">ئینفۆرمەیشن</button>
+    </div>
+  </div>
+
+  <script>
+    const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
+    const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
+    const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+
+    if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+    }
+
+    const ADMIN_EMAIL = 'zhyarinfinix@gmail.com';
+    const STORAGE_KEY = 'shushawaty_maily_posts_v1';
+
+    let isAdmin = false;
+    let pendingEmail = '';
+    let generatedOtp = '';
+    let editingPostId = null;
+
+    const defaultProducts = [
+      {
+        id: 'seed-1',
+        title: 'سێتی شووشەواتی کریستاڵی مۆدێرن',
+        desc: 'شووشەی ئەستوور و بریسکەدار بە لێواری زێڕین بۆ خوانی ڕازاوە.',
+        price: '35,000 د.ع',
+        img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600'
+      }
+    ];
+
+    let products = loadProducts();
+
+    function loadProducts() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultProducts));
+          return [...defaultProducts];
+        }
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [...defaultProducts];
+      } catch (e) {
+        return [...defaultProducts];
+      }
+    }
+
+    function persistProducts() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+      } catch (e) {
+        alert('قەبارەی وێنەکە زۆر گەورەیە بۆ پاشەکەوتکردن لە بیرەوەریی وێبگەڕ؛ وێنەیەکی بچووکتر هەڵبژێرە.');
+      }
+    }
+
+    function showErr(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function hideErr(id) {
+      const el = document.getElementById(id);
+      el.textContent = '';
+      el.classList.add('hidden');
+    }
+
+    async function requestEmailOtp() {
+      const mail = document.getElementById('emailInput').value.trim().toLowerCase();
+      if (!mail || !mail.includes('@')) {
+        showErr('step1Err', 'تکایە ئیمەیڵێکی دروست بنووسە.');
+        return;
+      }
+
+      hideErr('step1Err');
+      pendingEmail = mail;
+      generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
+
+      const btn = document.getElementById('sendOtpBtn');
+      btn.disabled = true;
+      btn.textContent = 'خەریکی ناردنی کۆد...';
+
+      document.getElementById('otpTargetLabel').textContent = 'ئیمەیڵ: ' + pendingEmail;
+
+      if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+        try {
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_email: pendingEmail,
+            otp_code: generatedOtp,
+            account_id: pendingEmail
+          });
+          document.getElementById('otpStatusBox').textContent =
+            'کۆدی OTP بۆ ئیمەیڵی (' + pendingEmail + ') نێردرا. Inbox یان Spam بپشکنە.';
+        } catch (e) {
+          document.getElementById('otpStatusBox').textContent =
+            'ناردنی ئیمەیڵ سەرکەوتوو نەبوو؛ کۆدی تاقیکردنەوەی OTP: ' + generatedOtp;
+        }
+      } else {
+        document.getElementById('otpStatusBox').textContent =
+          'کلیلەکانی EmailJS هێشتا دانەنراون؛ کۆدی تاقیکردنەوەی OTP: ' + generatedOtp;
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'ناردنی کۆدی OTP بۆ ئیمەیڵ';
+      document.getElementById('otpInput').value = '';
+      hideErr('step2Err');
+
+      document.getElementById('stepEmailCard').classList.add('hidden');
+      document.getElementById('stepOtpCard').classList.remove('hidden');
+    }
+
+    function backToEmail() {
+      document.getElementById('stepOtpCard').classList.add('hidden');
+      document.getElementById('stepEmailCard').classList.remove('hidden');
+      hideErr('step2Err');
+    }
+
+    function verifyOtpAndEnter() {
+      const code = document.getElementById('otpInput').value.trim();
+      if (code !== generatedOtp) {
+        showErr('step2Err', 'کۆدی OTP هەڵەیە! کۆدە ٦ ڕەقەمییەکە بە دروستی بنووسە.');
+        return;
+      }
+
+      hideErr('step2Err');
+      isAdmin = (pendingEmail === ADMIN_EMAIL);
+
+      document.getElementById('activeAccountLabel').textContent = 'هەژمار: ' + pendingEmail;
+      document.getElementById('adminEditorBox').classList.toggle('hidden', !isAdmin);
+      document.getElementById('roleBadge').classList.toggle('hidden', !isAdmin);
+
+      document.getElementById('loginView').classList.add('hidden');
+      document.getElementById('appView').classList.remove('hidden');
+      renderProducts();
+    }
+
+    function saveProduct() {
+      if (!isAdmin) return;
+      const title = document.getElementById('prodTitle').value.trim();
+      const desc = document.getElementById('prodDesc').value.trim();
+      const price = document.getElementById('prodPrice').value.trim();
+      const fileInput = document.getElementById('prodImage');
+
+      if (!title || !price) return;
+
+      const existingItem = editingPostId ? products.find(p => p.id === editingPostId) : null;
+      const fallbackImg = existingItem
+        ? existingItem.img
+        : 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600';
+
+      const applySave = (finalImg) => {
+        if (editingPostId) {
+          products = products.map(p =>
+            p.id === editingPostId ? { ...p, title, desc, price, img: finalImg } : p
+          );
+        } else {
+          products.unshift({
+            id: 'post-' + Date.now(),
+            title,
+            desc,
+            price,
+            img: finalImg
+          });
+        }
+        persistProducts();
+        cancelEdit();
+        renderProducts();
+      };
+
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => applySave(e.target.result);
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        applySave(fallbackImg);
+      }
+    }
+
+    function startEditProduct(id) {
+      if (!isAdmin) return;
+      const item = products.find(p => p.id === id);
+      if (!item) return;
+
+      editingPostId = id;
+      document.getElementById('editorTitle').textContent = 'دەستکاریی پۆست (Edit)';
+      document.getElementById('prodTitle').value = item.title;
+      document.getElementById('prodDesc').value = item.desc;
+      document.getElementById('prodPrice').value = item.price;
+      document.getElementById('prodImage').value = '';
+      document.getElementById('savePostBtn').textContent = 'پاشەکەوتکردنی گۆڕانکاری';
+      document.getElementById('cancelEditBtn').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelEdit() {
+      editingPostId = null;
+      document.getElementById('editorTitle').textContent = 'زیادکردنی پۆستی نوێ (تایبەت بە ئەدمین)';
+      document.getElementById('prodTitle').value = '';
+      document.getElementById('prodDesc').value = '';
+      document.getElementById('prodPrice').value = '';
+      document.getElementById('prodImage').value = '';
+      document.getElementById('savePostBtn').textContent = 'بڵاوکردنەوەی پۆست';
+      document.getElementById('cancelEditBtn').classList.add('hidden');
+    }
+
+    function deleteProduct(id) {
+      if (!isAdmin) return;
+      products = products.filter(p => p.id !== id);
+      if (editingPostId === id) cancelEdit();
+      persistProducts();
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+      const filtered = products.filter(p =>
+        p.title.toLowerCase().includes(q) ||
+        p.desc.toLowerCase().includes(q) ||
+        p.price.toLowerCase().includes(q)
+      );
+
+      const box = document.getElementById('productsList');
+      if (filtered.length === 0) {
+        box.innerHTML = '<div class="card"><p style="margin:0;text-align:center;">هیچ کاڵایەک بەم ناو/زانیارییە نەدۆزرایەوە.</p></div>';
+        return;
+      }
+
+      box.innerHTML = filtered.map(p => `
+        <div class="card">
+          <img class="product-img" src="${p.img}" alt="${p.title}" />
+          <h4 style="margin:4px 0;">${p.title}</h4>
+          <div class="price-badge">نرخ: ${p.price}</div>
+          <p style="margin:4px 0;color:#334155;">${p.desc}</p>
+          ${isAdmin ? `
+            <div class="action-row">
+              <button class="btn-edit" onclick="startEditProduct('${p.id}')">✏️ ئیدیت (Edit)</button>
+              <button class="btn-del" onclick="deleteProduct('${p.id}')">🗑️ سڕینەوە (Delete)</button>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    function switchTab(tab) {
+      document.getElementById('shopTab').classList.toggle('hidden', tab !== 'shop');
+      document.getElementById('infoTab').classList.toggle('hidden', tab !== 'info');
+      document.getElementById('navShop').classList.toggle('active', tab === 'shop');
+      document.getElementById('navInfo').classList.toggle('active', tab === 'info');
+    }
+  </script>
+</body>
+</html>
+display: flex; border-top: 1px solid #e2e8f0; padding: 8px 0;
                                                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                                                                 .nav-item {
                                                                                                                                                                                                                                                                                                       flex: 1; text-align: center; background: none; border: none;
