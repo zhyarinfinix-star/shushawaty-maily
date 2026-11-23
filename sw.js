@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shushawaty-maily-v2';
+const CACHE_NAME = 'shushawaty-maily-v99';
 
 self.addEventListener('install', event => {
   self.skipWaiting();
