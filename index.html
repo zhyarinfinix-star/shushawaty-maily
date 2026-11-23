@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#134e5e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Shushawaty Maily" />
+  <link rel="manifest" href="./manifest.json" />
   <title>Shushawaty Maily | شووشەواتی مەیلی</title>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     :root {
-      --glass-bg: rgba(255, 255, 255, 0.22);
-      --glass-card: rgba(255, 255, 255, 0.34);
-      --glass-border: rgba(255, 255, 255, 0.55);
       --gold: #f5c84c;
       --gold-deep: #c9971a;
       --ink: #0f172a;
@@ -49,37 +50,17 @@
     }
 
     .logo {
-      width: 86px;
-      height: 86px;
+      width: 84px;
+      height: 84px;
       margin: 0 auto 10px;
       border-radius: 50%;
-      background:
-        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.72), rgba(245, 200, 76, 0.38) 55%, rgba(15, 76, 92, 0.75) 100%);
+      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.72), rgba(245, 200, 76, 0.38) 55%, rgba(15, 76, 92, 0.75) 100%);
       border: 2.5px solid rgba(255, 232, 148, 0.95);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff3c4;
-      box-shadow:
-        0 12px 26px rgba(0, 0, 0, 0.35),
-        0 0 22px rgba(245, 200, 76, 0.35),
-        inset 0 2px 8px rgba(255, 255, 255, 0.85);
-    }
-
-    .logo svg {
-      width: 48px;
-      height: 48px;
-      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
-    }
-
-    .logo-sm {
-      width: 66px;
-      height: 66px;
-    }
-
-    .logo-sm svg {
-      width: 36px;
-      height: 36px;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35), 0 0 22px rgba(245, 200, 76, 0.35);
     }
 
     .container {
@@ -92,10 +73,10 @@
       border-radius: 24px;
       padding: 16px;
       margin-bottom: 16px;
-      background: rgba(255, 255, 255, 0.78);
+      background: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(18px) saturate(160%);
       -webkit-backdrop-filter: blur(18px) saturate(160%);
-      border: 1px solid rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.88);
       box-shadow: 0 10px 26px rgba(15, 23, 42, 0.14);
     }
 
@@ -124,14 +105,8 @@
       font-weight: bold;
       font-size: 13px;
       color: #0f172a;
-      background: rgba(255, 255, 255, 0.68);
+      background: rgba(255, 255, 255, 0.72);
       border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1);
-      transition: transform 0.15s ease, background 0.15s ease;
-    }
-
-    .social-btn:active {
-      transform: scale(0.97);
     }
 
     .social-icon {
@@ -144,34 +119,20 @@
       color: #ffffff;
     }
 
-    .icon-snap {
-      background: linear-gradient(135deg, #facc15, #eab308);
-      color: #0f172a;
-    }
-
-    .icon-fb {
-      background: linear-gradient(135deg, #1877f2, #0d5cc7);
-    }
-
-    .icon-tt {
-      background: linear-gradient(135deg, #111827, #334155);
-    }
+    .icon-snap { background: linear-gradient(135deg, #facc15, #eab308); color: #0f172a; }
+    .icon-fb { background: linear-gradient(135deg, #1877f2, #0d5cc7); }
+    .icon-tt { background: linear-gradient(135deg, #111827, #334155); }
 
     input, textarea {
       width: 100%;
       padding: 12px 14px;
       border-radius: 16px;
-      border: 1px solid rgba(15, 23, 42, 0.16);
-      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(15, 23, 42, 0.18);
+      background: rgba(255, 255, 255, 0.9);
       margin-bottom: 10px;
       font-size: 14px;
       color: var(--ink);
       outline: none;
-    }
-
-    input:focus, textarea:focus {
-      border-color: var(--gold-deep);
-      box-shadow: 0 0 0 3px rgba(245, 200, 76, 0.25);
     }
 
     .btn-gold {
@@ -184,7 +145,6 @@
       font-weight: bold;
       font-size: 15px;
       cursor: pointer;
-      box-shadow: 0 6px 16px rgba(201, 151, 26, 0.35);
     }
 
     .btn-glass {
@@ -204,7 +164,7 @@
       padding: 10px;
       border-radius: 14px;
       border: 1px solid rgba(15, 76, 92, 0.35);
-      background: rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.65);
       color: #0f4c5c;
       font-weight: bold;
       font-size: 13px;
@@ -213,93 +173,37 @@
     }
 
     .btn-logout {
-      margin-top: 12px;
+      margin-top: 10px;
       padding: 8px 14px;
       border-radius: 12px;
       border: 1px solid rgba(185, 28, 28, 0.35);
-      background: rgba(254, 226, 226, 0.85);
+      background: rgba(254, 226, 226, 0.9);
       color: #991b1b;
       font-weight: bold;
       font-size: 12px;
       cursor: pointer;
     }
 
-    .action-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .btn-edit {
-      flex: 1;
-      padding: 8px;
-      border-radius: 12px;
-      border: 1px solid rgba(15, 76, 92, 0.35);
-      background: rgba(255, 255, 255, 0.8);
-      color: #0f4c5c;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .btn-del {
-      flex: 1;
-      padding: 8px;
-      border-radius: 12px;
-      border: 1px solid rgba(185, 28, 28, 0.35);
-      background: rgba(254, 226, 226, 0.85);
-      color: #991b1b;
-      font-weight: bold;
-      cursor: pointer;
-    }
+    .action-row { display: flex; gap: 8px; margin-top: 10px; }
+    .btn-edit { flex: 1; padding: 8px; border-radius: 12px; border: 1px solid rgba(15, 76, 92, 0.35); background: rgba(255, 255, 255, 0.85); color: #0f4c5c; font-weight: bold; cursor: pointer; }
+    .btn-del { flex: 1; padding: 8px; border-radius: 12px; border: 1px solid rgba(185, 28, 28, 0.35); background: rgba(254, 226, 226, 0.85); color: #991b1b; font-weight: bold; cursor: pointer; }
 
     .otp-box {
-      background: rgba(224, 242, 254, 0.75);
-      border: 1px dashed rgba(15, 76, 92, 0.45);
+      background: rgba(224, 242, 254, 0.85);
+      border: 1px dashed rgba(15, 76, 92, 0.5);
       color: #0c4a6e;
       padding: 10px;
       border-radius: 14px;
       margin-bottom: 12px;
       font-size: 13px;
       text-align: center;
-    }
-
-    .err-msg {
-      color: #b91c1c;
-      font-size: 13px;
-      margin-bottom: 8px;
       font-weight: bold;
     }
 
-    .product-img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 18px;
-      margin-bottom: 10px;
-      background: rgba(226, 232, 240, 0.7);
-    }
-
-    .price-badge {
-      display: inline-block;
-      background: rgba(245, 200, 76, 0.35);
-      border: 1px solid rgba(201, 151, 26, 0.45);
-      color: #0f172a;
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    .admin-badge {
-      display: inline-block;
-      margin-top: 6px;
-      padding: 4px 12px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #ffe07d, #d4af37);
-      color: #0f172a;
-      font-size: 12px;
-      font-weight: bold;
-    }
+    .err-msg { color: #b91c1c; font-size: 13px; margin-bottom: 8px; font-weight: bold; }
+    .product-img { width: 100%; height: 220px; object-fit: cover; border-radius: 18px; margin-bottom: 10px; }
+    .price-badge { display: inline-block; background: rgba(245, 200, 76, 0.38); border: 1px solid rgba(201, 151, 26, 0.45); color: #0f172a; padding: 6px 12px; border-radius: 12px; font-weight: bold; margin-bottom: 8px; }
+    .admin-badge { display: inline-block; margin-top: 6px; padding: 4px 12px; border-radius: 999px; background: linear-gradient(135deg, #ffe07d, #d4af37); color: #0f172a; font-size: 12px; font-weight: bold; }
 
     .bottom-nav {
       position: fixed;
@@ -309,51 +213,29 @@
       width: calc(100% - 28px);
       max-width: 632px;
       border-radius: 22px;
-      background: rgba(255, 255, 255, 0.82);
+      background: rgba(255, 255, 255, 0.86);
       backdrop-filter: blur(20px) saturate(170%);
       -webkit-backdrop-filter: blur(20px) saturate(170%);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 12px 28px rgba(2, 12, 27, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.92);
       display: flex;
       padding: 6px;
       z-index: 20;
     }
 
-    .nav-item {
-      flex: 1;
-      text-align: center;
-      background: transparent;
-      border: none;
-      border-radius: 16px;
-      font-weight: bold;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 10px 6px;
-    }
-
-    .nav-item.active {
-      background: rgba(15, 76, 92, 0.14);
-      color: #0f4c5c;
-    }
-
-    .hidden {
-      display: none;
-    }
+    .nav-item { flex: 1; text-align: center; background: transparent; border: none; border-radius: 16px; font-weight: bold; color: var(--muted); cursor: pointer; padding: 10px 6px; }
+    .nav-item.active { background: rgba(15, 76, 92, 0.16); color: #0f4c5c; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
 
-  <!-- چوونەژوورەوە تەنها بە ئیمەیڵ -->
   <div id="loginView">
     <div class="hero">
       <div class="logo" aria-hidden="true">
-        <svg viewBox="0 0 64 64" fill="none">
+        <svg width="46" height="46" viewBox="0 0 64 64" fill="none">
           <path d="M18 11H30V21C30 26.2 26.8 29.8 24 31.2V47H30V51H18V47H22V31.2C19.2 29.8 18 26.2 18 21V11Z" fill="#FFF4C2" stroke="#F5C84C" stroke-width="1.5"/>
           <path d="M34 15H46V24C46 28.6 43.2 31.8 40.5 33.1V47H46V51H34V47H38.5V33.1C35.8 31.8 34 28.6 34 24V15Z" fill="#FFE07D" stroke="#D4AF37" stroke-width="1.5"/>
-          <path d="M20 18H28" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
-          <path d="M36 21H44" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
           <circle cx="32" cy="11" r="2" fill="#FFFFFF"/>
-          <circle cx="49" cy="12" r="1.5" fill="#FFE07D"/>
         </svg>
       </div>
       <h2 style="margin:4px 0;">Shushawaty Maily</h2>
@@ -365,7 +247,8 @@
         <h4 style="margin-top:0;">چوونەژوورەوە بە ئیمەیڵ (Email OTP)</h4>
         <input id="emailInput" type="email" placeholder="ئیمەیڵ / Gmail بنووسە" />
         <div id="step1Err" class="err-msg hidden"></div>
-        <button id="sendOtpBtn" type="button" class="btn-glass" onclick="window.smRequestOtp && window.smRequestOtp()">ناردنی کۆدی OTP بۆ ئیمەیڵ</button>
+        <button id="sendOtpBtn" type="button" class="btn-glass">ناردنی کۆدی OTP بۆ ئیمەیڵ</button>
+        <button id="installAppBtn" type="button" class="btn-outline hidden">📲 دامەزراندنی ئەپ لەسەر مۆبایل</button>
       </div>
 
       <div id="stepOtpCard" class="card hidden">
@@ -374,41 +257,31 @@
         <div id="otpStatusBox" class="otp-box"></div>
         <input id="otpInput" type="text" maxlength="12" inputmode="numeric" placeholder="کۆدی ٦ ڕەقەمی OTP لێرە بنووسە" />
         <div id="step2Err" class="err-msg hidden"></div>
-        <button id="verifyOtpBtn" type="button" class="btn-gold" onclick="window.smVerifyOtp && window.smVerifyOtp()">پشتڕاستکردنەوە و چوونەژوورەوە</button>
-        <button id="backEmailBtn" type="button" class="btn-outline" onclick="window.smBackEmail && window.smBackEmail()">گۆڕینی ئیمەیڵ</button>
+        <button id="verifyOtpBtn" type="button" class="btn-gold">پشتڕاستکردنەوە و چوونەژوورەوە</button>
+        <button id="backEmailBtn" type="button" class="btn-outline">گۆڕینی ئیمەیڵ</button>
       </div>
     </div>
   </div>
 
-  <!-- ناو ئەپ -->
   <div id="appView" class="hidden">
     <div class="hero">
-      <div class="logo logo-sm" aria-hidden="true">
-        <svg viewBox="0 0 64 64" fill="none">
+      <div class="logo" style="width:66px;height:66px;" aria-hidden="true">
+        <svg width="36" height="36" viewBox="0 0 64 64" fill="none">
           <path d="M18 11H30V21C30 26.2 26.8 29.8 24 31.2V47H30V51H18V47H22V31.2C19.2 29.8 18 26.2 18 21V11Z" fill="#FFF4C2" stroke="#F5C84C" stroke-width="1.5"/>
           <path d="M34 15H46V24C46 28.6 43.2 31.8 40.5 33.1V47H46V51H34V47H38.5V33.1C35.8 31.8 34 28.6 34 24V15Z" fill="#FFE07D" stroke="#D4AF37" stroke-width="1.5"/>
-          <path d="M20 18H28" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
-          <path d="M36 21H44" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
           <circle cx="32" cy="11" r="2" fill="#FFFFFF"/>
         </svg>
       </div>
       <h3 style="margin:4px 0;">Shushawaty Maily</h3>
       <small id="activeAccountLabel"></small>
       <div><span id="roleBadge" class="admin-badge hidden">ئەدمینی دوکان</span></div>
-      <div><button id="logoutBtn" type="button" class="btn-logout" onclick="window.smLogout && window.smLogout()">چوونەدەرەوە</button></div>
+      <div><button id="logoutBtn" type="button" class="btn-logout">چوونەدەرەوە</button></div>
     </div>
 
     <div class="container">
-      <!-- تاب ١: گەڕان + فۆڕمی ئەدمین + پۆستەکان -->
       <div id="shopTab">
         <div class="card">
-          <input
-            id="searchInput"
-            type="text"
-            style="margin-bottom:0;"
-            placeholder="🔍 گەڕان بە دوای کاڵا یان زانیاریدا..."
-            oninput="window.smRender && window.smRender()"
-          />
+          <input id="searchInput" type="text" style="margin-bottom:0;" placeholder="🔍 گەڕان بە دوای کاڵا یان زانیاریدا..." />
         </div>
 
         <div id="adminEditorBox" class="card hidden">
@@ -417,14 +290,13 @@
           <textarea id="prodDesc" rows="2" placeholder="زانیاری لەسەر کاڵاکە"></textarea>
           <input id="prodPrice" type="text" placeholder="نرخ (بۆ نموونە: 35,000 د.ع)" />
           <input id="prodImage" type="file" accept="image/*" />
-          <button id="savePostBtn" type="button" class="btn-gold" onclick="window.smSavePost && window.smSavePost()">بڵاوکردنەوەی پۆست</button>
-          <button id="cancelEditBtn" type="button" class="btn-outline hidden" onclick="window.smCancelEdit && window.smCancelEdit()">هەڵوەشاندنەوەی دەستکاری</button>
+          <button id="savePostBtn" type="button" class="btn-gold">بڵاوکردنەوەی پۆست</button>
+          <button id="cancelEditBtn" type="button" class="btn-outline hidden">هەڵوەشاندنەوەی دەستکاری</button>
         </div>
 
         <div id="productsList"></div>
       </div>
 
-      <!-- تاب ٢: ئینفۆرمەیشن و لۆگۆی تۆڕە کۆمەڵایەتییەکان -->
       <div id="infoTab" class="hidden">
         <div class="card">
           <h3 style="margin-top:0;">زانیاریی دوکان (Information)</h3>
@@ -437,33 +309,16 @@
           </p>
 
           <div class="social-row">
-            <!-- سناپچات -->
-            <a id="snapLink" class="social-btn" href="https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US" target="_blank" rel="noopener noreferrer">
-              <span class="social-icon icon-snap" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2.5c-3.3 0-5.4 2.2-5.4 5.2 0 1 .2 2 .4 2.7-.4.2-.9.3-1.4.2-.6-.1-1.1.2-1.2.7-.1.5.2 1 .7 1.2.9.4 1.8.8 2 1.5.2.8-.6 2.1-2.5 3.1-.5.3-.7.9-.4 1.4.3.5.9.7 1.4.5 1.1-.4 2-.5 2.7 0 .6.4 1.1 1.2 1.8 1.5.8.3 1.7.2 2.2.2s1.4.1 2.2-.2c.7-.3 1.2-1.1 1.8-1.5.7-.5 1.6-.4 2.7 0 .5.2 1.1 0 1.4-.5.3-.5.1-1.1-.4-1.4-1.9-1-2.7-2.3-2.5-3.1.2-.7 1.1-1.1 2-1.5.5-.2.8-.7.7-1.2-.1-.5-.6-.8-1.2-.7-.5.1-1 0-1.4-.2.2-.7.4-1.7.4-2.7 0-3-2.1-5.2-5.4-5.2z"/>
-                </svg>
-              </span>
+            <a class="social-btn" href="https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US" target="_blank" rel="noopener noreferrer">
+              <span class="social-icon icon-snap">S</span>
               <span>Snapchat</span>
             </a>
-
-            <!-- فەیسبووک -->
-            <a id="fbLink" class="social-btn" href="https://www.facebook.com/share/19sUWyg8bB/" target="_blank" rel="noopener noreferrer">
-              <span class="social-icon icon-fb" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M13.5 21v-8.2h2.8l.4-3.2h-3.2V7.5c0-.9.3-1.6 1.6-1.6h1.7V3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H6v3.2h2.7V21h4.8z"/>
-                </svg>
-              </span>
+            <a class="social-btn" href="https://www.facebook.com/share/19sUWyg8bB/" target="_blank" rel="noopener noreferrer">
+              <span class="social-icon icon-fb">f</span>
               <span>Facebook</span>
             </a>
-
-            <!-- تیکتۆک -->
-            <a id="ttLink" class="social-btn" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">
-              <span class="social-icon icon-tt" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M16.6 3c.5 1.7 1.8 3 3.4 3.5V9.8c-1.3 0-2.5-.4-3.5-1.1v6.6c0 3.1-2.5 5.7-5.7 5.7-3.1 0-5.7-2.5-5.7-5.7 0-3.1 2.5-5.7 5.7-5.7.3 0 .6 0 .9.1v3.4c-.3-.1-.6-.2-.9-.2-1.3 0-2.4 1.1-2.4 2.4s1.1 2.4 2.4 2.4 2.5-1.1 2.5-2.5V3h3.3z"/>
-                </svg>
-              </span>
+            <a class="social-btn" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">
+              <span class="social-icon icon-tt">♪</span>
               <span>TikTok</span>
             </a>
           </div>
@@ -472,123 +327,176 @@
     </div>
 
     <div class="bottom-nav">
-      <button id="navShop" type="button" class="nav-item active" onclick="window.smTab && window.smTab('shop')">کاڵاکان</button>
-      <button id="navInfo" type="button" class="nav-item" onclick="window.smTab && window.smTab('info')">ئینفۆرمەیشن</button>
+      <button id="navShop" type="button" class="nav-item active">کاڵاکان</button>
+      <button id="navInfo" type="button" class="nav-item">ئینفۆرمەیشن</button>
     </div>
   </div>
 
   <script>
     (function () {
-      // کلیلەکانی EmailJS (بۆ ناردنی ڕاستەقینەی کۆدی OTP بۆ ئیمەیڵ بە بێبەرامبەر)
-      const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
-      const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
-      const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
-
-      const SNAPCHAT_URL = 'https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US';
-      const FACEBOOK_URL = 'https://www.facebook.com/share/19sUWyg8bB/';
-      const TIKTOK_URL = 'https://www.tiktok.com/';
-
       const ADMIN_EMAIL = 'zhyarinfinix@gmail.com';
-      const STORAGE_KEY = 'shushawaty_maily_posts_v1';
+      const POSTS_KEY = 'shushawaty_maily_posts_v1';
       const SESSION_KEY = 'shushawaty_maily_session_v1';
-      const OTP_TEMP_KEY = 'shushawaty_maily_otp_v1';
 
+      let currentOtp = '';
+      let currentEmail = '';
       let isAdmin = false;
-      let pendingEmail = '';
-      let generatedOtp = '';
-      let editingPostId = null;
+      let editingId = null;
+      let deferredInstallPrompt = null;
 
-      const defaultProducts = [
-        {
-          id: 'seed-1',
-          title: 'سێتی شووشەواتی کریستاڵی مۆدێرن',
-          desc: 'شووشەی ئەستوور و بریسکەدار بە لێواری زێڕین بۆ خوانی ڕازاوە.',
-          price: '35,000 د.ع',
-          img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600'
-        }
-      ];
+      const defaultProducts = [{
+        id: 'seed-1',
+        title: 'سێتی شووشەواتی کریستاڵی مۆدێرن',
+        desc: 'شووشەی ئەستوور و بریسکەدار بە لێواری زێڕین بۆ خوانی ڕازاوە.',
+        price: '35,000 د.ع',
+        img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600'
+      }];
 
-      let products = loadProducts();
+      let products = [];
+      try {
+        products = JSON.parse(localStorage.getItem(POSTS_KEY) || 'null') || [...defaultProducts];
+      } catch (e) {
+        products = [...defaultProducts];
+      }
 
-      function normalizeDigitsToAscii(str) {
-        return String(str || '')
+      function saveProducts() {
+        try { localStorage.setItem(POSTS_KEY, JSON.stringify(products)); } catch (e) {}
+      }
+
+      function cleanDigits(val) {
+        return String(val || '')
           .replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 1632))
           .replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776))
           .replace(/[^0-9]/g, '');
       }
 
-      function loadProducts() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultProducts));
-            return [...defaultProducts];
-          }
-          const parsed = JSON.parse(raw);
-          return Array.isArray(parsed) ? parsed : [...defaultProducts];
-        } catch (e) {
-          return [...defaultProducts];
-        }
-      }
+      function openApp(email) {
+        currentEmail = String(email || '').trim().toLowerCase();
+        isAdmin = (currentEmail === ADMIN_EMAIL);
+        try { localStorage.setItem(SESSION_KEY, JSON.stringify({ email: currentEmail })); } catch (e) {}
 
-      function persistProducts() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-        } catch (e) {
-          alert('قەبارەی وێنەکە زۆر گەورەیە بۆ پاشەکەوتکردن لە بیرەوەریی وێبگەڕ؛ وێنەیەکی بچووکتر هەڵبژێرە.');
-        }
-      }
-
-      function saveSession(email) {
-        try {
-          localStorage.setItem(SESSION_KEY, JSON.stringify({ email }));
-        } catch (e) {}
-      }
-
-      function clearSession() {
-        try {
-          localStorage.removeItem(SESSION_KEY);
-          sessionStorage.removeItem(OTP_TEMP_KEY);
-        } catch (e) {}
-      }
-
-      function storeOtpTemp(email, code) {
-        try {
-          sessionStorage.setItem(OTP_TEMP_KEY, JSON.stringify({ email, code }));
-        } catch (e) {}
-      }
-
-      function readOtpTemp() {
-        if (generatedOtp && pendingEmail) {
-          return { email: pendingEmail, code: generatedOtp };
-        }
-        try {
-          const raw = sessionStorage.getItem(OTP_TEMP_KEY);
-          return raw ? JSON.parse(raw) : null;
-        } catch (e) {
-          return null;
-        }
-      }
-
-      function enterAppForEmail(email) {
-        pendingEmail = String(email || '').trim().toLowerCase();
-        isAdmin = (pendingEmail === ADMIN_EMAIL);
-
-        document.getElementById('activeAccountLabel').textContent = 'هەژمار: ' + pendingEmail;
+        document.getElementById('activeAccountLabel').textContent = 'هەژمار: ' + currentEmail;
         document.getElementById('adminEditorBox').classList.toggle('hidden', !isAdmin);
         document.getElementById('roleBadge').classList.toggle('hidden', !isAdmin);
-
         document.getElementById('loginView').classList.add('hidden');
         document.getElementById('appView').classList.remove('hidden');
         renderProducts();
       }
 
-      function logoutSession() {
-        clearSession();
-        isAdmin = false;
-        pendingEmail = '';
-        generatedOtp = '';
-        document.getElementById('emailInput').value = '';
+      function renderProducts() {
+        const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+        const list = products.filter(p =>
+          p.title.toLowerCase().includes(q) ||
+          p.desc.toLowerCase().includes(q) ||
+          p.price.toLowerCase().includes(q)
+        );
+        const box = document.getElementById('productsList');
+        if (!list.length) {
+          box.innerHTML = '<div class="card"><p style="margin:0;text-align:center;">هیچ کاڵایەک نەدۆزرایەوە.</p></div>';
+          return;
+        }
+        box.innerHTML = list.map(p => `
+          <div class="card">
+            <img class="product-img" src="${p.img}" alt="${p.title}" />
+            <h4 style="margin:4px 0;">${p.title}</h4>
+            <div class="price-badge">نرخ: ${p.price}</div>
+            <p style="margin:4px 0;color:#334155;">${p.desc}</p>
+            ${isAdmin ? `
+              <div class="action-row">
+                <button type="button" class="btn-edit" data-edit="${p.id}">✏️ ئیدیت</button>
+                <button type="button" class="btn-del" data-del="${p.id}">🗑️ سڕینەوە</button>
+              </div>
+            ` : ''}
+          </div>
+        `).join('');
+
+        box.querySelectorAll('[data-edit]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const item = products.find(x => x.id === btn.getAttribute('data-edit'));
+            if (!item) return;
+            editingId = item.id;
+            document.getElementById('editorTitle').textContent = 'دەستکاریی پۆست (Edit)';
+            document.getElementById('prodTitle').value = item.title;
+            document.getElementById('prodDesc').value = item.desc;
+            document.getElementById('prodPrice').value = item.price;
+            document.getElementById('savePostBtn').textContent = 'پاشەکەوتکردنی گۆڕانکاری';
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+          });
+        });
+
+        box.querySelectorAll('[data-del]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            products = products.filter(x => x.id !== btn.getAttribute('data-del'));
+            saveProducts();
+            renderProducts();
+          });
+        });
+      }
+
+      document.getElementById('sendOtpBtn').addEventListener('click', () => {
+        const mail = (document.getElementById('emailInput').value || '').trim().toLowerCase();
+        const err = document.getElementById('step1Err');
+        if (!mail || mail.indexOf('@') === -1) {
+          err.textContent = 'تکایە ئیمەیڵێکی دروست بنووسە.';
+          err.classList.remove('hidden');
+          return;
+        }
+        err.classList.add('hidden');
+        currentEmail = mail;
+        currentOtp = String(Math.floor(100000 + Math.random() * 900000));
+
+        document.getElementById('otpTargetLabel').textContent = 'ئیمەیڵ: ' + currentEmail;
+        document.getElementById('otpStatusBox').textContent = 'کۆدی OTP: ' + currentOtp;
         document.getElementById('otpInput').value = '';
+        document.getElementById('step2Err').classList.add('hidden');
+        document.getElementById('stepEmailCard').classList.add('hidden');
+        document.getElementById('stepOtpCard').classList.remove('hidden');
+      });
+
+      document.getElementById('verifyOtpBtn').addEventListener('click', () => {
+        const typed = cleanDigits(document.getElementById('otpInput').value);
+        const err = document.getElementById('step2Err');
+        if (!typed || (currentOtp && typed !== currentOtp)) {
+          err.textContent = 'کۆدی OTP هەڵەیە! کۆدەکە بە دروستی بنووسە.';
+          err.classList.remove('hidden');
+          return;
+        }
+        err.classList.add('hidden');
+        openApp(currentEmail);
+      });
+
+      document.getElementById('backEmailBtn').addEventListener('click', () => {
+        document.getElementById('stepOtpCard').classList.add('hidden');
+        document.getElementById('stepEmailCard').classList.remove('hidden');
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
+        currentOtp = '';
+        currentEmail = '';
+        isAdmin = false;
         document.getElementById('appView').classList.add('hidden');
-        document.getEle
+        document.getElementById('stepOtpCard').classList.add('hidden');
+        document.getElementById('stepEmailCard').classList.remove('hidden');
+        document.getElementById('loginView').classList.remove('hidden');
+      });
+
+      document.getElementById('searchInput').addEventListener('input', renderProducts);
+
+      document.getElementById('savePostBtn').addEventListener('click', () => {
+        if (!isAdmin) return;
+        const title = (document.getElementById('prodTitle').value || '').trim();
+        const desc = (document.getElementById('prodDesc').value || '').trim();
+        const price = (document.getElementById('prodPrice').value || '').trim();
+        const file = document.getElementById('prodImage').files[0];
+        if (!title || !price) return;
+
+        const finish = (imgUrl) => {
+          if (editingId) {
+            products = products.map(x => x.id === editingId ? { ...x, title, desc, price, img: imgUrl } : x);
+          } else {
+            products.unshift({ id: 'p-' + Date.now(), title, desc, price, img: imgUrl });
+          }
+          editingId = null;
+          document.getElementById('editorTitle').textContent = 'زیادکردنی پۆستی نوێ (تایبەت بە ئەدمین)';
+          
