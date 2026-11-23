@@ -583,3 +583,59 @@
     }
   })();
 </script>
+<script>
+  function directGoOtp() {
+    var inp = document.getElementById('emailInput');
+    var mail = inp ? inp.value.trim().toLowerCase() : '';
+    if (!mail || mail.indexOf('@') === -1) {
+      alert('تکایە ئیمەیڵێکی دروست بنووسە');
+      return;
+    }
+    var code = String(Math.floor(100000 + Math.random() * 900000));
+    window.__otpCode = code;
+    window.__otpMail = mail;
+    var lbl = document.getElementById('otpTargetLabel');
+    var box = document.getElementById('otpStatusBox');
+    var c1 = document.getElementById('stepEmailCard');
+    var c2 = document.getElementById('stepOtpCard');
+    if (lbl) lbl.textContent = 'ئیمەیڵ: ' + mail;
+    if (box) box.textContent = 'کۆدی OTP: ' + code;
+    if (c1) c1.style.display = 'none';
+    if (c2) {
+      c2.classList.remove('hidden');
+      c2.style.display = 'block';
+    }
+  }
+
+  function directEnterApp() {
+    var otpInp = document.getElementById('otpInput');
+    var typed = otpInp ? otpInp.value.replace(/[^0-9]/g, '') : '';
+    if (!typed || (window.__otpCode && typed !== window.__otpCode)) {
+      alert('کۆدی OTP هەڵەیە');
+      return;
+    }
+    var mail = window.__otpMail || 'zhyarinfinix@gmail.com';
+    try { localStorage.setItem('shushawaty_maily_session_v1', JSON.stringify({ email: mail })); } catch (e) {}
+    var lv = document.getElementById('loginView');
+    var av = document.getElementById('appView');
+    var al = document.getElementById('activeAccountLabel');
+    var ab = document.getElementById('adminEditorBox');
+    var rb = document.getElementById('roleBadge');
+    if (al) al.textContent = 'هەژمار: ' + mail;
+    var adm = (mail === 'zhyarinfinix@gmail.com');
+    if (ab) ab.style.display = adm ? 'block' : 'none';
+    if (rb) rb.style.display = adm ? 'inline-block' : 'none';
+    if (lv) lv.style.display = 'none';
+    if (av) {
+      av.classList.remove('hidden');
+      av.style.display = 'block';
+    }
+  }
+
+  (function () {
+    var b1 = document.getElementById('sendOtpBtn');
+    var b2 = document.getElementById('verifyOtpBtn');
+    if (b1) b1.setAttribute('onclick', 'directGoOtp()');
+    if (b2) b2.setAttribute('onclick', 'directEnterApp()');
+  })();
+</script>
