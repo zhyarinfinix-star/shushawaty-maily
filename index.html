@@ -1,11 +1,10 @@
-index.html
 <!DOCTYPE html>
 <html lang="ckb" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shushawaty Maily | شووشەواتی مەیلی</title>
-  <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     :root {
       --glass-bg: rgba(255, 255, 255, 0.22);
@@ -366,7 +365,7 @@ index.html
         <h4 style="margin-top:0;">چوونەژوورەوە بە ئیمەیڵ (Email OTP)</h4>
         <input id="emailInput" type="email" placeholder="ئیمەیڵ / Gmail بنووسە" />
         <div id="step1Err" class="err-msg hidden"></div>
-        <button id="sendOtpBtn" type="button" class="btn-glass">ناردنی کۆدی OTP بۆ ئیمەیڵ</button>
+        <button id="sendOtpBtn" type="button" class="btn-glass" onclick="window.smRequestOtp && window.smRequestOtp()">ناردنی کۆدی OTP بۆ ئیمەیڵ</button>
       </div>
 
       <div id="stepOtpCard" class="card hidden">
@@ -375,8 +374,8 @@ index.html
         <div id="otpStatusBox" class="otp-box"></div>
         <input id="otpInput" type="text" maxlength="12" inputmode="numeric" placeholder="کۆدی ٦ ڕەقەمی OTP لێرە بنووسە" />
         <div id="step2Err" class="err-msg hidden"></div>
-        <button id="verifyOtpBtn" type="button" class="btn-gold">پشتڕاستکردنەوە و چوونەژوورەوە</button>
-        <button id="backEmailBtn" type="button" class="btn-outline">گۆڕینی ئیمەیڵ</button>
+        <button id="verifyOtpBtn" type="button" class="btn-gold" onclick="window.smVerifyOtp && window.smVerifyOtp()">پشتڕاستکردنەوە و چوونەژوورەوە</button>
+        <button id="backEmailBtn" type="button" class="btn-outline" onclick="window.smBackEmail && window.smBackEmail()">گۆڕینی ئیمەیڵ</button>
       </div>
     </div>
   </div>
@@ -396,7 +395,7 @@ index.html
       <h3 style="margin:4px 0;">Shushawaty Maily</h3>
       <small id="activeAccountLabel"></small>
       <div><span id="roleBadge" class="admin-badge hidden">ئەدمینی دوکان</span></div>
-      <div><button id="logoutBtn" type="button" class="btn-logout">چوونەدەرەوە</button></div>
+      <div><button id="logoutBtn" type="button" class="btn-logout" onclick="window.smLogout && window.smLogout()">چوونەدەرەوە</button></div>
     </div>
 
     <div class="container">
@@ -408,6 +407,7 @@ index.html
             type="text"
             style="margin-bottom:0;"
             placeholder="🔍 گەڕان بە دوای کاڵا یان زانیاریدا..."
+            oninput="window.smRender && window.smRender()"
           />
         </div>
 
@@ -417,8 +417,8 @@ index.html
           <textarea id="prodDesc" rows="2" placeholder="زانیاری لەسەر کاڵاکە"></textarea>
           <input id="prodPrice" type="text" placeholder="نرخ (بۆ نموونە: 35,000 د.ع)" />
           <input id="prodImage" type="file" accept="image/*" />
-          <button id="savePostBtn" type="button" class="btn-gold">بڵاوکردنەوەی پۆست</button>
-          <button id="cancelEditBtn" type="button" class="btn-outline hidden">هەڵوەشاندنەوەی دەستکاری</button>
+          <button id="savePostBtn" type="button" class="btn-gold" onclick="window.smSavePost && window.smSavePost()">بڵاوکردنەوەی پۆست</button>
+          <button id="cancelEditBtn" type="button" class="btn-outline hidden" onclick="window.smCancelEdit && window.smCancelEdit()">هەڵوەشاندنەوەی دەستکاری</button>
         </div>
 
         <div id="productsList"></div>
@@ -472,146 +472,123 @@ index.html
     </div>
 
     <div class="bottom-nav">
-      <button id="navShop" type="button" class="nav-item active">کاڵاکان</button>
-      <button id="navInfo" type="button" class="nav-item">ئینفۆرمەیشن</button>
+      <button id="navShop" type="button" class="nav-item active" onclick="window.smTab && window.smTab('shop')">کاڵاکان</button>
+      <button id="navInfo" type="button" class="nav-item" onclick="window.smTab && window.smTab('info')">ئینفۆرمەیشن</button>
     </div>
   </div>
 
   <script>
-    const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
-    const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
-    const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+    (function () {
+      // کلیلەکانی EmailJS (بۆ ناردنی ڕاستەقینەی کۆدی OTP بۆ ئیمەیڵ بە بێبەرامبەر)
+      const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
+      const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
+      const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
 
-    const SNAPCHAT_URL = 'https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US';
-    const FACEBOOK_URL = 'https://www.facebook.com/share/19sUWyg8bB/';
-    const TIKTOK_URL = 'https://www.tiktok.com/';
+      const SNAPCHAT_URL = 'https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US';
+      const FACEBOOK_URL = 'https://www.facebook.com/share/19sUWyg8bB/';
+      const TIKTOK_URL = 'https://www.tiktok.com/';
 
-    const ADMIN_EMAIL = 'zhyarinfinix@gmail.com';
-    const STORAGE_KEY = 'shushawaty_maily_posts_v1';
-    const SESSION_KEY = 'shushawaty_maily_session_v1';
-    const OTP_TEMP_KEY = 'shushawaty_maily_otp_v1';
+      const ADMIN_EMAIL = 'zhyarinfinix@gmail.com';
+      const STORAGE_KEY = 'shushawaty_maily_posts_v1';
+      const SESSION_KEY = 'shushawaty_maily_session_v1';
+      const OTP_TEMP_KEY = 'shushawaty_maily_otp_v1';
 
-    let isAdmin = false;
-    let pendingEmail = '';
-    let generatedOtp = '';
-    let editingPostId = null;
+      let isAdmin = false;
+      let pendingEmail = '';
+      let generatedOtp = '';
+      let editingPostId = null;
 
-    const defaultProducts = [
-      {
-        id: 'seed-1',
-        title: 'سێتی شووشەواتی کریستاڵی مۆدێرن',
-        desc: 'شووشەی ئەستوور و بریسکەدار بە لێواری زێڕین بۆ خوانی ڕازاوە.',
-        price: '35,000 د.ع',
-        img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600'
+      const defaultProducts = [
+        {
+          id: 'seed-1',
+          title: 'سێتی شووشەواتی کریستاڵی مۆدێرن',
+          desc: 'شووشەی ئەستوور و بریسکەدار بە لێواری زێڕین بۆ خوانی ڕازاوە.',
+          price: '35,000 د.ع',
+          img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600'
+        }
+      ];
+
+      let products = loadProducts();
+
+      function normalizeDigitsToAscii(str) {
+        return String(str || '')
+          .replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 1632))
+          .replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776))
+          .replace(/[^0-9]/g, '');
       }
-    ];
 
-    let products = loadProducts();
-
-    function normalizeDigitsToAscii(str) {
-      return String(str || '')
-        .replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 1632))
-        .replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776))
-        .replace(/[^0-9]/g, '');
-    }
-
-    function loadProducts() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultProducts));
+      function loadProducts() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultProducts));
+            return [...defaultProducts];
+          }
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [...defaultProducts];
+        } catch (e) {
           return [...defaultProducts];
         }
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [...defaultProducts];
-      } catch (e) {
-        return [...defaultProducts];
       }
-    }
 
-    function persistProducts() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-      } catch (e) {
-        alert('قەبارەی وێنەکە زۆر گەورەیە بۆ پاشەکەوتکردن لە بیرەوەریی وێبگەڕ؛ وێنەیەکی بچووکتر هەڵبژێرە.');
+      function persistProducts() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+        } catch (e) {
+          alert('قەبارەی وێنەکە زۆر گەورەیە بۆ پاشەکەوتکردن لە بیرەوەریی وێبگەڕ؛ وێنەیەکی بچووکتر هەڵبژێرە.');
+        }
       }
-    }
 
-    function saveSession(email) {
-      try {
-        localStorage.setItem(SESSION_KEY, JSON.stringify({ email }));
-      } catch (e) {}
-    }
-
-    function clearSession() {
-      try {
-        localStorage.removeItem(SESSION_KEY);
-        sessionStorage.removeItem(OTP_TEMP_KEY);
-      } catch (e) {}
-    }
-
-    function storeOtpTemp(email, code) {
-      try {
-        sessionStorage.setItem(OTP_TEMP_KEY, JSON.stringify({ email, code }));
-      } catch (e) {}
-    }
-
-    function readOtpTemp() {
-      if (generatedOtp && pendingEmail) {
-        return { email: pendingEmail, code: generatedOtp };
+      function saveSession(email) {
+        try {
+          localStorage.setItem(SESSION_KEY, JSON.stringify({ email }));
+        } catch (e) {}
       }
-      try {
-        const raw = sessionStorage.getItem(OTP_TEMP_KEY);
-        if (!raw) return null;
-        return JSON.parse(raw);
-      } catch (e) {
-        return null;
+
+      function clearSession() {
+        try {
+          localStorage.removeItem(SESSION_KEY);
+          sessionStorage.removeItem(OTP_TEMP_KEY);
+        } catch (e) {}
       }
-    }
 
-    function enterAppForEmail(email) {
-      pendingEmail = String(email || '').trim().toLowerCase();
-      isAdmin = (pendingEmail === ADMIN_EMAIL);
+      function storeOtpTemp(email, code) {
+        try {
+          sessionStorage.setItem(OTP_TEMP_KEY, JSON.stringify({ email, code }));
+        } catch (e) {}
+      }
 
-      document.getElementById('activeAccountLabel').textContent = 'هەژمار: ' + pendingEmail;
-      document.getElementById('adminEditorBox').classList.toggle('hidden', !isAdmin);
-      document.getElementById('roleBadge').classList.toggle('hidden', !isAdmin);
+      function readOtpTemp() {
+        if (generatedOtp && pendingEmail) {
+          return { email: pendingEmail, code: generatedOtp };
+        }
+        try {
+          const raw = sessionStorage.getItem(OTP_TEMP_KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          return null;
+        }
+      }
 
-      document.getElementById('loginView').classList.add('hidden');
-      document.getElementById('appView').classList.remove('hidden');
-      renderProducts();
-    }
+      function enterAppForEmail(email) {
+        pendingEmail = String(email || '').trim().toLowerCase();
+        isAdmin = (pendingEmail === ADMIN_EMAIL);
 
-    function logoutSession() {
-      clearSession();
-      isAdmin = false;
-      pendingEmail = '';
-      generatedOtp = '';
-      document.getElementById('emailInput').value = '';
-      document.getElementById('otpInput').value = '';
-      document.getElementById('appView').classList.add('hidden');
-      document.getElementById('stepOtpCard').classList.add('hidden');
-      document.getElementById('stepEmailCard').classList.remove('hidden');
-      document.getElementById('loginView').classList.remove('hidden');
-    }
+        document.getElementById('activeAccountLabel').textContent = 'هەژمار: ' + pendingEmail;
+        document.getElementById('adminEditorBox').classList.toggle('hidden', !isAdmin);
+        document.getElementById('roleBadge').classList.toggle('hidden', !isAdmin);
 
-    function showErr(id, msg) {
-      const el = document.getElementById(id);
-      el.textContent = msg;
-      el.classList.remove('hidden');
-    }
+        document.getElementById('loginView').classList.add('hidden');
+        document.getElementById('appView').classList.remove('hidden');
+        renderProducts();
+      }
 
-    function hideErr(id) {
-      const el = document.getElementById(id);
-      el.textContent = '';
-      el.classList.add('hidden');
-    }
-
-    function initEmailJsSafe() {
-      try {
-        if (
-          window.emailjs &&
-          EMAILJS_PUBLIC_KEY &&
-          EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY'
-        ) {
-          window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY }
+      function logoutSession() {
+        clearSession();
+        isAdmin = false;
+        pendingEmail = '';
+        generatedOtp = '';
+        document.getElementById('emailInput').value = '';
+        document.getElementById('otpInput').value = '';
+        document.getElementById('appView').classList.add('hidden');
+        document.getEle
