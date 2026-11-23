@@ -50,17 +50,37 @@ index.html
     }
 
     .logo {
-      width: 78px;
-      height: 78px;
+      width: 86px;
+      height: 86px;
       margin: 0 auto 10px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(255,255,255,0.45), rgba(245,200,76,0.55));
-      border: 2px solid rgba(255, 255, 255, 0.85);
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.72), rgba(245, 200, 76, 0.38) 55%, rgba(15, 76, 92, 0.75) 100%);
+      border: 2.5px solid rgba(255, 232, 148, 0.95);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 34px;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.28), inset 0 2px 6px rgba(255,255,255,0.8);
+      color: #fff3c4;
+      box-shadow:
+        0 12px 26px rgba(0, 0, 0, 0.35),
+        0 0 22px rgba(245, 200, 76, 0.35),
+        inset 0 2px 8px rgba(255, 255, 255, 0.85);
+    }
+
+    .logo svg {
+      width: 48px;
+      height: 48px;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+    }
+
+    .logo-sm {
+      width: 66px;
+      height: 66px;
+    }
+
+    .logo-sm svg {
+      width: 36px;
+      height: 36px;
     }
 
     .container {
@@ -84,6 +104,58 @@ index.html
       direction: ltr;
       unicode-bidi: isolate;
       font-variant-numeric: tabular-nums;
+    }
+
+    .social-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .social-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 8px;
+      border-radius: 18px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 13px;
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .social-btn:active {
+      transform: scale(0.97);
+    }
+
+    .social-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+
+    .icon-snap {
+      background: linear-gradient(135deg, #facc15, #eab308);
+      color: #0f172a;
+    }
+
+    .icon-fb {
+      background: linear-gradient(135deg, #1877f2, #0d5cc7);
+    }
+
+    .icon-tt {
+      background: linear-gradient(135deg, #111827, #334155);
     }
 
     input, textarea {
@@ -263,7 +335,16 @@ index.html
   <!-- چوونەژوورەوە تەنها بە ئیمەیڵ -->
   <div id="loginView">
     <div class="hero">
-      <div class="logo">🥂</div>
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none">
+          <path d="M18 11H30V21C30 26.2 26.8 29.8 24 31.2V47H30V51H18V47H22V31.2C19.2 29.8 18 26.2 18 21V11Z" fill="#FFF4C2" stroke="#F5C84C" stroke-width="1.5"/>
+          <path d="M34 15H46V24C46 28.6 43.2 31.8 40.5 33.1V47H46V51H34V47H38.5V33.1C35.8 31.8 34 28.6 34 24V15Z" fill="#FFE07D" stroke="#D4AF37" stroke-width="1.5"/>
+          <path d="M20 18H28" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M36 21H44" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="32" cy="11" r="2" fill="#FFFFFF"/>
+          <circle cx="49" cy="12" r="1.5" fill="#FFE07D"/>
+        </svg>
+      </div>
       <h2 style="margin:4px 0;">Shushawaty Maily</h2>
       <p style="margin:0;font-size:13px;opacity:0.92;">شووشەواتی مەیلی — جیهانی شووشە و کریستاڵی مۆدێرن</p>
     </div>
@@ -291,7 +372,15 @@ index.html
   <!-- ناو ئەپ -->
   <div id="appView" class="hidden">
     <div class="hero">
-      <div class="logo" style="width:58px;height:58px;font-size:24px;">🥂</div>
+      <div class="logo logo-sm" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none">
+          <path d="M18 11H30V21C30 26.2 26.8 29.8 24 31.2V47H30V51H18V47H22V31.2C19.2 29.8 18 26.2 18 21V11Z" fill="#FFF4C2" stroke="#F5C84C" stroke-width="1.5"/>
+          <path d="M34 15H46V24C46 28.6 43.2 31.8 40.5 33.1V47H46V51H34V47H38.5V33.1C35.8 31.8 34 28.6 34 24V15Z" fill="#FFE07D" stroke="#D4AF37" stroke-width="1.5"/>
+          <path d="M20 18H28" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M36 21H44" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="32" cy="11" r="2" fill="#FFFFFF"/>
+        </svg>
+      </div>
       <h3 style="margin:4px 0;">Shushawaty Maily</h3>
       <small id="activeAccountLabel"></small>
       <div><span id="roleBadge" class="admin-badge hidden">ئەدمینی دوکان</span></div>
@@ -323,7 +412,7 @@ index.html
         <div id="productsList"></div>
       </div>
 
-      <!-- تاب ٢: ئینفۆرمەیشن -->
+      <!-- تاب ٢: ئینفۆرمەیشن و لۆگۆی تۆڕە کۆمەڵایەتییەکان -->
       <div id="infoTab" class="hidden">
         <div class="card">
           <h3 style="margin-top:0;">زانیاریی دوکان (Information)</h3>
@@ -334,6 +423,38 @@ index.html
             <span>یان</span>
             <span class="num-ltr">07504619938</span>
           </p>
+
+          <div class="social-row">
+            <!-- سناپچات -->
+            <a id="snapLink" class="social-btn" href="https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US" target="_blank" rel="noopener noreferrer">
+              <span class="social-icon icon-snap" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2.5c-3.3 0-5.4 2.2-5.4 5.2 0 1 .2 2 .4 2.7-.4.2-.9.3-1.4.2-.6-.1-1.1.2-1.2.7-.1.5.2 1 .7 1.2.9.4 1.8.8 2 1.5.2.8-.6 2.1-2.5 3.1-.5.3-.7.9-.4 1.4.3.5.9.7 1.4.5 1.1-.4 2-.5 2.7 0 .6.4 1.1 1.2 1.8 1.5.8.3 1.7.2 2.2.2s1.4.1 2.2-.2c.7-.3 1.2-1.1 1.8-1.5.7-.5 1.6-.4 2.7 0 .5.2 1.1 0 1.4-.5.3-.5.1-1.1-.4-1.4-1.9-1-2.7-2.3-2.5-3.1.2-.7 1.1-1.1 2-1.5.5-.2.8-.7.7-1.2-.1-.5-.6-.8-1.2-.7-.5.1-1 0-1.4-.2.2-.7.4-1.7.4-2.7 0-3-2.1-5.2-5.4-5.2z"/>
+                </svg>
+              </span>
+              <span>Snapchat</span>
+            </a>
+
+            <!-- فەیسبووک -->
+            <a id="fbLink" class="social-btn" href="https://www.facebook.com/share/19sUWyg8bB/" target="_blank" rel="noopener noreferrer">
+              <span class="social-icon icon-fb" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M13.5 21v-8.2h2.8l.4-3.2h-3.2V7.5c0-.9.3-1.6 1.6-1.6h1.7V3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H6v3.2h2.7V21h4.8z"/>
+                </svg>
+              </span>
+              <span>Facebook</span>
+            </a>
+
+            <!-- تیکتۆک -->
+            <a id="ttLink" class="social-btn" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">
+              <span class="social-icon icon-tt" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M16.6 3c.5 1.7 1.8 3 3.4 3.5V9.8c-1.3 0-2.5-.4-3.5-1.1v6.6c0 3.1-2.5 5.7-5.7 5.7-3.1 0-5.7-2.5-5.7-5.7 0-3.1 2.5-5.7 5.7-5.7.3 0 .6 0 .9.1v3.4c-.3-.1-.6-.2-.9-.2-1.3 0-2.4 1.1-2.4 2.4s1.1 2.4 2.4 2.4 2.5-1.1 2.5-2.5V3h3.3z"/>
+                </svg>
+              </span>
+              <span>TikTok</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -352,6 +473,15 @@ index.html
     if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
       emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
     }
+
+    // لینکە فەرمییەکانی پڕۆفایلی دوکان لە تۆڕە کۆمەڵایەتییەکان
+    const SNAPCHAT_URL = 'https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US';
+    const FACEBOOK_URL = 'https://www.facebook.com/share/19sUWyg8bB/';
+    const TIKTOK_URL = 'https://www.tiktok.com/';
+
+    document.getElementById('snapLink').href = SNAPCHAT_URL;
+    document.getElementById('fbLink').href = FACEBOOK_URL;
+    document.getElementById('ttLink').href = TIKTOK_URL;
 
     const ADMIN_EMAIL = 'zhyarinfinix@gmail.com';
     const STORAGE_KEY = 'shushawaty_maily_posts_v1';
@@ -469,211 +599,7 @@ index.html
 
       document.getElementById('activeAccountLabel').textContent = 'هەژمار: ' + pendingEmail;
       document.getElementById('adminEditorBox').classList.toggle('hidden', !isAdmin);
-      document.getElementById('roleBadge').classList.toggle('hidden', !isAdmin);
-
-      document.getElementById('loginView').classList.add('hidden');
-      document.getElementById('appView').classList.remove('hidden');
-      renderProducts();
-    }
-
-    function saveProduct() {
-      if (!isAdmin) return;
-      const title = document.getElementById('prodTitle').value.trim();
-      const desc = document.getElementById('prodDesc').value.trim();
-      const price = document.getElementById('prodPrice').value.trim();
-      const fileInput = document.getElementById('prodImage');
-
-      if (!title || !price) return;
-
-      const existingItem = editingPostId ? products.find(p => p.id === editingPostId) : null;
-      const fallbackImg = existingItem
-        ? existingItem.img
-        : 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600';
-
-      const applySave = (finalImg) => {
-        if (editingPostId) {
-          products = products.map(p =>
-            p.id === editingPostId ? { ...p, title, desc, price, img: finalImg } : p
-          );
-        } else {
-          products.unshift({
-            id: 'post-' + Date.now(),
-            title,
-            desc,
-            price,
-            img: finalImg
-          });
-        }
-        persistProducts();
-        cancelEdit();
-        renderProducts();
-      };
-
-      if (fileInput.files && fileInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = e => applySave(e.target.result);
-        reader.readAsDataURL(fileInput.files[0]);
-      } else {
-        applySave(fallbackImg);
-      }
-    }
-
-    function startEditProduct(id) {
-      if (!isAdmin) return;
-      const item = products.find(p => p.id === id);
-      if (!item) return;
-
-      editingPostId = id;
-      document.getElementById('editorTitle').textContent = 'دەستکاریی پۆست (Edit)';
-      document.getElementById('prodTitle').value = item.title;
-      document.getElementById('prodDesc').value = item.desc;
-      document.getElementById('prodPrice').value = item.price;
-      document.getElementById('prodImage').value = '';
-      document.getElementById('savePostBtn').textContent = 'پاشەکەوتکردنی گۆڕانکاری';
-      document.getElementById('cancelEditBtn').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function cancelEdit() {
-      editingPostId = null;
-      document.getElementById('editorTitle').textContent = 'زیادکردنی پۆستی نوێ (تایبەت بە ئەدمین)';
-      document.getElementById('prodTitle').value = '';
-      document.getElementById('prodDesc').value = '';
-      document.getElementById('prodPrice').value = '';
-      document.getElementById('prodImage').value = '';
-      document.getElementById('savePostBtn').textContent = 'بڵاوکردنەوەی پۆست';
-      document.getElementById('cancelEditBtn').classList.add('hidden');
-    }
-
-    function deleteProduct(id) {
-      if (!isAdmin) return;
-      products = products.filter(p => p.id !== id);
-      if (editingPostId === id) cancelEdit();
-      persistProducts();
-      renderProducts();
-    }
-
-    function renderProducts() {
-      const q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
-      const filtered = products.filter(p =>
-        p.title.toLowerCase().includes(q) ||
-        p.desc.toLowerCase().includes(q) ||
-        p.price.toLowerCase().includes(q)
-      );
-
-      const box = document.getElementById('productsList');
-      if (filtered.length === 0) {
-        box.innerHTML = '<div class="card"><p style="margin:0;text-align:center;">هیچ کاڵایەک بەم ناو/زانیارییە نەدۆزرایەوە.</p></div>';
-        return;
-      }
-
-      box.innerHTML = filtered.map(p => `
-        <div class="card">
-          <img class="product-img" src="${p.img}" alt="${p.title}" />
-          <h4 style="margin:4px 0;">${p.title}</h4>
-          <div class="price-badge">نرخ: ${p.price}</div>
-          <p style="margin:4px 0;color:#334155;">${p.desc}</p>
-          ${isAdmin ? `
-            <div class="action-row">
-              <button class="btn-edit" onclick="startEditProduct('${p.id}')">✏️ ئیدیت (Edit)</button>
-              <button class="btn-del" onclick="deleteProduct('${p.id}')">🗑️ سڕینەوە (Delete)</button>
-            </div>
-          ` : ''}
-        </div>
-      `).join('');
-    }
-
-    function switchTab(tab) {
-      document.getElementById('shopTab').classList.toggle('hidden', tab !== 'shop');
-      document.getElementById('infoTab').classList.toggle('hidden', tab !== 'info');
-      document.getElementById('navShop').classList.toggle('active', tab === 'shop');
-      document.getElementById('navInfo').classList.toggle('active', tab === 'info');
-    }
-  </script>
-</body>
-</html>
-<!-- بەشی ناو ئەپ -->
-                                                                                                                                                                                                                                                                                                                                                                                                                                      <div id="appView" class="hidden">
-                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="hero">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="logo" style="width:58px;height:58px;font-size:24px;">🥂</div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                      <h3 style="margin:4px 0;">Shushawaty Maily</h3>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                            <small id="activeAccountLabel"></small>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="container">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <!-- تاب ١: کاڵاکان و بڵاوکردنەوە -->
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div id="shopTab">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="card">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h4>زیادکردنی کاڵای نوێ</h4>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <input id="prodTitle" type="text" placeholder="ناوی کاڵا" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <textarea id="prodDesc" rows="2" placeholder="زانیاری لەسەر کاڵاکە"></textarea>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <input id="prodPrice" type="text" placeholder="نرخ (بۆ نموونە: ٢٥,٠٠٠ د.ع)" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <input id="prodImage" type="file" accept="image/*" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <button class="btn-gold" onclick="addProduct()">بڵاوکردنەوەی کاڵا</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div id="productsList"></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </div>
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <!-- تاب ٢: ئینفۆرمەیشن -->
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <div id="infoTab" class="hidden">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div class="card">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <h3>زانیاریی دوکان (Information)</h3>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <p><strong>ناونیشان و شوێنی دوکان:</strong> [ناونیشانی دوکانەکەت لێرە بنووسە]</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <p><strong>ژمارەی مۆبایل:</strong> [ژمارەی مۆبایلەکەت لێرە بنووسە]</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </div>
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div class="bottom-nav">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button id="navShop" class="nav-item active" onclick="switchTab('shop')">کاڵاکان</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <button id="navInfo" class="nav-item" onclick="switchTab('info')">ئینفۆرمەیشن</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          let authMode = 'phone';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              const products = [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            title: 'سێتی شووشەواتی کریستاڵی',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    desc: 'کوالێتی بەرز و نەخشی زێڕین بۆ ڕازاندنەوەی ماڵ.',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            price: '٣٠,٠٠٠ د.ع',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600'
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ];
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  function setAuthMode(mode) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        authMode = mode;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              document.getElementById('modePhone').classList.toggle('active', mode === 'phone');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    document.getElementById('modeGmail').classList.toggle('active', mode === 'gmail');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          document.getElementById('authInput').placeholder =
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  mode === 'phone' ? 'ژمارەی مۆبایل (0770 / 0750 / 0780)' : 'ناونیشانی Gmail';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          function normalizeIraqPhone(raw) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                let d = raw.replace(/[^0-9]/g, '');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      if (d.startsWith('00964')) d = d.slice(5);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            else if (d.startsWith('964')) d = d.slice(3);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  else if (d.startsWith('0')) d = d.slice(1);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        return '+964' + d;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                function loginUser() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      const val = document.getElementById('authInput').value.trim();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            if (!val) return;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  const id = authMode === 'phone' ? normalizeIraqPhone(val) : val;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        document.getElementById('activeAccountLabel').textContent = 'هەژمار: ' + id;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              document.getElementById('loginView').classList.add('hidden');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    document.getElementById('appView').classList.remove('hidden');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          renderProducts();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              }
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  function addProduct() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        const title = document.getElementById('prodTitle').value.trim();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              const desc = document.getElementById('prodDesc').value.trim();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    const price = document.getElementById('prodPrice').value.trim();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          const fileInput = document.getElementById('prodImage');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                if (!title || !price) return;
-
+      document.getElementById('roleBadge').classList.tog
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       const pushItem = (imgUrl) => {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               products.unshift({ title, desc, price, img: imgUrl });
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       document.getElementById('prodTitle').value = '';
