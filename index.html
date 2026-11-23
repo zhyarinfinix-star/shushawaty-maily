@@ -500,3 +500,86 @@
           editingId = null;
           document.getElementById('editorTitle').textContent = 'زیادکردنی پۆستی نوێ (تایبەت بە ئەدمین)';
           
+<script>
+  (function () {
+    function showOtpStep() {
+      var mailEl = document.getElementById('emailInput');
+      var errEl = document.getElementById('step1Err');
+      var mail = mailEl ? mailEl.value.trim().toLowerCase() : '';
+
+      if (!mail || mail.indexOf('@') === -1) {
+        if (errEl) {
+          errEl.textContent = 'تکایە ئیمەیڵێکی دروست بنووسە.';
+          errEl.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (errEl) errEl.classList.add('hidden');
+      var code = String(Math.floor(100000 + Math.random() * 900000));
+      window.__directOtpCode = code;
+      window.__directOtpEmail = mail;
+
+      var targetEl = document.getElementById('otpTargetLabel');
+      var statusEl = document.getElementById('otpStatusBox');
+      var otpInputEl = document.getElementById('otpInput');
+      var emailCard = document.getElementById('stepEmailCard');
+      var otpCard = document.getElementById('stepOtpCard');
+
+      if (targetEl) targetEl.textContent = 'ئیمەیڵ: ' + mail;
+      if (statusEl) statusEl.textContent = 'کۆدی OTP: ' + code;
+      if (otpInputEl) otpInputEl.value = '';
+      if (emailCard) emailCard.classList.add('hidden');
+      if (otpCard) otpCard.classList.remove('hidden');
+    }
+
+    function verifyDirectOtp() {
+      var otpInputEl = document.getElementById('otpInput');
+      var err2El = document.getElementById('step2Err');
+      var typed = otpInputEl ? otpInputEl.value.replace(/[^0-9]/g, '') : '';
+
+      if (!typed || (window.__directOtpCode && typed !== window.__directOtpCode)) {
+        if (err2El) {
+          err2El.textContent = 'کۆدی OTP هەڵەیە!';
+          err2El.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (err2El) err2El.classList.add('hidden');
+      var mail = window.__directOtpEmail || (document.getElementById('emailInput') && document.getElementById('emailInput').value.trim().toLowerCase()) || 'zhyarinfinix@gmail.com';
+      try {
+        localStorage.setItem('shushawaty_maily_session_v1', JSON.stringify({ email: mail }));
+      } catch (e) {}
+
+      var loginView = document.getElementById('loginView');
+      var appView = document.getElementById('appView');
+      var accLabel = document.getElementById('activeAccountLabel');
+      var adminBox = document.getElementById('adminEditorBox');
+      var roleBadge = document.getElementById('roleBadge');
+
+      if (accLabel) accLabel.textContent = 'هەژمار: ' + mail;
+      var isAdmin = (mail === 'zhyarinfinix@gmail.com');
+      if (adminBox) adminBox.classList.toggle('hidden', !isAdmin);
+      if (roleBadge) roleBadge.classList.toggle('hidden', !isAdmin);
+      if (loginView) loginView.classList.add('hidden');
+      if (appView) appView.classList.remove('hidden');
+    }
+
+    var sendBtn = document.getElementById('sendOtpBtn');
+    if (sendBtn) {
+      sendBtn.onclick = function (ev) {
+        if (ev) ev.preventDefault();
+        showOtpStep();
+      };
+    }
+
+    var verifyBtn = document.getElementById('verifyOtpBtn');
+    if (verifyBtn) {
+      verifyBtn.onclick = function (ev) {
+        if (ev) ev.preventDefault();
+        verifyDirectOtp();
+      };
+    }
+  })();
+</script>
