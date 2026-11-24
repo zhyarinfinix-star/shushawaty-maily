@@ -3,367 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shushawaty Maily | شووشەواتی مەیلی</title>
-    <link rel="manifest" href="manifest.json" />
+  <title>Shushawaty Maily</title>
+  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#0e4656" />
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('./sw.js').catch(function () {});
-      });
-    }
-  </script>
-  
   <style>
-    :root {
-      --gold: #ffd15c;
-      --gold-deep: #d49b1a;
-      --ink: #0f172a;
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: Tahoma, Arial, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    * { box-sizing: border-box; font-family: Tahoma, Arial, sans-serif; }
     body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--ink);
-      padding: 16px 14px 98px;
+      margin: 0; min-height: 100vh; color: #0f172a; padding: 16px 14px 96px;
       background:
         radial-gradient(circle at 12% 14%, rgba(255, 209, 92, 0.52), transparent 40%),
         radial-gradient(circle at 88% 18%, rgba(45, 212, 191, 0.42), transparent 44%),
-        radial-gradient(circle at 20% 82%, rgba(56, 189, 248, 0.38), transparent 46%),
-        radial-gradient(circle at 85% 86%, rgba(168, 85, 247, 0.25), transparent 45%),
         linear-gradient(150deg, #071e28 0%, #0e4656 50%, #172742 100%);
       background-attachment: fixed;
     }
-
     .box {
-      max-width: 620px;
-      margin: 0 auto 15px;
-      border-radius: 26px;
-      padding: 18px;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.64));
-      backdrop-filter: blur(22px) saturate(180%);
-      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      max-width: 620px; margin: 0 auto 14px; border-radius: 24px; padding: 16px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.92);
-      box-shadow:
-        0 14px 32px rgba(3, 12, 24, 0.24),
-        inset 0 1.5px 1px rgba(255, 255, 255, 0.95);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
     }
-
     .hero {
-      text-align: center;
-      color: #ffffff;
-      padding: 22px 18px;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.08));
-      border: 1px solid rgba(255, 255, 255, 0.48);
-      box-shadow:
-        0 18px 38px rgba(0, 0, 0, 0.34),
-        inset 0 1.5px 1px rgba(255, 255, 255, 0.55);
-    }
-
-    .logo-ring {
-      width: 78px;
-      height: 78px;
-      margin: 0 auto 10px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.72), rgba(255, 209, 92, 0.35) 58%, rgba(14, 70, 86, 0.8) 100%);
-      border: 2px solid rgba(255, 232, 150, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow:
-        0 10px 24px rgba(0, 0, 0, 0.3),
-        0 0 22px rgba(255, 209, 92, 0.35),
-        inset 0 2px 6px rgba(255, 255, 255, 0.8);
-    }
-
-    .account-pill {
-      display: inline-block;
-      margin-top: 6px;
-      padding: 5px 14px;
-      border-radius: 999px;
-      font-size: 12px;
-      color: #fff8dc;
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid rgba(255, 255, 255, 0.28);
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 12px 15px;
-      margin-bottom: 11px;
-      border-radius: 16px;
-      border: 1px solid rgba(15, 23, 42, 0.14);
-      background: rgba(255, 255, 255, 0.86);
-      font-size: 14px;
-      color: var(--ink);
-      outline: none;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px 14px;
-      border: none;
-      border-radius: 16px;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .btn1 {
-      background: linear-gradient(135deg, #0f5c70, #16829b);
-      color: #ffffff;
+      text-align: center; color: #fff; padding: 20px 16px;
+      background: rgba(255, 255, 255, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.45);
     }
-
-    .btn2 {
-      background: linear-gradient(135deg, #ffe38a, var(--gold), var(--gold-deep));
-      color: #0f172a;
-      border: 1px solid rgba(255, 255, 255, 0.65);
+    input, textarea {
+      width: 100%; padding: 11px 14px; margin-bottom: 10px;
+      border-radius: 14px; border: 1px solid #cbd5e1;
+      background: rgba(255, 255, 255, 0.94); font-size: 14px;
     }
-
-    .btn3 {
-      background: rgba(255, 255, 255, 0.72);
-      color: #0f4c5c;
-      border: 1px solid rgba(15, 76, 92, 0.25);
-      margin-top: 8px;
+    button {
+      width: 100%; padding: 12px; border: none; border-radius: 14px;
+      font-weight: bold; font-size: 14px; cursor: pointer;
     }
-
-    .admin-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
+    .b1 { background: #0f5c70; color: #fff; }
+    .b2 { background: linear-gradient(135deg, #ffe38a, #d49b1a); color: #0f172a; }
+    .b3 { background: rgba(255, 255, 255, 0.78); color: #0f4c5c; margin-top: 8px; }
+    .del { background: #fee2e2; color: #991b1b; width: auto; padding: 7px 14px; border-radius: 12px; font-size: 12px; }
+    .edt { background: #e0f2fe; color: #0c4a6e; width: auto; padding: 7px 14px; border-radius: 12px; font-size: 12px; }
+    .row-btn { display: flex; gap: 8px; margin-top: 10px; }
+    .otp { background: #e0f2fe; color: #0c4a6e; padding: 11px; border-radius: 14px; text-align: center; font-weight: bold; margin-bottom: 10px; }
+    .err { color: #b91c1c; font-weight: bold; font-size: 13px; margin-bottom: 8px; }
+    .img { width: 100%; height: 220px; object-fit: cover; border-radius: 16px; margin-bottom: 8px; cursor: zoom-in; }
+    .thumbs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 8px; }
+    .thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; border: 2px solid transparent; cursor: pointer; flex-shrink: 0; }
+    .thumb.on { border-color: #d49b1a; }
+    .soc-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+    .soc {
+      display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px;
+      border-radius: 16px; text-decoration: none; color: #0f172a; font-weight: bold; font-size: 13px;
+      background: rgba(255, 255, 255, 0.74); border: 1px solid rgba(255, 255, 255, 0.9);
     }
-
-    .edit-btn {
-      width: auto;
-      padding: 8px 16px;
-      border-radius: 13px;
-      font-size: 12px;
-      background: linear-gradient(135deg, rgba(224, 242, 254, 0.95), rgba(186, 230, 253, 0.9));
-      color: #0c4a6e;
-      border: 1px solid rgba(14, 116, 144, 0.3);
-    }
-
-    .del {
-      background: linear-gradient(135deg, rgba(254, 202, 202, 0.95), rgba(254, 226, 226, 0.9));
-      color: #991b1b;
-      border: 1px solid rgba(185, 28, 28, 0.28);
-      width: auto;
-      padding: 8px 16px;
-      border-radius: 13px;
-      font-size: 12px;
-    }
-
-    .otp {
-      background: rgba(224, 242, 254, 0.9);
-      border: 1.5px dashed rgba(14, 116, 144, 0.45);
-      color: #0c4a6e;
-      padding: 12px;
-      border-radius: 16px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 15px;
-      margin-bottom: 12px;
-    }
-
-    .err {
-      color: #b91c1c;
-      font-weight: bold;
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
-
-    .img-wrap {
-      position: relative;
-      margin-bottom: 10px;
-    }
-
-    .img {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.85);
-      display: block;
-      cursor: zoom-in;
-    }
-
-    .zoom-hint {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(15, 23, 42, 0.68);
-      color: #ffffff;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      pointer-events: none;
-    }
-
-    .thumbs-row {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 2px 2px 8px;
-      margin-bottom: 6px;
-    }
-
-    .thumb-item {
-      width: 58px;
-      height: 58px;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 2px solid rgba(255, 255, 255, 0.7);
-      cursor: pointer;
-      flex-shrink: 0;
-      opacity: 0.75;
-    }
-
-    .thumb-item.active {
-      opacity: 1;
-      border-color: var(--gold-deep);
-    }
-
-    .price-tag {
-      display: inline-block;
-      padding: 5px 12px;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 13px;
-      color: #78350f;
-      background: rgba(255, 209, 92, 0.35);
-      border: 1px solid rgba(212, 155, 26, 0.4);
-      margin-bottom: 8px;
-    }
-
-    .info-row {
-      padding: 10px 12px;
-      border-radius: 15px;
-      background: rgba(255, 255, 255, 0.58);
-      border: 1px solid rgba(255, 255, 255, 0.82);
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
-
-    .social-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .social-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 14px 8px;
-      border-radius: 20px;
-      text-decoration: none;
-      color: #0f172a;
-      font-weight: bold;
-      font-size: 13px;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.52));
-      border: 1px solid rgba(255, 255, 255, 0.92);
-    }
-
-    .s-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .s-snap { background: linear-gradient(135deg, #fff04d, #facc15); color: #111827; }
-    .s-fb { background: linear-gradient(135deg, #2589ff, #1266d8); color: #ffffff; }
-    .s-tt { background: linear-gradient(135deg, #18181b, #27272a); color: #ffffff; }
-
     .nav {
-      position: fixed;
-      bottom: 14px;
-      left: 14px;
-      right: 14px;
-      max-width: 620px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.84);
-      backdrop-filter: blur(22px) saturate(180%);
-      -webkit-backdrop-filter: blur(22px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.95);
-      border-radius: 22px;
-      padding: 6px;
-      display: flex;
-      gap: 8px;
-      box-shadow: 0 14px 28px rgba(2, 12, 27, 0.32);
-      z-index: 40;
+      position: fixed; bottom: 12px; left: 12px; right: 12px; max-width: 620px; margin: 0 auto;
+      background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(18px);
+      border-radius: 20px; padding: 6px; display: flex; gap: 8px; z-index: 30;
     }
-
-    .nav button { background: transparent; color: #334155; border-radius: 16px; padding: 11px 8px; }
-    .nav button.on { background: linear-gradient(135deg, #0f5c70, #16829b); color: #ffffff; }
-
-    .lightbox {
-      position: fixed;
-      inset: 0;
-      background: rgba(5, 12, 22, 0.92);
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
+    .nav button { background: transparent; color: #334155; }
+    .nav button.on { background: #0f5c70; color: #fff; }
+    .lb {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); z-index: 99;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px;
     }
-
-    .lb-top {
-      width: 100%;
-      max-width: 640px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #ffffff;
-      margin-bottom: 10px;
-    }
-
-    .lb-close {
-      width: auto;
-      padding: 8px 16px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.18);
-      color: #ffffff;
-      font-size: 13px;
-    }
-
-    .lb-img {
-      max-width: 100%;
-      max-height: 68vh;
-      border-radius: 18px;
-      object-fit: contain;
-    }
-
-    .lb-controls {
-      display: flex;
-      gap: 12px;
-      margin-top: 14px;
-      width: 100%;
-      max-width: 340px;
-    }
-
-    .lb-btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.2);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-    }
-
+    .lb img { max-width: 100%; max-height: 70vh; border-radius: 14px; }
     .hide { display: none !important; }
   </style>
 </head>
@@ -371,159 +74,95 @@
 
   <div id="loginBox">
     <div class="box hero">
-      <div class="logo-ring" aria-hidden="true">
-        <svg width="38" height="38" viewBox="0 0 64 64" fill="none">
-          <path d="M18 11H30V21C30 26.2 26.8 29.8 24 31.2V47H30V51H18V47H22V31.2C19.2 29.8 18 26.2 18 21V11Z" fill="#FFF4C2" stroke="#FFD15C" stroke-width="1.6"/>
-          <path d="M34 15H46V24C46 28.6 43.2 31.8 40.5 33.1V47H46V51H34V47H38.5V33.1C35.8 31.8 34 28.6 34 24V15Z" fill="#FFE07D" stroke="#D49B1A" stroke-width="1.6"/>
-          <circle cx="32" cy="11" r="2.2" fill="#FFFFFF"/>
-        </svg>
-      </div>
       <h2 style="margin:0 0 4px;">Shushawaty Maily</h2>
-      <div style="font-size:13px;opacity:0.92;">شووشەواتی مەیلی — جیهانی شووشە و کریستاڵ</div>
+      <div style="font-size:13px;">شووشەواتی مەیلی</div>
     </div>
 
     <div id="step1" class="box">
       <h3 style="margin-top:0;">چوونەژوورەوە بە ئیمەیڵ</h3>
-      <input id="mailInp" type="email" placeholder="ئیمەیڵ / Gmail بنووسە" />
+      <input id="mailInp" type="email" placeholder="ئیمەیڵ بنووسە" />
       <div id="err1" class="err hide"></div>
-      <button id="btnSendOtp" type="button" class="btn1" onclick="sendCode()">ناردنی کۆدی OTP</button>
+      <button id="sendBtn" type="button" class="b1">ناردنی کۆدی OTP</button>
     </div>
 
     <div id="step2" class="box hide">
       <h3 style="margin-top:0;">پشتڕاستکردنەوەی OTP</h3>
-      <div id="whoMail" style="font-size:13px;color:#334155;margin-bottom:8px;"></div>
+      <div id="whoMail" style="font-size:13px;margin-bottom:8px;"></div>
       <div id="codeShow" class="otp"></div>
       <input id="codeInp" type="text" placeholder="کۆدەکە بنووسە" />
       <div id="err2" class="err hide"></div>
-      <button id="btnVerifyOtp" type="button" class="btn2" onclick="checkCode()">چوونەژوورەوە</button>
-      <button id="btnBackMail" type="button" class="btn3" onclick="backStep1()">گۆڕینی ئیمەیڵ</button>
+      <button id="verifyBtn" type="button" class="b2">چوونەژوورەوە</button>
+      <button id="backBtn" type="button" class="b3">گۆڕینی ئیمەیڵ</button>
     </div>
   </div>
 
   <div id="mainBox" class="hide">
     <div class="box hero">
-      <div class="logo-ring" style="width:62px;height:62px;" aria-hidden="true">
-        <svg width="30" height="30" viewBox="0 0 64 64" fill="none">
-          <path d="M18 11H30V21C30 26.2 26.8 29.8 24 31.2V47H30V51H18V47H22V31.2C19.2 29.8 18 26.2 18 21V11Z" fill="#FFF4C2" stroke="#FFD15C" stroke-width="1.6"/>
-          <path d="M34 15H46V24C46 28.6 43.2 31.8 40.5 33.1V47H46V51H34V47H38.5V33.1C35.8 31.8 34 28.6 34 24V15Z" fill="#FFE07D" stroke="#D49B1A" stroke-width="1.6"/>
-          <circle cx="32" cy="11" r="2.2" fill="#FFFFFF"/>
-        </svg>
-      </div>
       <h3 style="margin:0 0 4px;">Shushawaty Maily</h3>
-      <div id="userShow" class="account-pill"></div>
-      <div><button type="button" class="del" style="margin-top:10px;" onclick="logOut()">چوونەدەرەوە</button></div>
+      <div id="userShow" style="font-size:12px;"></div>
+      <button id="outBtn" type="button" class="del" style="margin-top:10px;">چوونەدەرەوە</button>
     </div>
 
     <div id="tabShop">
-      <div class="box" style="padding:12px 16px;">
-        <input id="srch" type="text" placeholder="🔍 گەڕان بە دوای کاڵا یان نرخ..." oninput="drawPosts()" style="margin-bottom:0;" />
+      <div class="box" style="padding:12px;">
+        <input id="srch" type="text" placeholder="گەڕان..." style="margin-bottom:0;" />
       </div>
 
       <div id="adminBox" class="box hide">
-        <h4 id="formHeading" style="margin-top:0;">زیادکردنی کاڵا</h4>
+        <h4 id="fTitle" style="margin-top:0;">زیادکردنی کاڵا</h4>
         <input id="pName" type="text" placeholder="ناوی کاڵا" />
         <textarea id="pDesc" rows="2" placeholder="زانیاری"></textarea>
-        <input id="pPrice" type="text" placeholder="نرخ (بۆ نموونە: 35,000 د.ع)" />
-        <label style="display:block;font-size:12px;color:#334155;margin-bottom:6px;font-weight:bold;">وێنەکانی کاڵا (چەند وێنەیەک پێکەوە هەڵبژێرە):</label>
+        <input id="pPrice" type="text" placeholder="نرخ" />
         <input id="pImg" type="file" accept="image/*" multiple />
-        <button id="pubBtn" type="button" class="btn2" onclick="savePost()">بڵاوکردنەوە</button>
-        <button id="cancelEditBtn" type="button" class="btn3 hide" onclick="cancelEdit()">هەڵوەشاندنەوەی ئیدیت</button>
+        <button id="pubBtn" type="button" class="b2">بڵاوکردنەوە</button>
+        <button id="cancelBtn" type="button" class="b3 hide">هەڵوەشاندنەوە</button>
       </div>
 
-      <div id="postsArea">
-        <div class="box" style="text-align:center;">چاوەڕێ بکە، کاڵاکان دەهێنرێن...</div>
-      </div>
+      <div id="postsArea"></div>
     </div>
 
     <div id="tabInfo" class="box hide">
       <h3 style="margin-top:0;">ئینفۆرمەیشن</h3>
-      <div class="info-row"><b>ناونیشان:</b> سۆران ڕواندز تەنیشت پیزای مییر</div>
-      <div class="info-row"><b>پەیوەندی:</b> <bdi dir="ltr">07824463372</bdi> / <bdi dir="ltr">07504619938</bdi></div>
-
-      <div class="social-grid">
-        <a class="social-card" href="https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US" target="_blank" rel="noopener noreferrer">
-          <span class="s-icon s-snap" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2.5c-3.3 0-5.4 2.2-5.4 5.2 0 1 .2 2 .4 2.7-.4.2-.9.3-1.4.2-.6-.1-1.1.2-1.2.7-.1.5.2 1 .7 1.2.9.4 1.8.8 2 1.5.2.8-.6 2.1-2.5 3.1-.5.3-.7.9-.4 1.4.3.5.9.7 1.4.5 1.1-.4 2-.5 2.7 0 .6.4 1.1 1.2 1.8 1.5.8.3 1.7.2 2.2.2s1.4.1 2.2-.2c.7-.3 1.2-1.1 1.8-1.5.7-.5 1.6-.4 2.7 0 .5.2 1.1 0 1.4-.5.3-.5.1-1.1-.4-1.4-1.9-1-2.7-2.3-2.5-3.1.2-.7 1.1-1.1 2-1.5.5-.2.8-.7.7-1.2-.1-.5-.6-.8-1.2-.7-.5.1-1 0-1.4-.2.2-.7.4-1.7.4-2.7 0-3-2.1-5.2-5.4-5.2z"/>
-            </svg>
-          </span>
-          <span>Snapchat</span>
-        </a>
-
-        <a class="social-card" href="https://www.facebook.com/share/19sUWyg8bB/" target="_blank" rel="noopener noreferrer">
-          <span class="s-icon s-fb" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M13.5 21v-8.2h2.8l.4-3.2h-3.2V7.5c0-.9.3-1.6 1.6-1.6h1.7V3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H6v3.2h2.7V21h4.8z"/>
-            </svg>
-          </span>
-          <span>Facebook</span>
-        </a>
-
-        <a class="social-card" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">
-          <span class="s-icon s-tt" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M16.6 3c.5 1.7 1.8 3 3.4 3.5V9.8c-1.3 0-2.5-.4-3.5-1.1v6.6c0 3.1-2.5 5.7-5.7 5.7-3.1 0-5.7-2.5-5.7-5.7 0-3.1 2.5-5.7 5.7-5.7.3 0 .6 0 .9.1v3.4c-.3-.1-.6-.2-.9-.2-1.3 0-2.4 1.1-2.4 2.4s1.1 2.4 2.4 2.4 2.5-1.1 2.5-2.5V3h3.3z"/>
-            </svg>
-          </span>
-          <span>TikTok</span>
-        </a>
+      <p><b>ناونیشان:</b> سۆران ڕواندز تەنیشت پیزای مییر</p>
+      <p><b>پەیوەندی:</b> <bdi dir="ltr">07824463372</bdi> / <bdi dir="ltr">07504619938</bdi></p>
+      <div class="soc-row">
+        <a class="soc" href="https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US" target="_blank">Snapchat</a>
+        <a class="soc" href="https://www.facebook.com/share/19sUWyg8bB/" target="_blank">Facebook</a>
+        <a class="soc" href="https://www.tiktok.com/" target="_blank">TikTok</a>
       </div>
     </div>
 
     <div class="nav">
-      <button id="bShop" type="button" class="on" onclick="goTab('shop')">کاڵاکان</button>
-      <button id="bInfo" type="button" onclick="goTab('info')">ئینفۆرمەیشن</button>
+      <button id="bShop" type="button" class="on">کاڵاکان</button>
+      <button id="bInfo" type="button">ئینفۆرمەیشن</button>
     </div>
   </div>
 
-  <div id="lightbox" class="lightbox hide" onclick="if(event.target===this) closeLightbox()">
-    <div class="lb-top">
-      <span id="lbCounter" style="font-weight:bold;font-size:14px;">1 / 1</span>
-      <button type="button" class="lb-close" onclick="closeLightbox()">داخستن ✕</button>
+  <div id="lbBox" class="lb hide">
+    <div style="width:100%;max-width:600px;display:flex;justify-content:space-between;color:#fff;margin-bottom:8px;">
+      <span id="lbNum">1 / 1</span>
+      <button id="lbClose" type="button" class="del" style="background:#fff;color:#000;">داخستن</button>
     </div>
-    <img id="lbImg" class="lb-img" src="" alt="" />
-    <div id="lbControls" class="lb-controls">
-      <button type="button" class="lb-btn" onclick="stepLightbox(-1)">‹ پێشوو</button>
-      <button type="button" class="lb-btn" onclick="stepLightbox(1)">دواتر ›</button>
+    <img id="lbPic" src="" alt="" />
+    <div id="lbNav" style="display:flex;gap:10px;margin-top:12px;width:240px;">
+      <button id="lbPrev" type="button" class="b3">پێشوو</button>
+      <button id="lbNext" type="button" class="b3">دواتر</button>
     </div>
   </div>
 
   <script>
-    var DB_URL = 'https://shushawaty-maily-default-rtdb.firebaseio.com';
+    var DB = 'https://shushawaty-maily-default-rtdb.firebaseio.com';
     var ADMIN = 'zhyarinfinix@gmail.com';
-    var SESSION_KEY = 'shushawaty_maily_session_v1';
-
-    var otpNow = '';
-    var mailNow = '';
+    var SKEY = 'sm_session_v3';
+    var otp = '';
+    var mail = '';
     var posts = [];
-    var editingKey = null;
-    var lbImages = [];
-    var lbIndex = 0;
+    var editKey = null;
+    var lbList = [];
+    var lbIdx = 0;
 
-    function saveSession(email) {
-      try {
-        localStorage.setItem(SESSION_KEY, JSON.stringify({ email: email }));
-      } catch (e) {}
-    }
-
-    function readSession() {
-      try {
-        var raw = localStorage.getItem(SESSION_KEY);
-        if (!raw) return '';
-        var obj = JSON.parse(raw);
-        if (obj && obj.email) return String(obj.email).trim().toLowerCase();
-      } catch (e) {}
-      return '';
-    }
-
-    function clearSession() {
-      try {
-        localStorage.removeItem(SESSION_KEY);
-      } catch (e) {}
-    }
-
-    function getPostImages(p) {
-      if (p && p.imgs && p.imgs.length > 0) return p.imgs;
+    function getImgs(p) {
+      if (p && p.imgs && p.imgs.length) return p.imgs;
       if (p && p.img) return [p.img];
       return ['https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600'];
     }
@@ -536,18 +175,16 @@
       document.getElementById('bInfo').className = isInfo ? 'on' : '';
     }
 
-    function enterMain(m) {
-      mailNow = String(m || '').trim().toLowerCase();
-      if (!mailNow) return;
-      saveSession(mailNow);
-
+    function openApp(m) {
+      mail = String(m || '').trim().toLowerCase();
+      if (!mail) return;
+      try { localStorage.setItem(SKEY, mail); } catch (e) {}
       document.getElementById('loginBox').className = 'hide';
       document.getElementById('mainBox').className = '';
-      document.getElementById('userShow').textContent = 'هەژمار: ' + mailNow;
-      document.getElementById('adminBox').className = (mailNow === ADMIN) ? 'box' : 'box hide';
-
+      document.getElementById('userShow').textContent = 'هەژمار: ' + mail;
+      document.getElementById('adminBox').className = (mail === ADMIN) ? 'box' : 'box hide';
       goTab('shop');
-      loadPostsFromCloud();
+      loadPosts();
     }
 
     function sendCode() {
@@ -559,53 +196,255 @@
         return;
       }
       e1.className = 'err hide';
-      mailNow = m;
-      otpNow = String(Math.floor(100000 + Math.random() * 900000));
-
-      document.getElementById('whoMail').textContent = 'ئیمەیڵ: ' + mailNow;
-      document.getElementById('codeShow').textContent = 'کۆدی OTP: ' + otpNow;
+      mail = m;
+      otp = String(Math.floor(100000 + Math.random() * 900000));
+      document.getElementById('whoMail').textContent = 'ئیمەیڵ: ' + mail;
+      document.getElementById('codeShow').textContent = 'کۆدی OTP: ' + otp;
       document.getElementById('codeInp').value = '';
       document.getElementById('err2').className = 'err hide';
       document.getElementById('step1').className = 'box hide';
       document.getElementById('step2').className = 'box';
     }
 
-    function backStep1() {
-      document.getElementById('step2').className = 'box hide';
-      document.getElementById('step1').className = 'box';
-      document.getElementById('err2').className = 'err hide';
-    }
-
     function checkCode() {
       var c = (document.getElementById('codeInp').value || '').trim();
       var e2 = document.getElementById('err2');
-      if (!c || (otpNow && c !== otpNow)) {
+      if (!c || (otp && c !== otp)) {
         e2.textContent = 'کۆدەکە هەڵەیە';
         e2.className = 'err';
         return;
       }
       e2.className = 'err hide';
-      enterMain(mailNow || ADMIN);
+      openApp(mail || ADMIN);
+    }
+
+    function backMail() {
+      document.getElementById('step2').className = 'box hide';
+      document.getElementById('step1').className = 'box';
     }
 
     function logOut() {
-      clearSession();
-      cancelEdit();
-      otpNow = '';
-      mailNow = '';
-      document.getElementById('mailInp').value = '';
-      document.getElementById('codeInp').value = '';
+      try { localStorage.removeItem(SKEY); } catch (e) {}
+      resetEdit();
+      mail = ''; otp = '';
       document.getElementById('mainBox').className = 'hide';
       document.getElementById('step2').className = 'box hide';
       document.getElementById('step1').className = 'box';
       document.getElementById('loginBox').className = '';
     }
 
-    function loadPostsFromCloud() {
-      document.getElementById('postsArea').innerHTML = '<div class="box" style="text-align:center;">چاوەڕێ بکە، کاڵاکان دەهێنرێن...</div>';
-      fetch(DB_URL + '/products.json')
+    function resetEdit() {
+      editKey = null;
+      document.getElementById('fTitle').textContent = 'زیادکردنی کاڵا';
+      document.getElementById('pName').value = '';
+      document.getElementById('pDesc').value = '';
+      document.getElementById('pPrice').value = '';
+      document.getElementById('pImg').value = '';
+      document.getElementById('pubBtn').textContent = 'بڵاوکردنەوە';
+      document.getElementById('cancelBtn').className = 'b3 hide';
+    }
+
+    function startEdit(k) {
+      if (mail !== ADMIN) return;
+      for (var i = 0; i < posts.length; i++) {
+        if (posts[i]._k === k) {
+          editKey = k;
+          document.getElementById('fTitle').textContent = 'دەستکاریی کاڵا';
+          document.getElementById('pName').value = posts[i].name || '';
+          document.getElementById('pDesc').value = posts[i].desc || '';
+          document.getElementById('pPrice').value = posts[i].price || '';
+          document.getElementById('pImg').value = '';
+          document.getElementById('pubBtn').textContent = 'پاشەکەوتکردن';
+          document.getElementById('cancelBtn').className = 'b3';
+          window.scrollTo(0, 0);
+          return;
+        }
+      }
+    }
+
+    function shrinkImg(file, cb) {
+      var r = new FileReader();
+      r.onload = function (ev) {
+        var im = new Image();
+        im.onload = function () {
+          var w = im.width > 640 ? 640 : im.width;
+          var h = Math.round(im.height * (w / im.width));
+          var cv = document.createElement('canvas');
+          cv.width = w; cv.height = h;
+          cv.getContext('2d').drawImage(im, 0, 0, w, h);
+          cb(cv.toDataURL('image/jpeg', 0.65));
+        };
+        im.onerror = function () { cb('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600'); };
+        im.src = ev.target.result;
+      };
+      r.readAsDataURL(file);
+    }
+
+    function shrinkMany(files, cb) {
+      var arr = [];
+      var n = Math.min(files.length, 6);
+      function step(i) {
+        if (i >= n) return cb(arr);
+        shrinkImg(files[i], function (u) { arr.push(u); step(i + 1); });
+      }
+      step(0);
+    }
+
+    function savePost() {
+      if (mail !== ADMIN) return;
+      var name = (document.getElementById('pName').value || '').trim();
+      var desc = (document.getElementById('pDesc').value || '').trim();
+      var price = (document.getElementById('pPrice').value || '').trim();
+      var fl = document.getElementById('pImg').files;
+      var btn = document.getElementById('pubBtn');
+      if (!name || !price) return;
+
+      btn.disabled = true;
+      btn.textContent = 'چاوەڕێ بکە...';
+
+      var old = null;
+      if (editKey) {
+        for (var i = 0; i < posts.length; i++) {
+          if (posts[i]._k === editKey) { old = posts[i]; break; }
+        }
+      }
+
+      function pushData(list) {
+        var body = {
+          id: old ? old.id : Date.now(),
+          name: name, desc: desc, price: price,
+          img: list[0], imgs: list
+        };
+        var url = editKey ? (DB + '/products/' + editKey + '.json') : (DB + '/products.json');
+        var method = editKey ? 'PUT' : 'POST';
+        fetch(url, { method: method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+          .then(function () { btn.disabled = false; resetEdit(); loadPosts(); })
+          .catch(function () { btn.disabled = false; btn.textContent = 'بڵاوکردنەوە'; });
+      }
+
+      if (fl && fl.length > 0) shrinkMany(fl, pushData);
+      else pushData(old ? getImgs(old) : ['https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600']);
+    }
+
+    function delPost(k) {
+      if (mail !== ADMIN || !k) return;
+      if (editKey === k) resetEdit();
+      fetch(DB + '/products/' + k + '.json', { method: 'DELETE' }).then(function () { loadPosts(); });
+    }
+
+    function loadPosts() {
+      document.getElementById('postsArea').innerHTML = '<div class="box" style="text-align:center;">چاوەڕێ بکە...</div>';
+      fetch(DB + '/products.json')
         .then(function (r) { return r.json(); })
-        .then(function (data) {
+        .then(function (d) {
           var arr = [];
-          if (data && typeof data === 'object') {
-            var keys = Object.key
+          if (d && typeof d === 'object') {
+            var ks = Object.keys(d);
+            for (var i = 0; i < ks.length; i++) {
+              if (d[ks[i]]) {
+                var item = d[ks[i]];
+                item._k = ks[i];
+                arr.push(item);
+              }
+            }
+          }
+          arr.sort(function (a, b) { return (b.id || 0) - (a.id || 0); });
+          posts = arr;
+          drawPosts();
+        })
+        .catch(function () { posts = []; drawPosts(); });
+    }
+
+    function pickThumb(k, idx) {
+      for (var i = 0; i < posts.length; i++) {
+        if (posts[i]._k === k) {
+          var imgs = getImgs(posts[i]);
+          var main = document.getElementById('mimg-' + k);
+          if (main && imgs[idx]) { main.src = imgs[idx]; main.setAttribute('data-i', idx); }
+          for (var j = 0; j < imgs.length; j++) {
+            var th = document.getElementById('th-' + k + '-' + j);
+            if (th) th.className = (j === idx) ? 'thumb on' : 'thumb';
+          }
+          return;
+        }
+      }
+    }
+
+    function openLb(k) {
+      for (var i = 0; i < posts.length; i++) {
+        if (posts[i]._k === k) {
+          lbList = getImgs(posts[i]);
+          var main = document.getElementById('mimg-' + k);
+          lbIdx = main ? (parseInt(main.getAttribute('data-i') || '0', 10) || 0) : 0;
+          showLb();
+          document.getElementById('lbBox').className = 'lb';
+          return;
+        }
+      }
+    }
+
+    function showLb() {
+      document.getElementById('lbPic').src = lbList[lbIdx] || '';
+      document.getElementById('lbNum').textContent = (lbIdx + 1) + ' / ' + lbList.length;
+      document.getElementById('lbNav').style.display = lbList.length > 1 ? 'flex' : 'none';
+    }
+
+    function drawPosts() {
+      var q = (document.getElementById('srch').value || '').trim().toLowerCase();
+      var html = '';
+      for (var i = 0; i < posts.length; i++) {
+        var p = posts[i];
+        var s = ((p.name || '') + ' ' + (p.desc || '') + ' ' + (p.price || '')).toLowerCase();
+        if (q && s.indexOf(q) === -1) continue;
+        var imgs = getImgs(p);
+        var thHtml = '';
+        if (imgs.length > 1) {
+          thHtml = '<div class="thumbs">';
+          for (var j = 0; j < imgs.length; j++) {
+            thHtml += '<img id="th-' + p._k + '-' + j + '" class="thumb ' + (j === 0 ? 'on' : '') + '" src="' + imgs[j] + '" onclick="pickThumb(\'' + p._k + '\',' + j + ')" alt="" />';
+          }
+          thHtml += '</div>';
+        }
+        html += '<div class="box">' +
+          '<img id="mimg-' + p._k + '" data-i="0" class="img" src="' + imgs[0] + '" onclick="openLb(\'' + p._k + '\')" alt="" />' +
+          thHtml +
+          '<h4 style="margin:4px 0;">' + (p.name || '') + '</h4>' +
+          '<div style="font-weight:bold;color:#92400e;margin-bottom:4px;">نرخ: ' + (p.price || '') + '</div>' +
+          '<div style="color:#334155;">' + (p.desc || '') + '</div>' +
+          (mail === ADMIN ? (
+            '<div class="row-btn">' +
+              '<button type="button" class="edt" onclick="startEdit(\'' + p._k + '\')">ئیدیت</button>' +
+              '<button type="button" class="del" onclick="delPost(\'' + p._k + '\')">سڕینەوە</button>' +
+            '</div>'
+          ) : '') +
+          '</div>';
+      }
+      document.getElementById('postsArea').innerHTML = html || '<div class="box" style="text-align:center;">هیچ کاڵایەک نییە</div>';
+    }
+
+    document.getElementById('sendBtn').onclick = sendCode;
+    document.getElementById('verifyBtn').onclick = checkCode;
+    document.getElementById('backBtn').onclick = backMail;
+    document.getElementById('outBtn').onclick = logOut;
+    document.getElementById('pubBtn').onclick = savePost;
+    document.getElementById('cancelBtn').onclick = resetEdit;
+    document.getElementById('srch').oninput = drawPosts;
+    document.getElementById('bShop').onclick = function () { goTab('shop'); };
+    document.getElementById('bInfo').onclick = function () { goTab('info'); };
+    document.getElementById('lbClose').onclick = function () { document.getElementById('lbBox').className = 'lb hide'; };
+    document.getElementById('lbPrev').onclick = function () { lbIdx = (lbIdx - 1 + lbList.length) % lbList.length; showLb(); };
+    document.getElementById('lbNext').onclick = function () { lbIdx = (lbIdx + 1) % lbList.length; showLb(); };
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./sw.js').catch(function () {});
+      });
+    }
+
+    try {
+      var saved = localStorage.getItem(SKEY);
+      if (saved && saved.indexOf('@') > 0) openApp(saved);
+    } catch (e) {}
+  </script>
+</body>
+</html>
