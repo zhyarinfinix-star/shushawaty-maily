@@ -178,7 +178,7 @@
 
     .field {
       position: relative;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
     }
 
     .field label {
@@ -188,7 +188,7 @@
       margin-bottom: 6px;
     }
 
-    .field input, .field textarea {
+    .field input, .field textarea, .field select {
       width: 100%;
       padding: 10px 12px;
       background: rgba(255, 255, 255, 0.14);
@@ -196,16 +196,22 @@
       border-bottom: 1.5px solid rgba(255, 255, 255, 0.55);
       border-radius: 12px;
       color: var(--white);
-      font-size: 1rem;
+      font-size: 0.96rem;
       outline: none;
       transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
     }
 
     body.night-mode .field input,
-    body.night-mode .field textarea {
+    body.night-mode .field textarea,
+    body.night-mode .field select {
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.22);
       border-bottom: 1.5px solid rgba(255, 255, 255, 0.42);
+    }
+
+    .field input[type="file"] {
+      padding: 8px 10px;
+      font-size: 0.84rem;
     }
 
     .field input::placeholder, .field textarea::placeholder {
@@ -408,6 +414,17 @@
       color: var(--muted);
     }
 
+    .admin-badge {
+      display: inline-block;
+      margin-right: 6px;
+      padding: 2px 7px;
+      border-radius: 8px;
+      background: var(--gold-soft);
+      color: var(--gold);
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
     .btn-logout {
       padding: 8px 13px;
       border-radius: 12px;
@@ -440,17 +457,32 @@
     }
 
     .glass-card h2 {
-      margin: 0 0 10px;
+      margin: 0 0 12px;
       font-size: 1.05rem;
       color: var(--gold);
+    }
+
+    .preview-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .preview-thumb {
+      width: 100%;
+      height: 76px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
     }
 
     .item-card {
       background: rgba(255, 255, 255, 0.14);
       border: 1px solid rgba(255, 255, 255, 0.35);
       border-radius: 16px;
-      padding: 12px;
-      margin-bottom: 10px;
+      padding: 13px;
+      margin-bottom: 12px;
     }
 
     body.night-mode .item-card {
@@ -458,16 +490,71 @@
       border: 1px solid rgba(255, 255, 255, 0.18);
     }
 
+    .item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
     .item-title {
-      font-weight: 700;
-      font-size: 0.96rem;
-      margin-bottom: 4px;
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .item-price {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 3px 10px;
+      border-radius: 9px;
+      background: var(--gold-soft);
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 0.84rem;
     }
 
     .item-desc {
-      font-size: 0.85rem;
-      color: var(--muted);
+      font-size: 0.86rem;
+      color: var(--white);
       line-height: 1.5;
+      margin-top: 6px;
+    }
+
+    .item-more {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.24);
+    }
+
+    .item-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .item-photo {
+      width: 100%;
+      height: 82px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-del {
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(217, 38, 72, 0.45);
+      background: rgba(217, 38, 72, 0.16);
+      color: var(--danger);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
     }
 
     .info-row {
@@ -491,38 +578,13 @@
     .info-label {
       color: var(--muted);
       font-weight: 600;
+      flex-shrink: 0;
     }
 
     .info-val {
       color: var(--white);
       font-weight: 700;
-      direction: ltr;
       text-align: left;
-    }
-
-    .social-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 9px;
-      margin-top: 8px;
-    }
-
-    .social-chip {
-      display: block;
-      text-align: center;
-      text-decoration: none;
-      padding: 10px 8px;
-      border-radius: 13px;
-      background: rgba(255, 255, 255, 0.16);
-      border: 1px solid rgba(255, 255, 255, 0.38);
-      color: var(--white);
-      font-weight: 700;
-      font-size: 0.85rem;
-    }
-
-    body.night-mode .social-chip {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.22);
     }
 
     .bottom-nav {
@@ -695,23 +757,38 @@
     </header>
 
     <div class="app-content">
+      <!-- بەشی تایبەت بە کاڵاکان -->
       <section id="tab-goods">
         <div class="glass-card">
           <h2>زیادکردنی کاڵا</h2>
-          <form id="addPostForm">
+          <form id="addGoodsForm">
             <div class="field">
-              <label for="postCategory">بەش</label>
-              <input id="postCategory" type="text" value="کاڵاکان" readonly />
+              <label for="goodsTitle">ناوی کاڵا *</label>
+              <input id="goodsTitle" type="text" required placeholder="بۆ نموونە: سێتێکی شووشەی کریستاڵ" />
             </div>
+
             <div class="field">
-              <label for="postTitle">ناوی کاڵا / بابەت *</label>
-              <input id="postTitle" type="text" required placeholder="بۆ نموونە: سێتێکی شووشەی کریستاڵ" />
+              <label for="goodsPrice">نرخی کاڵا *</label>
+              <input id="goodsPrice" type="text" required placeholder="بۆ نموونە: 25,000 IQD یان $20" />
             </div>
+
             <div class="field">
-              <label for="postDesc">وردەکاری</label>
-              <textarea id="postDesc" rows="2" placeholder="زانیاری زیاتر بنووسە..."></textarea>
+              <label for="goodsInfo">زانیاری کاڵا *</label>
+              <textarea id="goodsInfo" rows="2" required placeholder="زانیاری سەرەکی کاڵا بنووسە..."></textarea>
             </div>
-            <button type="submit" class="btn-submit">بڵاوکردنەوە</button>
+
+            <div class="field">
+              <label for="goodsMore">زیاتر دەربارەی کاڵا</label>
+              <textarea id="goodsMore" rows="2" placeholder="وردەکاری زیاتر، قەبارە، ڕەنگ یان هەر زانیارییەکی تر..."></textarea>
+            </div>
+
+            <div class="field">
+              <label for="goodsImages">وێنەی کاڵا (تا ٦ وێنە)</label>
+              <input id="goodsImages" type="file" accept="image/*" multiple />
+              <div class="preview-strip" id="goodsPreview"></div>
+            </div>
+
+            <button type="submit" class="btn-submit">بڵاوکردنەوەی کاڵا</button>
           </form>
         </div>
 
@@ -721,37 +798,66 @@
         </div>
       </section>
 
+      <!-- بەشی تایبەت بە ئەمەزۆن و ئامێری کارەبایی (جیاواز لە کاڵاکان) -->
       <section id="tab-electronics" class="hidden">
         <div class="glass-card">
-          <h2>ئەمەزۆن و ئەلیکترۆنی</h2>
+          <h2>زیادکردنی بابەتی ئەمەزۆن و ئامێری کارەبایی</h2>
+          <form id="addElecForm">
+            <div class="field">
+              <label for="elecTitle">ناوی ئامێر / بابەت *</label>
+              <input id="elecTitle" type="text" required placeholder="بۆ نموونە: گەرماوکەری کارەبایی یان ئامێری ئەمەزۆن" />
+            </div>
+
+            <div class="field">
+              <label for="elecPrice">نرخ *</label>
+              <input id="elecPrice" type="text" required placeholder="بۆ نموونە: 45,000 IQD یان $35" />
+            </div>
+
+            <div class="field">
+              <label for="elecInfo">زانیاری *</label>
+              <textarea id="elecInfo" rows="2" required placeholder="زانیاری ئامێرەکە بنووسە..."></textarea>
+            </div>
+
+            <div class="field">
+              <label for="elecMore">زیاتر دەربارەی بابەتەکە</label>
+              <textarea id="elecMore" rows="2" placeholder="تایبەتمەندی زیاتر، ڤۆڵتیە، گەرەنتی یان وردەکاری..."></textarea>
+            </div>
+
+            <div class="field">
+              <label for="elecImages">وێنە (تا ٦ وێنە - دەتوانیت بێ وێنەش دایبنێیت)</label>
+              <input id="elecImages" type="file" accept="image/*" multiple />
+              <div class="preview-strip" id="elecPreview"></div>
+            </div>
+
+            <button type="submit" class="btn-submit">بڵاوکردنەوە لە ئەمەزۆن و کارەبایی</button>
+          </form>
+        </div>
+
+        <div class="glass-card">
+          <h2>لیستی ئەمەزۆن و ئامێری کارەبایی</h2>
           <div id="electronicsList"></div>
         </div>
       </section>
 
+      <!-- بەشی زانیاری و سەپۆرت -->
       <section id="tab-support" class="hidden">
         <div class="glass-card">
           <h2>زانیاری و پەیوەندی</h2>
           <div class="info-row">
-            <span class="info-label">ژمارە مۆبایل</span>
-            <a class="info-val" href="tel:+9647500000000" style="text-decoration:none;">+964 750 000 0000</a>
+            <span class="info-label">ژمارە مۆبایل 1</span>
+            <a class="info-val" href="tel:07824463372" style="direction:ltr; text-decoration:none;">07824463372</a>
           </div>
           <div class="info-row">
-            <span class="info-label">شوێن / ناونیشان</span>
-            <span class="info-val" style="direction:rtl;">هەولێر، کوردستان</span>
+            <span class="info-label">ژمارە مۆبایل 2</span>
+            <a class="info-val" href="tel:07504619938" style="direction:ltr; text-decoration:none;">07504619938</a>
           </div>
           <div class="info-row">
-            <span class="info-label">ئیمەیڵی سەپۆرت</span>
-            <span class="info-val">support@shushawatymaily.com</span>
+            <span class="info-label">ناونیشان</span>
+            <span class="info-val">سۆران ڕواندز تەنیشت پیزای میر</span>
           </div>
-        </div>
-
-        <div class="glass-card">
-          <h2>سۆشیاڵ میدیاکان</h2>
-          <div class="social-grid">
-            <a class="social-chip" href="https://tiktok.com" target="_blank" rel="noopener">TikTok</a>
-            <a class="social-chip" href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
-            <a class="social-chip" href="https://youtube.com" target="_blank" rel="noopener">YouTube</a>
-            <a class="social-chip" href="https://t.me" target="_blank" rel="noopener">Telegram</a>
+          <div class="info-row">
+            <span class="info-label">ئەدمین</span>
+            <span class="info-val" style="direction:ltr;">zhyarinfinix@gmail.com</span>
           </div>
         </div>
       </section>
@@ -759,13 +865,18 @@
 
     <nav class="bottom-nav">
       <button type="button" class="nav-btn active" data-tab="goods">کاڵاکان</button>
-      <button type="button" class="nav-btn" data-tab="electronics">ئەمەزۆن و ئەلیکترۆنی</button>
+      <button type="button" class="nav-btn" data-tab="electronics">ئەمەزۆن و ئامێری کارەبایی</button>
       <button type="button" class="nav-btn" data-tab="support">زانیاری و سەپۆرت</button>
     </nav>
   </div>
 
   <script>
-    // Stickman stays inside hole after falling until theme is toggled again
+    var ADMIN_EMAIL = "zhyarinfinix@gmail.com";
+
+    function isAdminEmail(email) {
+      return String(email || "").trim().toLowerCase() === ADMIN_EMAIL;
+    }
+
     (function initStickmanPortal() {
       var wrapper = document.getElementById("portalToggleBtn");
       var canvas = document.getElementById("stage");
@@ -777,7 +888,6 @@
       var h = 64;
       var dpr = 1;
 
-      // states: "walking", "falling", "inside"
       var stick = {
         x: 155,
         y: 47,
@@ -831,7 +941,6 @@
         syncThemeClass();
 
         if (stick.state === "inside") {
-          // Emerge out to walk again until falling into the hole once more
           stick.state = "walking";
           stick.vy = 0;
           stick.scale = 1;
@@ -1047,7 +1156,8 @@
 
     var USERS_KEY = "sm_users_v1";
     var SESSION_KEY = "sm_active_user";
-    var POSTS_KEY = "sm_posts_v1";
+    var GOODS_KEY = "sm_goods_posts_v1";
+    var ELEC_KEY = "sm_elec_posts_v1";
 
     function getUsers() {
       try { return JSON.parse(localStorage.getItem(USERS_KEY) || "[]"); }
@@ -1066,12 +1176,86 @@
     function clearSession() {
       try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
     }
-    function getPosts() {
-      try { return JSON.parse(localStorage.getItem(POSTS_KEY) || "[]"); }
+    function getGoodsPosts() {
+      try { return JSON.parse(localStorage.getItem(GOODS_KEY) || "[]"); }
       catch (e) { return []; }
     }
-    function savePosts(list) {
-      try { localStorage.setItem(POSTS_KEY, JSON.stringify(list)); } catch (e) {}
+    function saveGoodsPosts(list) {
+      try { localStorage.setItem(GOODS_KEY, JSON.stringify(list)); } catch (e) {}
+    }
+    function getElecPosts() {
+      try { return JSON.parse(localStorage.getItem(ELEC_KEY) || "[]"); }
+      catch (e) { return []; }
+    }
+    function saveElecPosts(list) {
+      try { localStorage.setItem(ELEC_KEY, JSON.stringify(list)); } catch (e) {}
+    }
+
+    function readFilesMaxSix(fileInput, previewEl, cb) {
+      var files = fileInput && fileInput.files ? Array.prototype.slice.call(fileInput.files, 0, 6) : [];
+      if (previewEl) previewEl.innerHTML = "";
+      if (!files.length) {
+        cb([]);
+        return;
+      }
+
+      var result = [];
+      var doneCount = 0;
+
+      files.forEach(function (file, idx) {
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          result[idx] = ev.target && ev.target.result ? ev.target.result : "";
+          if (previewEl && result[idx]) {
+            var img = document.createElement("img");
+            img.src = result[idx];
+            img.className = "preview-thumb";
+            img.alt = "";
+            previewEl.appendChild(img);
+          }
+          doneCount += 1;
+          if (doneCount === files.length) {
+            cb(result.filter(function (x) { return !!x; }));
+          }
+        };
+        reader.onerror = function () {
+          doneCount += 1;
+          if (doneCount === files.length) {
+            cb(result.filter(function (x) { return !!x; }));
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    var goodsImagesInput = document.getElementById("goodsImages");
+    var goodsPreviewEl = document.getElementById("goodsPreview");
+    var selectedGoodsPhotos = [];
+
+    if (goodsImagesInput) {
+      goodsImagesInput.addEventListener("change", function () {
+        if (goodsImagesInput.files && goodsImagesInput.files.length > 6) {
+          alert("تەنها تا ٦ وێنە دەتوانیت هەڵبژێریت؛ ٦ وێنەی یەکەم وەردەگیرێن.");
+        }
+        readFilesMaxSix(goodsImagesInput, goodsPreviewEl, function (imgs) {
+          selectedGoodsPhotos = imgs;
+        });
+      });
+    }
+
+    var elecImagesInput = document.getElementById("elecImages");
+    var elecPreviewEl = document.getElementById("elecPreview");
+    var selectedElecPhotos = [];
+
+    if (elecImagesInput) {
+      elecImagesInput.addEventListener("change", function () {
+        if (elecImagesInput.files && elecImagesInput.files.length > 6) {
+          alert("تەنها تا ٦ وێنە دەتوانیت هەڵبژێریت؛ ٦ وێنەی یەکەم وەردەگیرێن.");
+        }
+        readFilesMaxSix(elecImagesInput, elecPreviewEl, function (imgs) {
+          selectedElecPhotos = imgs;
+        });
+      });
     }
 
     var authShell = document.getElementById("authShell");
@@ -1131,6 +1315,17 @@
         e.preventDefault();
         clearSession();
         enterAuthScreen();
+      } else if (btn.classList && btn.classList.contains("btn-del")) {
+        var session = getSession();
+        if (!session || !isAdminEmail(session.email)) return;
+        var postId = btn.getAttribute("data-id");
+        var sec = btn.getAttribute("data-sec");
+        if (sec === "goods") {
+          saveGoodsPosts(getGoodsPosts().filter(function (p) { return String(p.id) !== String(postId); }));
+        } else if (sec === "elec") {
+          saveElecPosts(getElecPosts().filter(function (p) { return String(p.id) !== String(postId); }));
+        }
+        renderAllSections();
       } else if (btn.classList && btn.classList.contains("nav-btn")) {
         var navs = document.querySelectorAll(".nav-btn");
         for (var i = 0; i < navs.length; i++) navs[i].classList.remove("active");
@@ -1142,43 +1337,73 @@
         if (gTab) gTab.classList.toggle("hidden", tab !== "goods");
         if (eTab) eTab.classList.toggle("hidden", tab !== "electronics");
         if (sTab) sTab.classList.toggle("hidden", tab !== "support");
-        var catInput = document.getElementById("postCategory");
-        if (catInput) {
-          catInput.value = tab === "electronics" ? "ئەمەزۆن و ئەلیکترۆنی" : "کاڵاکان";
-        }
       }
     });
 
-    function renderPosts() {
-      var posts = getPosts();
-      var goodsEl = document.getElementById("goodsList");
-      var elecEl = document.getElementById("electronicsList");
+    function buildPostCard(item, secName, adminMode) {
+      var delBtn = adminMode
+        ? '<button type="button" class="btn-del" data-sec="' + secName + '" data-id="' + item.id + '">سڕینەوە</button>'
+        : "";
+      var moreHtml = item.more
+        ? '<div class="item-more"><b>زیاتر دەربارەی:</b> ' + item.more + "</div>"
+        : "";
 
-      var goods = posts.filter(function (p) { return p.category !== "ئەمەزۆن و ئەلیکترۆنی"; });
-      var elec = posts.filter(function (p) { return p.category === "ئەمەزۆن و ئەلیکترۆنی"; });
+      var imgs = Array.isArray(item.images) ? item.images.slice(0, 6) : [];
+      var galleryHtml = imgs.length
+        ? '<div class="item-gallery">' +
+            imgs.map(function (src) {
+              return '<img src="' + src + '" class="item-photo" alt="" />';
+            }).join("") +
+          "</div>"
+        : "";
 
-      if (goodsEl) {
-        goodsEl.innerHTML = goods.length
-          ? goods.map(function (g) {
-              return '<div class="item-card"><div class="item-title">' + g.title + '</div><div class="item-desc">' + (g.desc || "") + "</div></div>";
-            }).join("")
+      return (
+        '<div class="item-card">' +
+          '<div class="item-head">' +
+            '<div>' +
+              '<div class="item-title">' + item.title + "</div>" +
+              '<div class="item-price">نرخ: ' + item.price + "</div>" +
+            "</div>" +
+            delBtn +
+          "</div>" +
+          '<div class="item-desc"><b>زانیاری:</b> ' + (item.info || "") + "</div>" +
+          moreHtml +
+          galleryHtml +
+        "</div>"
+      );
+    }
+
+    function renderAllSections() {
+      var session = getSession();
+      var adminMode = !!(session && isAdminEmail(session.email));
+
+      var goodsListEl = document.getElementById("goodsList");
+      var elecListEl = document.getElementById("electronicsList");
+
+      var goods = getGoodsPosts();
+      var elec = getElecPosts();
+
+      if (goodsListEl) {
+        goodsListEl.innerHTML = goods.length
+          ? goods.map(function (g) { return buildPostCard(g, "goods", adminMode); }).join("")
           : '<div class="item-desc">هێشتا هیچ کاڵایەک زیاد نەکراوە.</div>';
       }
 
-      if (elecEl) {
-        elecEl.innerHTML = elec.length
-          ? elec.map(function (item) {
-              return '<div class="item-card"><div class="item-title">' + item.title + '</div><div class="item-desc">' + (item.desc || "") + "</div></div>";
-            }).join("")
-          : '<div class="item-desc">هێشتا هیچ بابەتێک لەم بەشەدا نییە.</div>';
+      if (elecListEl) {
+        elecListEl.innerHTML = elec.length
+          ? elec.map(function (e) { return buildPostCard(e, "elec", adminMode); }).join("")
+          : '<div class="item-desc">هێشتا هیچ بابەتێک لە بەشی ئەمەزۆن و ئامێری کارەباییدا نییە.</div>';
       }
     }
 
     function enterMainApp(user) {
-      if (activeUserLabel) activeUserLabel.textContent = user.name + " • " + user.email;
+      var roleTag = isAdminEmail(user.email) ? '<span class="admin-badge">ئەدمین</span>' : "";
+      if (activeUserLabel) {
+        activeUserLabel.innerHTML = user.name + " • " + user.email + roleTag;
+      }
       if (authShell) authShell.classList.add("hidden");
       if (mainAppShell) mainAppShell.classList.remove("hidden");
-      renderPosts();
+      renderAllSections();
     }
 
     function enterAuthScreen() {
@@ -1187,24 +1412,71 @@
       openScreen("login");
     }
 
-    var addPostForm = document.getElementById("addPostForm");
-    if (addPostForm) {
-      addPostForm.addEventListener("submit", function (e) {
+    var addGoodsForm = document.getElementById("addGoodsForm");
+    if (addGoodsForm) {
+      addGoodsForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        var titleEl = document.getElementById("postTitle");
-        var descEl = document.getElementById("postDesc");
-        var catEl = document.getElementById("postCategory");
-        var title = titleEl ? titleEl.value.trim() : "";
-        var desc = descEl ? descEl.value.trim() : "";
-        var category = catEl ? catEl.value : "کاڵاکان";
-        if (!title) return;
+        var titleEl = document.getElementById("goodsTitle");
+        var priceEl = document.getElementById("goodsPrice");
+        var infoEl = document.getElementById("goodsInfo");
+        var moreEl = document.getElementById("goodsMore");
 
-        var list = getPosts();
-        list.unshift({ title: title, desc: desc, category: category, at: Date.now() });
-        savePosts(list);
-        if (titleEl) titleEl.value = "";
-        if (descEl) descEl.value = "";
-        renderPosts();
+        var title = titleEl ? titleEl.value.trim() : "";
+        var price = priceEl ? priceEl.value.trim() : "";
+        var info = infoEl ? infoEl.value.trim() : "";
+        var more = moreEl ? moreEl.value.trim() : "";
+        if (!title || !price || !info) return;
+
+        var list = getGoodsPosts();
+        list.unshift({
+          id: "g_" + String(Date.now()) + "_" + String(Math.floor(Math.random() * 1000)),
+          title: title,
+          price: price,
+          info: info,
+          more: more,
+          images: selectedGoodsPhotos.slice(0, 6),
+          at: Date.now()
+        });
+        saveGoodsPosts(list);
+
+        addGoodsForm.reset();
+        selectedGoodsPhotos = [];
+        if (goodsPreviewEl) goodsPreviewEl.innerHTML = "";
+        renderAllSections();
+      });
+    }
+
+    var addElecForm = document.getElementById("addElecForm");
+    if (addElecForm) {
+      addElecForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var titleEl = document.getElementById("elecTitle");
+        var priceEl = document.getElementById("elecPrice");
+        var infoEl = document.getElementById("elecInfo");
+        var moreEl = document.getElementById("elecMore");
+
+        var title = titleEl ? titleEl.value.trim() : "";
+        var price = priceEl ? priceEl.value.trim() : "";
+        var info = infoEl ? infoEl.value.trim() : "";
+        var more = moreEl ? moreEl.value.trim() : "";
+        if (!title || !price || !info) return;
+
+        var list = getElecPosts();
+        list.unshift({
+          id: "e_" + String(Date.now()) + "_" + String(Math.floor(Math.random() * 1000)),
+          title: title,
+          price: price,
+          info: info,
+          more: more,
+          images: selectedElecPhotos.slice(0, 6),
+          at: Date.now()
+        });
+        saveElecPosts(list);
+
+        addElecForm.reset();
+        selectedElecPhotos = [];
+        if (elecPreviewEl) elecPreviewEl.innerHTML = "";
+        renderAllSections();
       });
     }
 
@@ -1264,17 +1536,29 @@
         var password = passEl ? passEl.value : "";
         var users = getUsers();
         var found = null;
+
         for (var i = 0; i < users.length; i++) {
           if (users[i].email === email && users[i].password === password) {
             found = users[i];
             break;
           }
         }
+
+        if (!found && isAdminEmail(email) && password.length >= 4) {
+          found = { name: "ئەدمین", email: ADMIN_EMAIL, password: password };
+          users.push(found);
+          saveUsers(users);
+        }
+
         if (!found) {
           setStatus("ئیمەیڵ یان پاسۆرد هەڵەیە.", "err");
           return;
         }
-        var sessionUser = { name: found.name, email: found.email };
+
+        var sessionUser = {
+          name: isAdminEmail(found.email) ? "ئەدمین" : found.name,
+          email: found.email
+        };
         setSession(sessionUser);
         enterMainApp(sessionUser);
       });
@@ -1305,7 +1589,7 @@
         var emailEl = document.getElementById("forgotEmail");
         var email = (emailEl ? emailEl.value : "").trim().toLowerCase();
         var exists = getUsers().some(function (u) { return u.email === email; });
-        if (!exists) {
+        if (!exists && !isAdminEmail(email)) {
           setStatus("هیچ هەژمارێک بەم ئیمەیڵە نەدۆزرایەوە.", "err");
           return;
         }
@@ -1351,7 +1635,10 @@
         if (pendingFlow === "register") {
           users.push(pendingPayload);
           saveUsers(users);
-          var sessionUser = { name: pendingPayload.name, email: pendingPayload.email };
+          var sessionUser = {
+            name: isAdminEmail(pendingPayload.email) ? "ئەدمین" : pendingPayload.name,
+            email: pendingPayload.email
+          };
           setSession(sessionUser);
           clearInterval(timerId);
           enterMainApp(sessionUser);
@@ -1368,11 +1655,16 @@
             setStatus("هەردوو پاسۆردە نوێیەکە وەک یەک نین.", "err");
             return;
           }
+          var updated = false;
           for (var i = 0; i < users.length; i++) {
             if (users[i].email === pendingPayload.email) {
               users[i].password = p1;
+              updated = true;
               break;
             }
+          }
+          if (!updated && isAdminEmail(pendingPayload.email)) {
+            users.push({ name: "ئەدمین", email: ADMIN_EMAIL, password: p1 });
           }
           saveUsers(users);
           clearInterval(timerId);
