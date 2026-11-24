@@ -479,16 +479,16 @@
   </div>
 
   <script>
-    const DB_URL = 'https://shushawaty-maily-default-rtdb.firebaseio.com';
-    const ADMIN = 'zhyarinfinix@gmail.com';
-    const SESSION_KEY = 'shushawaty_maily_session_v1';
+    var DB_URL = 'https://shushawaty-maily-default-rtdb.firebaseio.com';
+    var ADMIN = 'zhyarinfinix@gmail.com';
+    var SESSION_KEY = 'shushawaty_maily_session_v1';
 
-    let otpNow = '';
-    let mailNow = '';
-    let posts = [];
-    let editingKey = null;
-    let lbImages = [];
-    let lbIndex = 0;
+    var otpNow = '';
+    var mailNow = '';
+    var posts = [];
+    var editingKey = null;
+    var lbImages = [];
+    var lbIndex = 0;
 
     function saveSession(email) {
       try {
@@ -498,9 +498,9 @@
 
     function readSession() {
       try {
-        const raw = localStorage.getItem(SESSION_KEY);
+        var raw = localStorage.getItem(SESSION_KEY);
         if (!raw) return '';
-        const obj = JSON.parse(raw);
+        var obj = JSON.parse(raw);
         if (obj && obj.email) return String(obj.email).trim().toLowerCase();
       } catch (e) {}
       return '';
@@ -513,13 +513,13 @@
     }
 
     function getPostImages(p) {
-      if (p && Array.isArray(p.imgs) && p.imgs.length > 0) return p.imgs;
+      if (p && p.imgs && p.imgs.length > 0) return p.imgs;
       if (p && p.img) return [p.img];
       return ['https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600'];
     }
 
     function goTab(t) {
-      const isInfo = (t === 'info');
+      var isInfo = (t === 'info');
       document.getElementById('tabShop').className = isInfo ? 'hide' : '';
       document.getElementById('tabInfo').className = isInfo ? 'box' : 'box hide';
       document.getElementById('bShop').className = isInfo ? '' : 'on';
@@ -541,8 +541,8 @@
     }
 
     function sendCode() {
-      const m = (document.getElementById('mailInp').value || '').trim().toLowerCase();
-      const e1 = document.getElementById('err1');
+      var m = (document.getElementById('mailInp').value || '').trim().toLowerCase();
+      var e1 = document.getElementById('err1');
       if (!m || m.indexOf('@') < 1) {
         e1.textContent = 'ئیمەیڵێکی دروست بنووسە';
         e1.className = 'err';
@@ -567,8 +567,8 @@
     }
 
     function checkCode() {
-      const c = (document.getElementById('codeInp').value || '').trim();
-      const e2 = document.getElementById('err2');
+      var c = (document.getElementById('codeInp').value || '').trim();
+      var e2 = document.getElementById('err2');
       if (!c || (otpNow && c !== otpNow)) {
         e2.textContent = 'کۆدەکە هەڵەیە';
         e2.className = 'err';
@@ -596,5 +596,6 @@
       fetch(DB_URL + '/products.json')
         .then(function (r) { return r.json(); })
         .then(function (data) {
-          const arr = [];
-          if (data && typeof data === 'object'
+          var arr = [];
+          if (data && typeof data === 'object') {
+            var keys = Object.key
