@@ -1,0 +1,23 @@
+{
+  "name": "Shushawaty Maily",
+  "short_name": "Shushawaty Maily",
+  "description": "شووشەواتی مەیلی — جیهانی شووشە و کریستاڵی مۆدێرن",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e4656",
+  "theme_color": "#0e4656",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=192",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=512",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
