@@ -91,18 +91,9 @@
       border-radius: 16px;
       border: 1px solid rgba(15, 23, 42, 0.14);
       background: rgba(255, 255, 255, 0.86);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       font-size: 14px;
       color: var(--ink);
       outline: none;
-      transition: all 0.2s ease;
-    }
-
-    input:focus, textarea:focus {
-      background: rgba(255, 255, 255, 0.98);
-      border-color: var(--gold-deep);
-      box-shadow: 0 0 0 4px rgba(255, 209, 92, 0.28);
     }
 
     button {
@@ -113,25 +104,18 @@
       font-weight: bold;
       font-size: 14px;
       cursor: pointer;
-      transition: transform 0.14s ease, box-shadow 0.2s ease;
-    }
-
-    button:active {
-      transform: scale(0.97);
     }
 
     .btn1 {
       background: linear-gradient(135deg, #0f5c70, #16829b);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.45);
-      box-shadow: 0 8px 20px rgba(15, 92, 112, 0.35);
     }
 
     .btn2 {
       background: linear-gradient(135deg, #ffe38a, var(--gold), var(--gold-deep));
       color: #0f172a;
       border: 1px solid rgba(255, 255, 255, 0.65);
-      box-shadow: 0 8px 20px rgba(212, 155, 26, 0.35);
     }
 
     .btn3 {
@@ -153,7 +137,7 @@
     }
 
     .otp {
-      background: linear-gradient(135deg, rgba(224, 242, 254, 0.9), rgba(240, 249, 255, 0.85));
+      background: rgba(224, 242, 254, 0.9);
       border: 1.5px dashed rgba(14, 116, 144, 0.45);
       color: #0c4a6e;
       padding: 12px;
@@ -173,12 +157,11 @@
 
     .img {
       width: 100%;
-      height: 215px;
+      height: 230px;
       object-fit: cover;
       border-radius: 18px;
       margin-bottom: 10px;
       border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14);
     }
 
     .price-tag {
@@ -222,15 +205,7 @@
       font-weight: bold;
       font-size: 13px;
       background: linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.52));
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.92);
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
-      transition: transform 0.16s ease, box-shadow 0.2s ease;
-    }
-
-    .social-card:active {
-      transform: scale(0.96);
     }
 
     .s-icon {
@@ -240,24 +215,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
     }
 
-    .s-snap {
-      background: linear-gradient(135deg, #fff04d, #facc15);
-      color: #111827;
-    }
-
-    .s-fb {
-      background: linear-gradient(135deg, #2589ff, #1266d8);
-      color: #ffffff;
-    }
-
-    .s-tt {
-      background: linear-gradient(135deg, #18181b, #27272a);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-    }
+    .s-snap { background: linear-gradient(135deg, #fff04d, #facc15); color: #111827; }
+    .s-fb { background: linear-gradient(135deg, #2589ff, #1266d8); color: #ffffff; }
+    .s-tt { background: linear-gradient(135deg, #18181b, #27272a); color: #ffffff; }
 
     .nav {
       position: fixed;
@@ -278,22 +240,9 @@
       z-index: 40;
     }
 
-    .nav button {
-      background: transparent;
-      color: #334155;
-      border-radius: 16px;
-      padding: 11px 8px;
-    }
-
-    .nav button.on {
-      background: linear-gradient(135deg, #0f5c70, #16829b);
-      color: #ffffff;
-      box-shadow: 0 6px 14px rgba(15, 92, 112, 0.32);
-    }
-
-    .hide {
-      display: none !important;
-    }
+    .nav button { background: transparent; color: #334155; border-radius: 16px; padding: 11px 8px; }
+    .nav button.on { background: linear-gradient(135deg, #0f5c70, #16829b); color: #ffffff; }
+    .hide { display: none !important; }
   </style>
 </head>
 <body>
@@ -354,17 +303,18 @@
         <textarea id="pDesc" rows="2" placeholder="زانیاری"></textarea>
         <input id="pPrice" type="text" placeholder="نرخ (بۆ نموونە: 35,000 د.ع)" />
         <input id="pImg" type="file" accept="image/*" />
-        <button type="button" class="btn2" onclick="addPost()">بڵاوکردنەوە</button>
+        <button id="pubBtn" type="button" class="btn2" onclick="addPost()">بڵاوکردنەوە</button>
       </div>
 
-      <div id="postsArea"></div>
+      <div id="postsArea">
+        <div class="box" style="text-align:center;">چاوەڕێ بکە، کاڵاکان دەهێنرێن...</div>
+      </div>
     </div>
 
     <div id="tabInfo" class="box hide">
       <h3 style="margin-top:0;">ئینفۆرمەیشن</h3>
-            <div class="info-row"><b>ناونیشان:</b> سۆران ڕواندز تەنیشت پیزای مییر</div>
+      <div class="info-row"><b>ناونیشان:</b> سۆران ڕواندز تەنیشت پیزای مییر</div>
       <div class="info-row"><b>پەیوەندی:</b> <bdi dir="ltr">07824463372</bdi> / <bdi dir="ltr">07504619938</bdi></div>
-      
 
       <div class="social-grid">
         <a class="social-card" href="https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US" target="_blank" rel="noopener noreferrer">
@@ -403,13 +353,52 @@
   </div>
 
   <script>
+    var DB_URL = 'https://shushawaty-maily-default-rtdb.firebaseio.com'.replace(/\/+$/, '');
     var ADMIN = 'zhyarinfinix@gmail.com';
     var otpNow = '';
     var mailNow = '';
     var posts = [];
-    try { posts = JSON.parse(localStorage.getItem('sm_posts_simple') || 'null') || []; } catch(e) {}
-    if (!posts.length) {
-      posts = [{ id:1, name:'سێتی شووشەواتی کریستاڵ', desc:'شووشەی جوان و مۆدێرن', price:'35,000 د.ع', img:'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600' }];
+
+    function loadPostsFromCloud() {
+      fetch(DB_URL + '/products.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var arr = [];
+          if (data && typeof data === 'object') {
+            Object.keys(data).forEach(function(k) {
+              if (data[k]) {
+                var item = data[k];
+                item._key = k;
+                arr.push(item);
+              }
+            });
+          }
+          arr.sort(function(a, b) { return (b.id || 0) - (a.id || 0); });
+          posts = arr;
+          drawPosts();
+        })
+        .catch(function() {
+          document.getElementById('postsArea').innerHTML = '<div class="box" style="text-align:center;">هەڵەیەک لە هێنانی کاڵاکان ڕوویدا، دڵنیابە لە ئینتەرنێت و ڕووڵەکانی Firebase.</div>';
+        });
+    }
+
+    function compressImage(file, callback) {
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var img = new Image();
+        img.onload = function() {
+          var maxW = 720;
+          var scale = img.width > maxW ? (maxW / img.width) : 1;
+          var canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          callback(canvas.toDataURL('image/jpeg', 0.72));
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
     }
 
     function sendCode() {
@@ -455,7 +444,7 @@
       document.getElementById('userShow').textContent = 'هەژمار: ' + m;
       document.getElementById('adminBox').className = (m === ADMIN) ? 'box' : 'box hide';
       goTab('shop');
-      drawPosts();
+      loadPostsFromCloud();
     }
 
     function logOut() {
@@ -480,40 +469,55 @@
       var desc = document.getElementById('pDesc').value.trim();
       var price = document.getElementById('pPrice').value.trim();
       var f = document.getElementById('pImg').files[0];
+      var btn = document.getElementById('pubBtn');
       if (!name || !price) return;
 
-      function saveNow(src) {
-        posts.unshift({ id:Date.now(), name:name, desc:desc, price:price, img:src });
-        try { localStorage.setItem('sm_posts_simple', JSON.stringify(posts)); } catch(e) {}
-        document.getElementById('pName').value = '';
-        document.getElementById('pDesc').value = '';
-        document.getElementById('pPrice').value = '';
-        document.getElementById('pImg').value = '';
-        drawPosts();
+      btn.disabled = true;
+      btn.textContent = 'چاوەڕێ بکە، بڵاودەکرێتەوە...';
+
+      function uploadToCloud(src) {
+        var payload = { id: Date.now(), name: name, desc: desc, price: price, img: src };
+        fetch(DB_URL + '/products.json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(function(res) {
+          if (!res.ok) throw new Error('Firebase write failed');
+          document.getElementById('pName').value = '';
+          document.getElementById('pDesc').value = '';
+          document.getElementById('pPrice').value = '';
+          document.getElementById('pImg').value = '';
+          btn.disabled = false;
+          btn.textContent = 'بڵاوکردنەوە';
+          loadPostsFromCloud();
+        })
+        .catch(function() {
+          btn.disabled = false;
+          btn.textContent = 'بڵاوکردنەوە';
+          alert('هەڵەیەک لە بڵاوکردنەوە ڕوویدا؛ لە Firebase دڵنیابە کە Realtime Database چالاکە و Rules کراوەیە.');
+        });
       }
 
       if (f) {
-        var r = new FileReader();
-        r.onload = function(ev){ saveNow(ev.target.result); };
-        r.readAsDataURL(f);
+        compressImage(f, uploadToCloud);
       } else {
-        saveNow('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600');
+        uploadToCloud('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600');
       }
     }
 
-    function delPost(id) {
-      if (mailNow !== ADMIN) return;
-      posts = posts.filter(function(x){ return x.id !== id; });
-      try { localStorage.setItem('sm_posts_simple', JSON.stringify(posts)); } catch(e) {}
-      drawPosts();
+    function delPost(key) {
+      if (mailNow !== ADMIN || !key) return;
+      fetch(DB_URL + '/products/' + key + '.json', { method: 'DELETE' })
+        .then(function() { loadPostsFromCloud(); });
     }
 
     function drawPosts() {
       var q = (document.getElementById('srch').value || '').trim().toLowerCase();
-      var list = posts.filter(function(x){
-        return x.name.toLowerCase().indexOf(q) > -1 ||
-               x.desc.toLowerCase().indexOf(q) > -1 ||
-               x.price.toLowerCase().indexOf(q) > -1;
+      var list = posts.filter(function(x) {
+        return (x.name || '').toLowerCase().indexOf(q) > -1 ||
+               (x.desc || '').toLowerCase().indexOf(q) > -1 ||
+               (x.price || '').toLowerCase().indexOf(q) > -1;
       });
       var html = '';
       for (var i = 0; i < list.length; i++) {
@@ -523,10 +527,10 @@
           '<h4 style="margin:4px 0 6px;">' + p.name + '</h4>' +
           '<div class="price-tag">نرخ: ' + p.price + '</div>' +
           '<div style="color:#334155;">' + p.desc + '</div>' +
-          (mailNow === ADMIN ? '<button type="button" class="del" onclick="delPost(' + p.id + ')">سڕینەوە</button>' : '') +
+          (mailNow === ADMIN ? '<button type="button" class="del" onclick="delPost(\'' + p._key + '\')">سڕینەوە</button>' : '') +
           '</div>';
       }
-      document.getElementById('postsArea').innerHTML = html || '<div class="box">هیچ کاڵایەک نەدۆزرایەوە</div>';
+      document.getElementById('postsArea').innerHTML = html || '<div class="box" style="text-align:center;">هیچ کاڵایەک نییە</div>';
     }
 
     try {
@@ -536,4 +540,3 @@
   </script>
 </body>
 </html>
-a
