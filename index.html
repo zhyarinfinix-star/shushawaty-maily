@@ -6,9 +6,26 @@
   <title>Shushawaty Maily</title>
   <style>
     :root {
+      --bg: #e8eef7;
+      --glass-panel: linear-gradient(145deg, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0.48) 55%, rgba(235, 242, 252, 0.68) 100%);
+      --glass-card: linear-gradient(155deg, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0.48) 60%, rgba(232, 240, 250, 0.68) 100%);
+      --glass-border: rgba(255, 255, 255, 0.9);
+      --glass-border-strong: rgba(24, 34, 54, 0.55);
+      --white: #101622;
+      --muted: rgba(16, 22, 34, 0.72);
+      --gold: #b87900;
+      --gold-soft: rgba(243, 198, 105, 0.28);
+      --danger: #d92648;
+      --success: #059669;
+      --photo-filter: grayscale(15%) contrast(1.06) brightness(0.94);
+      --vignette-bg: linear-gradient(180deg, rgba(232, 239, 249, 0.45) 0%, rgba(220, 230, 244, 0.62) 65%, rgba(208, 220, 238, 0.78) 100%),
+        radial-gradient(circle at 50% 35%, rgba(255, 244, 214, 0.35) 0%, transparent 55%, rgba(255, 255, 255, 0.25) 95%);
+    }
+
+    body.night-mode {
       --bg: #050608;
-      --glass-panel: linear-gradient(145deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 48%, rgba(12, 16, 24, 0.28) 100%);
-      --glass-card: linear-gradient(155deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 55%, rgba(10, 14, 22, 0.26) 100%);
+      --glass-panel: linear-gradient(145deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 48%, rgba(12, 16, 24, 0.35) 100%);
+      --glass-card: linear-gradient(155deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 55%, rgba(10, 14, 22, 0.32) 100%);
       --glass-border: rgba(255, 255, 255, 0.28);
       --glass-border-strong: rgba(255, 255, 255, 0.65);
       --white: #ffffff;
@@ -20,23 +37,6 @@
       --photo-filter: grayscale(45%) contrast(1.16) brightness(0.54);
       --vignette-bg: linear-gradient(180deg, rgba(5, 7, 12, 0.36) 0%, rgba(5, 7, 12, 0.56) 65%, rgba(5, 7, 12, 0.82) 100%),
         radial-gradient(circle at 50% 35%, rgba(255, 214, 150, 0.14) 0%, transparent 45%, rgba(0, 0, 0, 0.65) 95%);
-    }
-
-    body.light-mode {
-      --bg: #dce4f2;
-      --glass-panel: linear-gradient(145deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.42) 55%, rgba(235, 242, 252, 0.62) 100%);
-      --glass-card: linear-gradient(155deg, rgba(255, 255, 255, 0.74) 0%, rgba(255, 255, 255, 0.45) 60%, rgba(232, 240, 250, 0.65) 100%);
-      --glass-border: rgba(255, 255, 255, 0.85);
-      --glass-border-strong: rgba(24, 34, 54, 0.55);
-      --white: #101622;
-      --muted: rgba(16, 22, 34, 0.72);
-      --gold: #b87900;
-      --gold-soft: rgba(243, 198, 105, 0.28);
-      --danger: #d92648;
-      --success: #059669;
-      --photo-filter: grayscale(15%) contrast(1.06) brightness(0.92);
-      --vignette-bg: linear-gradient(180deg, rgba(232, 239, 249, 0.45) 0%, rgba(220, 230, 244, 0.62) 65%, rgba(208, 220, 238, 0.78) 100%),
-        radial-gradient(circle at 50% 35%, rgba(255, 244, 214, 0.35) 0%, transparent 55%, rgba(255, 255, 255, 0.25) 95%);
     }
 
     * {
@@ -53,7 +53,7 @@
       overflow-x: hidden;
       background: var(--bg);
       color: var(--white);
-      transition: background 0.35s ease, color 0.35s ease;
+      transition: background 0.28s ease, color 0.28s ease;
     }
 
     .bg-layer {
@@ -73,14 +73,14 @@
       object-position: center;
       filter: var(--photo-filter);
       transform: scale(1.04);
-      transition: filter 0.35s ease;
+      transition: filter 0.28s ease;
     }
 
     .bg-vignette {
       position: absolute;
       inset: 0;
       background: var(--vignette-bg);
-      transition: background 0.35s ease;
+      transition: background 0.28s ease;
     }
 
     #rainCanvas {
@@ -91,7 +91,7 @@
       pointer-events: none;
     }
 
-    /* بەشی سەرەوەی Stickman + دوگمەی Light/Dark */
+    /* بەشی سەرەوەی Stickman + دوگمەی Night / Light */
     .top-portal-bar {
       position: relative;
       z-index: 12;
@@ -108,16 +108,18 @@
       z-index: 10;
       width: 100%;
       max-width: 392px;
-      height: 62px;
-      border-radius: 20px;
-      background: var(--glass-panel);
-      backdrop-filter: blur(20px) saturate(165%);
-      -webkit-backdrop-filter: blur(20px) saturate(165%);
-      border: 1px solid var(--glass-border);
-      border-top-color: rgba(255, 255, 255, 0.58);
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.38), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+      height: 64px;
+      border-radius: 22px;
+      background: #e9eef7;
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.95);
       overflow: hidden;
       cursor: pointer;
+      transition: background 0.28s ease, box-shadow 0.28s ease;
+    }
+
+    body.night-mode .button-wrapper {
+      background: #141821;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.14);
     }
 
     .canvas-holder {
@@ -134,7 +136,7 @@
     .viewport {
       position: relative;
       z-index: 1;
-      min-height: calc(100dvh - 74px);
+      min-height: calc(100dvh - 76px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -146,30 +148,17 @@
       width: 100%;
       max-width: 392px;
       background: var(--glass-panel);
-      backdrop-filter: blur(22px) saturate(165%) brightness(1.08);
-      -webkit-backdrop-filter: blur(22px) saturate(165%) brightness(1.08);
+      backdrop-filter: blur(22px) saturate(165%) brightness(1.06);
+      -webkit-backdrop-filter: blur(22px) saturate(165%) brightness(1.06);
       border: 1px solid var(--glass-border);
-      border-top-color: rgba(255, 255, 255, 0.52);
-      border-left-color: rgba(255, 255, 255, 0.38);
+      border-top-color: rgba(255, 255, 255, 0.58);
+      border-left-color: rgba(255, 255, 255, 0.42);
       border-radius: 24px;
       padding: 24px 20px;
       box-shadow:
-        0 24px 64px rgba(0, 0, 0, 0.52),
-        inset 0 1px 1px rgba(255, 255, 255, 0.45),
-        inset 0 -10px 24px rgba(255, 255, 255, 0.04);
+        0 24px 64px rgba(0, 0, 0, 0.28),
+        inset 0 1px 1px rgba(255, 255, 255, 0.55);
       overflow: hidden;
-    }
-
-    .auth-box::before {
-      content: "";
-      position: absolute;
-      top: -45%;
-      left: -25%;
-      width: 150%;
-      height: 85%;
-      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 70%);
-      pointer-events: none;
-      transform: rotate(-8deg);
     }
 
     .brand-tag {
@@ -203,14 +192,21 @@
     .field input, .field textarea {
       width: 100%;
       padding: 10px 12px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      border-bottom: 1.5px solid rgba(255, 255, 255, 0.45);
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.55);
       border-radius: 12px;
       color: var(--white);
       font-size: 1rem;
       outline: none;
       transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    body.night-mode .field input,
+    body.night-mode .field textarea {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.42);
     }
 
     .field input::placeholder, .field textarea::placeholder {
@@ -220,9 +216,8 @@
     }
 
     .field input:focus, .field textarea:focus {
-      background: rgba(255, 255, 255, 0.15);
       border-color: var(--glass-border-strong);
-      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.16);
     }
 
     .forgot-row {
@@ -238,15 +233,19 @@
       padding: 13px 16px;
       margin-top: 6px;
       border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.45);
-      border-top-color: rgba(255, 255, 255, 0.72);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.1) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.18) 100%);
       color: var(--white);
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.65);
       transition: background 0.2s ease, transform 0.12s ease;
+    }
+
+    body.night-mode .btn-submit {
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 100%);
     }
 
     .btn-submit:active {
@@ -298,8 +297,8 @@
       margin-top: 8px;
       padding: 7px 16px;
       border-radius: 12px;
-      background: linear-gradient(145deg, rgba(243, 198, 105, 0.28), rgba(243, 198, 105, 0.08));
-      border: 1px solid rgba(243, 198, 105, 0.55);
+      background: linear-gradient(145deg, rgba(243, 198, 105, 0.32), rgba(243, 198, 105, 0.1));
+      border: 1px solid rgba(243, 198, 105, 0.6);
       color: var(--gold);
       font-weight: 800;
       font-size: 1.18rem;
@@ -324,16 +323,19 @@
       font-size: 1.3rem;
       font-weight: 800;
       color: var(--white);
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-top-color: rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.45);
       border-radius: 12px;
       outline: none;
     }
 
+    body.night-mode .otp-input {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+
     .otp-input:focus {
       border-color: var(--glass-border-strong);
-      background: rgba(255, 255, 255, 0.18);
     }
 
     .otp-footer {
@@ -392,7 +394,7 @@
       backdrop-filter: blur(20px) saturate(160%);
       -webkit-backdrop-filter: blur(20px) saturate(160%);
       border-bottom: 1px solid var(--glass-border);
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
     }
 
     .topbar-title {
@@ -410,8 +412,8 @@
     .btn-logout {
       padding: 8px 13px;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.34);
-      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      background: rgba(255, 255, 255, 0.2);
       color: var(--white);
       font-size: 0.82rem;
       font-weight: 600;
@@ -431,11 +433,11 @@
       backdrop-filter: blur(20px) saturate(160%);
       -webkit-backdrop-filter: blur(20px) saturate(160%);
       border: 1px solid var(--glass-border);
-      border-top-color: rgba(255, 255, 255, 0.52);
+      border-top-color: rgba(255, 255, 255, 0.58);
       border-radius: 22px;
       padding: 16px;
       margin-bottom: 14px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.45);
     }
 
     .glass-card h2 {
@@ -445,11 +447,16 @@
     }
 
     .item-card {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       border-radius: 16px;
       padding: 12px;
       margin-bottom: 10px;
+    }
+
+    body.night-mode .item-card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.18);
     }
 
     .item-title {
@@ -477,7 +484,7 @@
       -webkit-backdrop-filter: blur(22px) saturate(165%);
       border-top: 1px solid var(--glass-border);
       padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.32);
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.22);
     }
 
     .nav-btn {
@@ -510,9 +517,9 @@
     <canvas id="rainCanvas"></canvas>
   </div>
 
-  <!-- بەشی سەرەوەی Stickman + دوگمەی گۆڕینی ڕووناکی/تاریکی -->
+  <!-- بەشی سەرەوەی Stickman + دوگمەی Night / Light -->
   <div class="top-portal-bar">
-    <div class="button-wrapper" id="portalToggleBtn" title="گۆڕینی ڕووناکی و تاریکی">
+    <div class="button-wrapper" id="portalToggleBtn" title="گۆڕینی نایت مۆد و وایت مۆد">
       <div class="canvas-holder">
         <canvas id="stage"></canvas>
       </div>
@@ -686,22 +693,22 @@
   </div>
 
   <script>
-    // Stickman + Light/Dark Toggle Physics in Top Bar
+    // Stickman + Instant Night/Light Toggle (matches video behavior)
     (function initStickmanPortal() {
       var wrapper = document.getElementById("portalToggleBtn");
       var canvas = document.getElementById("stage");
       if (!wrapper || !canvas || !canvas.getContext) return;
       var ctx = canvas.getContext("2d");
 
-      var isLight = false;
+      var isNight = false;
       var w = 320;
-      var h = 62;
+      var h = 64;
       var dpr = 1;
 
       var stick = {
-        x: 96,
-        y: 44,
-        vx: 1.4,
+        x: 165,
+        y: 47,
+        vx: 1.35,
         vy: 0,
         dir: 1,
         stepPhase: 0,
@@ -710,30 +717,37 @@
       };
 
       var hole = {
-        x: 248,
-        y: 46,
+        x: 265,
+        y: 49,
         rx: 22,
-        ry: 6.5
+        ry: 6
       };
 
       function resizeStage() {
         dpr = Math.min(window.devicePixelRatio || 1, 2);
         var rect = wrapper.getBoundingClientRect();
         w = Math.max(220, rect.width || 320);
-        h = Math.max(52, rect.height || 62);
+        h = Math.max(52, rect.height || 64);
         canvas.width = Math.floor(w * dpr);
         canvas.height = Math.floor(h * dpr);
-        hole.x = w * 0.74;
-        hole.y = h * 0.76;
-        if (stick.x > w - 40) stick.x = w * 0.35;
+        hole.x = w * 0.78;
+        hole.y = h * 0.77;
+        if (stick.x > w - 35) stick.x = w * 0.52;
       }
 
-      function applyTheme() {
-        if (isLight) {
-          document.body.classList.add("light-mode");
+      function syncThemeClass() {
+        if (isNight) {
+          document.body.classList.add("night-mode");
         } else {
-          document.body.classList.remove("light-mode");
+          document.body.classList.remove("night-mode");
         }
+      }
+
+      function toggleModeInstant() {
+        isNight = !isNight;
+        syncThemeClass();
+        stick.falling = true;
+        stick.vy = 1.4;
       }
 
       function updatePhysics() {
@@ -741,8 +755,8 @@
           stick.stepPhase += 0.18;
           stick.x += stick.vx * stick.dir;
 
-          var minX = w * 0.24;
-          var maxX = w * 0.86;
+          var minX = w * 0.34;
+          var maxX = w * 0.88;
           if (stick.x <= minX) {
             stick.x = minX;
             stick.dir = 1;
@@ -753,24 +767,22 @@
 
           var dx = Math.abs(stick.x - hole.x);
           var dy = Math.abs(stick.y - hole.y);
-          if (dx < hole.rx * 0.72 && dy < 12) {
+          if (dx < hole.rx * 0.65 && dy < 10) {
             stick.falling = true;
-            stick.vy = 0.8;
+            stick.vy = 1.1;
           }
         } else {
-          stick.vy += 0.24;
+          stick.vy += 0.26;
           stick.y += stick.vy;
-          stick.x += (hole.x - stick.x) * 0.14;
-          stick.scale = Math.max(0.05, stick.scale - 0.075);
+          stick.x += (hole.x - stick.x) * 0.16;
+          stick.scale = Math.max(0.05, stick.scale - 0.085);
 
-          if (stick.scale <= 0.08 || stick.y > h + 20) {
-            isLight = !isLight;
-            applyTheme();
+          if (stick.scale <= 0.08 || stick.y > h + 22) {
             stick.falling = false;
             stick.vy = 0;
             stick.scale = 1;
-            stick.x = w * 0.32;
-            stick.y = h * 0.72;
+            stick.x = w * 0.46;
+            stick.y = h * 0.73;
             stick.dir = 1;
           }
         }
@@ -780,51 +792,55 @@
         ctx.save();
         ctx.beginPath();
         ctx.ellipse(hole.x, hole.y, hole.rx, hole.ry, 0, 0, Math.PI * 2);
-        ctx.fillStyle = isLight ? "rgba(15, 23, 42, 0.72)" : "rgba(0, 0, 0, 0.82)";
+        ctx.fillStyle = isNight ? "#040609" : "#d3dce8";
         ctx.fill();
-        ctx.lineWidth = 1.4;
-        ctx.strokeStyle = isLight ? "rgba(255, 255, 255, 0.7)" : "rgba(255, 255, 255, 0.24)";
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = isNight ? "rgba(255,255,255,0.16)" : "rgba(148,163,184,0.45)";
         ctx.stroke();
         ctx.restore();
       }
 
       function drawKnob() {
-        var kx = 32;
+        var kx = 42;
         var ky = h * 0.5;
-        var kr = 17;
+        var kr = 19;
 
         ctx.save();
         ctx.beginPath();
         ctx.arc(kx, ky, kr, 0, Math.PI * 2);
-        ctx.fillStyle = isLight ? "rgba(255, 255, 255, 0.88)" : "rgba(20, 26, 38, 0.82)";
+        ctx.fillStyle = isNight ? "#1c2230" : "#f4f7fc";
         ctx.fill();
-        ctx.lineWidth = 1.4;
-        ctx.strokeStyle = isLight ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.32)";
+        ctx.shadowColor = isNight ? "rgba(0,0,0,0.65)" : "rgba(15,23,42,0.14)";
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetY = 3;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = isNight ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.9)";
         ctx.stroke();
+        ctx.shadowColor = "transparent";
 
-        if (!isLight) {
-          // Moon icon
-          ctx.fillStyle = "#60a5fa";
+        if (isNight) {
+          // Blue crescent moon
+          ctx.fillStyle = "#2b90ff";
           ctx.beginPath();
-          ctx.arc(kx - 1, ky, 7.2, 0, Math.PI * 2);
+          ctx.arc(kx - 1, ky, 7.6, 0, Math.PI * 2);
           ctx.fill();
-          ctx.fillStyle = "rgba(20, 26, 38, 0.9)";
+          ctx.fillStyle = "#1c2230";
           ctx.beginPath();
-          ctx.arc(kx + 3.2, ky - 2.2, 6.2, 0, Math.PI * 2);
+          ctx.arc(kx + 3.4, ky - 2.3, 6.6, 0, Math.PI * 2);
           ctx.fill();
         } else {
-          // Sun icon
-          ctx.strokeStyle = "#f59e0b";
-          ctx.fillStyle = "#f59e0b";
-          ctx.lineWidth = 1.8;
+          // Orange sun
+          ctx.strokeStyle = "#f97316";
+          ctx.fillStyle = "#f97316";
+          ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.arc(kx, ky, 5.2, 0, Math.PI * 2);
           ctx.fill();
           for (var a = 0; a < 8; a++) {
             var ang = (a * Math.PI) / 4;
             ctx.beginPath();
-            ctx.moveTo(kx + Math.cos(ang) * 7.5, ky + Math.sin(ang) * 7.5);
-            ctx.lineTo(kx + Math.cos(ang) * 10.5, ky + Math.sin(ang) * 10.5);
+            ctx.moveTo(kx + Math.cos(ang) * 7.6, ky + Math.sin(ang) * 7.6);
+            ctx.lineTo(kx + Math.cos(ang) * 10.6, ky + Math.sin(ang) * 10.6);
             ctx.stroke();
           }
         }
@@ -836,38 +852,38 @@
         ctx.translate(stick.x, stick.y);
         ctx.scale(stick.scale * stick.dir, stick.scale);
 
-        var col = isLight ? "#111827" : "#f8fafc";
+        var col = isNight ? "#f8fafc" : "#1e293b";
         ctx.strokeStyle = col;
         ctx.fillStyle = col;
-        ctx.lineWidth = 2.1;
+        ctx.lineWidth = 2.2;
         ctx.lineCap = "round";
 
         // Head
         ctx.beginPath();
-        ctx.arc(0, -24, 4.3, 0, Math.PI * 2);
+        ctx.arc(0, -25, 4.4, 0, Math.PI * 2);
         ctx.fill();
 
         // Body
         ctx.beginPath();
-        ctx.moveTo(0, -19.5);
-        ctx.lineTo(0, -9.5);
+        ctx.moveTo(0, -20.5);
+        ctx.lineTo(0, -10);
         ctx.stroke();
 
         // Arms swing
         var armSwing = Math.sin(stick.stepPhase) * 6;
         ctx.beginPath();
-        ctx.moveTo(0, -17);
-        ctx.lineTo(armSwing, -11);
-        ctx.moveTo(0, -17);
-        ctx.lineTo(-armSwing, -11);
+        ctx.moveTo(0, -17.5);
+        ctx.lineTo(armSwing, -11.5);
+        ctx.moveTo(0, -17.5);
+        ctx.lineTo(-armSwing, -11.5);
         ctx.stroke();
 
         // Legs walk
         var legSwing = Math.sin(stick.stepPhase) * 6.5;
         ctx.beginPath();
-        ctx.moveTo(0, -9.5);
+        ctx.moveTo(0, -10);
         ctx.lineTo(legSwing, 0);
-        ctx.moveTo(0, -9.5);
+        ctx.moveTo(0, -10);
         ctx.lineTo(-legSwing, 0);
         ctx.stroke();
 
@@ -886,13 +902,8 @@
         requestAnimationFrame(renderLoop);
       }
 
-      wrapper.addEventListener("click", function () {
-        if (!stick.falling) {
-          stick.falling = true;
-          stick.vy = 1.1;
-        }
-      });
-
+      wrapper.addEventListener("click", toggleModeInstant);
+      syncThemeClass();
       resizeStage();
       window.addEventListener("resize", resizeStage);
       requestAnimationFrame(renderLoop);
@@ -926,9 +937,9 @@
         ctx.clearRect(0, 0, w, h);
         for (var i = 0; i < drops.length; i++) {
           var d = drops[i];
-          ctx.strokeStyle = document.body.classList.contains("light-mode")
-            ? "rgba(30, 41, 59, " + (d.alpha * 0.65) + ")"
-            : "rgba(255, 255, 255, " + d.alpha + ")";
+          ctx.strokeStyle = document.body.classList.contains("night-mode")
+            ? "rgba(255, 255, 255, " + d.alpha + ")"
+            : "rgba(30, 41, 59, " + (d.alpha * 0.55) + ")";
           ctx.lineWidth = d.lw;
           ctx.beginPath();
           ctx.moveTo(d.x, d.y);
