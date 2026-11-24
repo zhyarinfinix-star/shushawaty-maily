@@ -478,96 +478,39 @@
     </div>
   </div>
 
-  <!-- سکریپتی سەربەخۆی چوونەژوورەوە و OTP تا هەرگیز نەوەستێت -->
   <script>
-    var SM_ADMIN = 'zhyarinfinix@gmail.com';
-    var SM_OTP = '';
-    var SM_MAIL = '';
+    const DB_URL = 'https://shushawaty-maily-default-rtdb.firebaseio.com';
+    const ADMIN = 'zhyarinfinix@gmail.com';
+    const SESSION_KEY = 'shushawaty_maily_session_v1';
 
-    function sendCode() {
-      var inp = document.getElementById('mailInp');
-      var err = document.getElementById('err1');
-      var m = inp ? inp.value.trim().toLowerCase() : '';
-      if (!m || m.indexOf('@') < 1) {
-        if (err) { err.textContent = 'ئیمەیڵێکی دروست بنووسە'; err.className = 'err'; }
-        return;
-      }
-      if (err) err.className = 'err hide';
-      SM_MAIL = m;
-      SM_OTP = String(Math.floor(100000 + Math.random() * 900000));
-      var who = document.getElementById('whoMail');
-      var box = document.getElementById('codeShow');
-      var cinp = document.getElementById('codeInp');
-      var s1 = document.getElementById('step1');
-      var s2 = document.getElementById('step2');
-      if (who) who.textContent = 'ئیمەیڵ: ' + SM_MAIL;
-      if (box) box.textContent = 'کۆدی OTP: ' + SM_OTP;
-      if (cinp) cinp.value = '';
-      if (s1) s1.className = 'box hide';
-      if (s2) s2.className = 'box';
+    let otpNow = '';
+    let mailNow = '';
+    let posts = [];
+    let editingKey = null;
+    let lbImages = [];
+    let lbIndex = 0;
+
+    function saveSession(email) {
+      try {
+        localStorage.setItem(SESSION_KEY, JSON.stringify({ email: email }));
+      } catch (e) {}
     }
 
-    function backStep1() {
-      var s1 = document.getElementById('step1');
-      var s2 = document.getElementById('step2');
-      var err2 = document.getElementById('err2');
-      if (s2) s2.className = 'box hide';
-      if (s1) s1.className = 'box';
-      if (err2) err2.className = 'err hide';
+    function readSession() {
+      try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return '';
+        const obj = JSON.parse(raw);
+        if (obj && obj.email) return String(obj.email).trim().toLowerCase();
+      } catch (e) {}
+      return '';
     }
 
-    function checkCode() {
-      var cinp = document.getElementById('codeInp');
-      var err2 = document.getElementById('err2');
-      var c = cinp ? cinp.value.trim() : '';
-      if (!c || (SM_OTP && c !== SM_OTP)) {
-        if (err2) { err2.textContent = 'کۆدەکە هەڵەیە'; err2.className = 'err'; }
-        return;
-      }
-      if (err2) err2.className = 'err hide';
-      try { localStorage.setItem('sm_user_simple', SM_MAIL || SM_ADMIN); } catch (e) {}
-      if (typeof enterMain === 'function') {
-        enterMain(SM_MAIL || SM_ADMIN);
-      } else {
-        document.getElementById('loginBox').className = 'hide';
-        document.getElementById('mainBox').className = '';
-      }
+    function clearSession() {
+      try {
+        localStorage.removeItem(SESSION_KEY);
+      } catch (e) {}
     }
-
-    function logOut() {
-      try { localStorage.removeItem('sm_user_simple'); } catch (e) {}
-      if (typeof cancelEdit === 'function') cancelEdit();
-      document.getElementById('mainBox').className = 'hide';
-      document.getElementById('step2').className = 'box hide';
-      document.getElementById('step1').className = 'box';
-      document.getElementById('loginBox').className = '';
-    }
-
-    function goTab(t) {
-      var isInfo = (t === 'info');
-      document.getElementById('tabShop').className = isInfo ? 'hide' : '';
-      document.getElementById('tabInfo').className = isInfo ? 'box' : 'box hide';
-      document.getElementById('bShop').className = isInfo ? '' : 'on';
-      document.getElementById('bInfo').className = isInfo ? 'on' : '';
-    }
-
-    (function () {
-      var b1 = document.getElementById('btnSendOtp');
-      var b2 = document.getElementById('btnVerifyOtp');
-      var b3 = document.getElementById('btnBackMail');
-      if (b1) b1.onclick = sendCode;
-      if (b2) b2.onclick = checkCode;
-      if (b3) b3.onclick = backStep1;
-    })();
-  </script>
-
-  <!-- سکریپتی کاڵاکان، چەند وێنە، ئیدیت و Firebase -->
-  <script>
-    var DB_URL = 'https://shushawaty-maily-default-rtdb.firebaseio.com';
-    var posts = [];
-    var editingKey = null;
-    var lbImages = [];
-    var lbIndex = 0;
 
     function getPostImages(p) {
       if (p && Array.isArray(p.imgs) && p.imgs.length > 0) return p.imgs;
@@ -575,16 +518,83 @@
       return ['https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600'];
     }
 
+    function goTab(t) {
+      const isInfo = (t === 'info');
+      document.getElementById('tabShop').className = isInfo ? 'hide' : '';
+      document.getElementById('tabInfo').className = isInfo ? 'box' : 'box hide';
+      document.getElementById('bShop').className = isInfo ? '' : 'on';
+      document.getElementById('bInfo').className = isInfo ? 'on' : '';
+    }
+
     function enterMain(m) {
-      SM_MAIL = String(m || '').trim().toLowerCase();
+      mailNow = String(m || '').trim().toLowerCase();
+      if (!mailNow) return;
+      saveSession(mailNow);
+
       document.getElementById('loginBox').className = 'hide';
       document.getElementById('mainBox').className = '';
-      document.getElementById('userShow').textContent = 'هەژمار: ' + SM_MAIL;
-      document.getElementById('adminBox').className = (SM_MAIL === SM_ADMIN) ? 'box' : 'box hide';
+      document.getElementById('userShow').textContent = 'هەژمار: ' + mailNow;
+      document.getElementById('adminBox').className = (mailNow === ADMIN) ? 'box' : 'box hide';
+
       goTab('shop');
       loadPostsFromCloud();
     }
 
+    function sendCode() {
+      const m = (document.getElementById('mailInp').value || '').trim().toLowerCase();
+      const e1 = document.getElementById('err1');
+      if (!m || m.indexOf('@') < 1) {
+        e1.textContent = 'ئیمەیڵێکی دروست بنووسە';
+        e1.className = 'err';
+        return;
+      }
+      e1.className = 'err hide';
+      mailNow = m;
+      otpNow = String(Math.floor(100000 + Math.random() * 900000));
+
+      document.getElementById('whoMail').textContent = 'ئیمەیڵ: ' + mailNow;
+      document.getElementById('codeShow').textContent = 'کۆدی OTP: ' + otpNow;
+      document.getElementById('codeInp').value = '';
+      document.getElementById('err2').className = 'err hide';
+      document.getElementById('step1').className = 'box hide';
+      document.getElementById('step2').className = 'box';
+    }
+
+    function backStep1() {
+      document.getElementById('step2').className = 'box hide';
+      document.getElementById('step1').className = 'box';
+      document.getElementById('err2').className = 'err hide';
+    }
+
+    function checkCode() {
+      const c = (document.getElementById('codeInp').value || '').trim();
+      const e2 = document.getElementById('err2');
+      if (!c || (otpNow && c !== otpNow)) {
+        e2.textContent = 'کۆدەکە هەڵەیە';
+        e2.className = 'err';
+        return;
+      }
+      e2.className = 'err hide';
+      enterMain(mailNow || ADMIN);
+    }
+
+    function logOut() {
+      clearSession();
+      cancelEdit();
+      otpNow = '';
+      mailNow = '';
+      document.getElementById('mailInp').value = '';
+      document.getElementById('codeInp').value = '';
+      document.getElementById('mainBox').className = 'hide';
+      document.getElementById('step2').className = 'box hide';
+      document.getElementById('step1').className = 'box';
+      document.getElementById('loginBox').className = '';
+    }
+
     function loadPostsFromCloud() {
+      document.getElementById('postsArea').innerHTML = '<div class="box" style="text-align:center;">چاوەڕێ بکە، کاڵاکان دەهێنرێن...</div>';
       fetch(DB_URL + '/products.json')
-        .then(function 
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          const arr = [];
+          if (data && typeof data === 'object'
