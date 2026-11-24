@@ -414,17 +414,6 @@
       color: var(--muted);
     }
 
-    .admin-badge {
-      display: inline-block;
-      margin-right: 6px;
-      padding: 2px 7px;
-      border-radius: 8px;
-      background: var(--gold-soft);
-      color: var(--gold);
-      font-size: 0.7rem;
-      font-weight: 800;
-    }
-
     .btn-logout {
       padding: 8px 13px;
       border-radius: 12px;
@@ -757,7 +746,6 @@
     </header>
 
     <div class="app-content">
-      <!-- بەشی تایبەت بە کاڵاکان -->
       <section id="tab-goods">
         <div class="glass-card">
           <h2>زیادکردنی کاڵا</h2>
@@ -798,7 +786,6 @@
         </div>
       </section>
 
-      <!-- بەشی تایبەت بە ئەمەزۆن و ئامێری کارەبایی (جیاواز لە کاڵاکان) -->
       <section id="tab-electronics" class="hidden">
         <div class="glass-card">
           <h2>زیادکردنی بابەتی ئەمەزۆن و ئامێری کارەبایی</h2>
@@ -839,7 +826,6 @@
         </div>
       </section>
 
-      <!-- بەشی زانیاری و سەپۆرت -->
       <section id="tab-support" class="hidden">
         <div class="glass-card">
           <h2>زانیاری و پەیوەندی</h2>
@@ -854,10 +840,6 @@
           <div class="info-row">
             <span class="info-label">ناونیشان</span>
             <span class="info-val">سۆران ڕواندز تەنیشت پیزای میر</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">ئەدمین</span>
-            <span class="info-val" style="direction:ltr;">zhyarinfinix@gmail.com</span>
           </div>
         </div>
       </section>
@@ -1397,9 +1379,8 @@
     }
 
     function enterMainApp(user) {
-      var roleTag = isAdminEmail(user.email) ? '<span class="admin-badge">ئەدمین</span>' : "";
       if (activeUserLabel) {
-        activeUserLabel.innerHTML = user.name + " • " + user.email + roleTag;
+        activeUserLabel.textContent = user.name;
       }
       if (authShell) authShell.classList.add("hidden");
       if (mainAppShell) mainAppShell.classList.remove("hidden");
@@ -1536,15 +1517,18 @@
         var password = passEl ? passEl.value : "";
         var users = getUsers();
         var found = null;
+        var adminAlreadyExists = false;
 
         for (var i = 0; i < users.length; i++) {
+          if (isAdminEmail(users[i].email)) adminAlreadyExists = true;
           if (users[i].email === email && users[i].password === password) {
             found = users[i];
             break;
           }
         }
 
-        if (!found && isAdminEmail(email) && password.length >= 4) {
+        // تەنها ئەگەر هێشتا ئەدمین تۆمار نەکرابێت یەکەم جار بە پاسۆردی خۆت تۆمار دەبێت
+        if (!found && isAdminEmail(email) && !adminAlreadyExists && password.length >= 6) {
           found = { name: "ئەدمین", email: ADMIN_EMAIL, password: password };
           users.push(found);
           saveUsers(users);
