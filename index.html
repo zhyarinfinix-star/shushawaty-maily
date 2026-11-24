@@ -1,189 +1,316 @@
 <script>
-    // ١. ئەنیمەیشنی بارانی تاریک بۆ مۆبایل
-    (function initRain() {
-      const canvas = document.getElementById("rainCanvas");
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      let w = 0, h = 0, drops = [];
+(function () {
+  const EMAILJS_PUBLIC_KEY = "2MMVlqbe3ak0ENMry";
+  const EMAILJS_SERVICE_ID = "service_ackleif";
+  const EMAILJS_TEMPLATE_ID = "template_hj6esyr";
 
-      function resize() {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        w = canvas.width = Math.floor(window.innerWidth * dpr);
-        h = canvas.height = Math.floor(window.innerHeight * dpr);
-        const count = Math.min(95, Math.max(40, Math.floor(window.innerWidth / 7)));
-        drops = Array.from({ length: count }, () => ({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          len: (10 + Math.random() * 16) * dpr,
-          speed: (9 + Math.random() * 11) * dpr,
-          alpha: 0.14 + Math.random() * 0.28,
-          lw: Math.max(1, 1.15 * dpr)
-        }));
-      }
+  const USERS_KEY = "sm_users_v1";
+  const SESSION_KEY = "sm_active_user";
+  const POSTS_KEY = "sm_posts_v1";
 
-      function tick() {
-        ctx.clearRect(0, 0, w, h);
-        for (const d of drops) {
-          ctx.strokeStyle = `rgba(255, 255, 255, ${d.alpha})`;
-          ctx.lineWidth = d.lw;
-          ctx.beginPath();
-          ctx.moveTo(d.x, d.y);
-          ctx.lineTo(d.x, d.y + d.len);
-          ctx.stroke();
+  function readJson(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (_) {
+      return fallback;
+    }
+  }
 
-          d.y += d.speed;
-          if (d.y > h) {
-            d.y = -d.len;
-            d.x = Math.random() * w;
-          }
+  function writeJson(key, val) {
+    try {
+      localStorage.setItem(key, JSON.stringify(val));
+    } catch (_) {}
+  }
+
+  const getUsers = () => readJson(USERS_KEY, []);
+  const saveUsers = (list) => writeJson(USERS_KEY, list);
+  const getSession = () => readJson(SESSION_KEY, null);
+  const setSession = (u) => writeJson(SESSION_KEY, u);
+  const clearSession = () => {
+    try { localStorage.removeItem(SESSION_KEY); } catch (_) {}
+  };
+  const getPosts = () => readJson(POSTS_KEY, []);
+  const savePosts = (list) => writeJson(POSTS_KEY, list);
+
+  // باران لەسەر canvas
+  (function initRain() {
+    const canvas = document.getElementById("rainCanvas");
+    if (!canvas || !canvas.getContext) return;
+    const ctx = canvas.getContext("2d");
+    let w = 0, h = 0, drops = [];
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = canvas.width = Math.floor(window.innerWidth * dpr);
+      h = canvas.height = Math.floor(window.innerHeight * dpr);
+      const count = Math.min(85, Math.max(35, Math.floor(window.innerWidth / 8)));
+      drops = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        len: (10 + Math.random() * 14) * dpr,
+        speed: (8 + Math.random() * 10) * dpr,
+        alpha: 0.14 + Math.random() * 0.25,
+        lw: Math.max(1, 1.1 * dpr)
+      }));
+    }
+
+    function step() {
+      ctx.clearRect(0, 0, w, h);
+      for (let i = 0; i < drops.length; i++) {
+        const d = drops[i];
+        ctx.strokeStyle = "rgba(255,255,255," + d.alpha + ")";
+        ctx.lineWidth = d.lw;
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(d.x, d.y + d.len);
+        ctx.stroke();
+
+        d.y += d.speed;
+        if (d.y > h) {
+          d.y = -d.len;
+          d.x = Math.random() * w;
         }
-        requestAnimationFrame(tick);
       }
-
-      resize();
-      window.addEventListener("resize", resize);
-      requestAnimationFrame(tick);
-    })();
-
-    // ٢. زانیارییەکانی EmailJS
-    const EMAILJS_PUBLIC_KEY = "2MMVlqbe3ak0ENMry";
-    const EMAILJS_SERVICE_ID = "service_ackleif";
-    const EMAILJS_TEMPLATE_ID = "template_hj6esyr";
-
-    const USERS_KEY = "sm_users_v1";
-    const SESSION_KEY = "sm_active_user";
-    const POSTS_KEY = "sm_posts_v1";
-
-    const getUsers = () => {
-      try { return JSON.parse(localStorage.getItem(USERS_KEY) || "[]"); }
-      catch { return []; }
-    };
-    const saveUsers = (list) => localStorage.setItem(USERS_KEY, JSON.stringify(list));
-    const getSession = () => {
-      try { return JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); }
-      catch { return null; }
-    };
-    const setSession = (u) => localStorage.setItem(SESSION_KEY, JSON.stringify(u));
-    const clearSession = () => localStorage.removeItem(SESSION_KEY);
-    const getPosts = () => {
-      try { return JSON.parse(localStorage.getItem(POSTS_KEY) || "[]"); }
-      catch { return []; }
-    };
-    const savePosts = (list) => localStorage.setItem(POSTS_KEY, JSON.stringify(list));
-
-    const authShell = document.getElementById("authShell");
-    const mainAppShell = document.getElementById("mainAppShell");
-    const activeUserLabel = document.getElementById("activeUserLabel");
-
-    const loginForm = document.getElementById("loginForm");
-    const registerForm = document.getElementById("registerForm");
-    const forgotForm = document.getElementById("forgotForm");
-    const otpView = document.getElementById("otpView");
-    const resetFields = document.getElementById("resetFields");
-    const statusMsg = document.getElementById("statusMsg");
-    const otpText = document.getElementById("otpText");
-    const otpBox = document.getElementById("otpBox");
-    const otpInputs = [...document.querySelectorAll(".otp-input")];
-    const resendBtn = document.getElementById("resendBtn");
-
-    let pendingFlow = null;
-    let pendingPayload = null;
-    let currentOtp = "";
-    let timerId = null;
-
-    function setStatus(msg, type = "") {
-      if (!statusMsg) return;
-      statusMsg.textContent = msg;
-      statusMsg.className = "status " + type;
+      requestAnimationFrame(step);
     }
 
-    function openScreen(name) {
-      setStatus("");
-      if (loginForm) loginForm.classList.toggle("hidden", name !== "login");
-      if (registerForm) registerForm.classList.toggle("hidden", name !== "register");
-      if (forgotForm) forgotForm.classList.toggle("hidden", name !== "forgot");
-      if (otpView) otpView.classList.toggle("hidden", name !== "otp");
+    resize();
+    window.addEventListener("resize", resize);
+    requestAnimationFrame(step);
+  })();
+
+  const authShell = document.getElementById("authShell");
+  const mainAppShell = document.getElementById("mainAppShell");
+  const activeUserLabel = document.getElementById("activeUserLabel");
+
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+  const forgotForm = document.getElementById("forgotForm");
+  const otpView = document.getElementById("otpView");
+  const resetFields = document.getElementById("resetFields");
+  const statusMsg = document.getElementById("statusMsg");
+  const otpText = document.getElementById("otpText");
+  const otpBox = document.getElementById("otpBox");
+  const otpInputs = Array.prototype.slice.call(document.querySelectorAll(".otp-input"));
+  const resendBtn = document.getElementById("resendBtn");
+
+  let pendingFlow = null;
+  let pendingPayload = null;
+  let currentOtp = "";
+  let timerId = null;
+
+  function setStatus(msg, type) {
+    if (!statusMsg) return;
+    statusMsg.textContent = msg || "";
+    statusMsg.className = "status" + (type ? " " + type : "");
+  }
+
+  function openScreen(name) {
+    setStatus("", "");
+    if (loginForm) loginForm.classList.toggle("hidden", name !== "login");
+    if (registerForm) registerForm.classList.toggle("hidden", name !== "register");
+    if (forgotForm) forgotForm.classList.toggle("hidden", name !== "forgot");
+    if (otpView) otpView.classList.toggle("hidden", name !== "otp");
+  }
+
+  function renderPosts() {
+    const posts = getPosts();
+    const goodsEl = document.getElementById("goodsList");
+    const elecEl = document.getElementById("electronicsList");
+
+    const goods = posts.filter((p) => p.category !== "ئەمەزۆن و ئەلیکترۆنی");
+    const elec = posts.filter((p) => p.category === "ئەمەزۆن و ئەلیکترۆنی");
+
+    if (goodsEl) {
+      goodsEl.innerHTML = goods.length
+        ? goods.map((g) => '<div class="item-card"><div class="item-title">' + g.title + '</div><div class="item-desc">' + (g.desc || "") + "</div></div>").join("")
+        : '<div class="item-desc">هێشتا هیچ کاڵایەک زیاد نەکراوە.</div>';
     }
 
-    // ٣. بەڕێوەبردنی کلیکەکان بۆ گۆڕینی فۆڕمەکان بە شێوەی جێگیر
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest("button");
-      if (!btn) return;
+    if (elecEl) {
+      elecEl.innerHTML = elec.length
+        ? elec.map((e) => '<div class="item-card"><div class="item-title">' + e.title + '</div><div class="item-desc">' + (e.desc || "") + "</div></div>").join("")
+        : '<div class="item-desc">هێشتا هیچ بابەتێک لەم بەشەدا نییە.</div>';
+    }
+  }
 
-      if (btn.id === "goRegisterBtn") {
-        e.preventDefault();
-        openScreen("register");
-      } else if (btn.id === "goForgotBtn") {
-        e.preventDefault();
-        openScreen("forgot");
-      } else if (btn.id === "goLoginFromRegBtn" || btn.id === "goLoginFromForgotBtn") {
-        e.preventDefault();
-        openScreen("login");
-      } else if (btn.id === "cancelOtpBtn") {
-        e.preventDefault();
-        clearInterval(timerId);
-        pendingFlow = null;
-        pendingPayload = null;
-        openScreen("login");
-      }
+  function enterMainApp(user) {
+    if (activeUserLabel) activeUserLabel.textContent = user.name + " • " + user.email;
+    if (authShell) authShell.classList.add("hidden");
+    if (mainAppShell) mainAppShell.classList.remove("hidden");
+    renderPosts();
+  }
+
+  function enterAuthScreen() {
+    if (mainAppShell) mainAppShell.classList.add("hidden");
+    if (authShell) authShell.classList.remove("hidden");
+    openScreen("login");
+  }
+
+  function getExpiryString(mins) {
+    const d = new Date(Date.now() + (mins || 15) * 60000);
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+
+  async function sendOtpEmail(email, code) {
+    const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        service_id: EMAILJS_SERVICE_ID,
+        template_id: EMAILJS_TEMPLATE_ID,
+        user_id: EMAILJS_PUBLIC_KEY,
+        template_params: {
+          email: email,
+          passcode: code,
+          time: getExpiryString(15)
+        }
+      })
     });
 
-    // ٤. داشبۆرد و پۆستەکان
-    function renderPosts() {
-      const posts = getPosts();
-      const goodsEl = document.getElementById("goodsList");
-      const elecEl = document.getElementById("electronicsList");
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error("EmailJS (" + res.status + "): " + errText);
+    }
+  }
 
-      const goods = posts.filter((p) => p.category !== "ئەمەزۆن و ئەلیکترۆنی");
-      const elec = posts.filter((p) => p.category === "ئەمەزۆن و ئەلیکترۆنی");
-
-      if (goodsEl) {
-        goodsEl.innerHTML = goods.length
-          ? goods.map((g) => `<div class="item-card"><div class="item-title">${g.title}</div><div class="item-desc">${g.desc || ""}</div></div>`).join("")
-          : `<div class="item-desc">هێشتا هیچ کاڵایەک زیاد نەکراوە.</div>`;
-      }
-
-      if (elecEl) {
-        elecEl.innerHTML = elec.length
-          ? elec.map((e) => `<div class="item-card"><div class="item-title">${e.title}</div><div class="item-desc">${e.desc || ""}</div></div>`).join("")
-          : `<div class="item-desc">هێشتا هیچ بابەتێک لەم بەشەدا نییە.</div>`;
-      }
+  function run30sCountdown() {
+    clearInterval(timerId);
+    let left = 30;
+    if (resendBtn) {
+      resendBtn.disabled = true;
+      resendBtn.textContent = "دووبارە ناردنەوە (" + left + "s)";
     }
 
-    function enterMainApp(user) {
-      if (activeUserLabel) activeUserLabel.textContent = `${user.name} • ${user.email}`;
-      if (authShell) authShell.classList.add("hidden");
-      if (mainAppShell) mainAppShell.classList.remove("hidden");
-      renderPosts();
-    }
+    timerId = setInterval(() => {
+      left -= 1;
+      if (!resendBtn) return;
+      if (left > 0) {
+        resendBtn.textContent = "دووبارە ناردنەوە (" + left + "s)";
+      } else {
+        clearInterval(timerId);
+        resendBtn.disabled = false;
+        resendBtn.textContent = "دووبارە ناردنەوەی کۆد";
+      }
+    }, 1000);
+  }
 
-    function enterAuthScreen() {
-      if (mainAppShell) mainAppShell.classList.add("hidden");
-      if (authShell) authShell.classList.remove("hidden");
+  async function triggerOtp(email, flow, payload, btn) {
+    if (btn) btn.disabled = true;
+    setStatus("خەریکی ناردنی کۆدی OTP بۆ ئیمەیڵ...", "");
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+
+    try {
+      await sendOtpEmail(email, code);
+      pendingFlow = flow;
+      pendingPayload = payload;
+      currentOtp = code;
+
+      if (resetFields) resetFields.classList.toggle("hidden", flow !== "reset");
+      if (otpText) otpText.textContent = "کۆدی 6 خانەیی بۆ " + email + " نێردرا";
+      openScreen("otp");
+      otpInputs.forEach((inp) => { inp.value = ""; });
+      if (otpInputs[0]) otpInputs[0].focus();
+      run30sCountdown();
+      setStatus("کۆدەکە نێردرا؛ سەیری Inbox یان Spam بکە.", "ok");
+    } catch (e) {
+      setStatus((e && e.message) ? e.message : "هەڵەیەک لە ناردنی ئیمەیڵدا ڕوویدا.", "err");
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  // کلیکەکانی گۆڕینی فۆڕمەکان
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+
+    if (btn.id === "goRegisterBtn") {
+      e.preventDefault();
+      openScreen("register");
+    } else if (btn.id === "goForgotBtn") {
+      e.preventDefault();
+      openScreen("forgot");
+    } else if (btn.id === "goLoginFromRegBtn" || btn.id === "goLoginFromForgotBtn") {
+      e.preventDefault();
       openScreen("login");
-    }
-
-    document.getElementById("logoutBtn")?.addEventListener("click", () => {
+    } else if (btn.id === "cancelOtpBtn") {
+      e.preventDefault();
+      clearInterval(timerId);
+      pendingFlow = null;
+      pendingPayload = null;
+      openScreen("login");
+    } else if (btn.id === "logoutBtn") {
+      e.preventDefault();
       clearSession();
       enterAuthScreen();
-    });
+    } else if (btn.classList.contains("nav-btn")) {
+      document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      const tab = btn.dataset.tab;
+      document.getElementById("tab-goods")?.classList.toggle("hidden", tab !== "goods");
+      document.getElementById("tab-electronics")?.classList.toggle("hidden", tab !== "electronics");
+      document.getElementById("tab-support")?.classList.toggle("hidden", tab !== "support");
+      const catInput = document.getElementById("postCategory");
+      if (catInput) {
+        catInput.value = tab === "electronics" ? "ئەمەزۆن و ئەلیکترۆنی" : "کاڵاکان";
+      }
+    }
+  });
 
-    document.querySelectorAll(".nav-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        const tab = btn.dataset.tab;
-        document.getElementById("tab-goods")?.classList.toggle("hidden", tab !== "goods");
-        document.getElementById("tab-electronics")?.classList.toggle("hidden", tab !== "electronics");
-        document.getElementById("tab-support")?.classList.toggle("hidden", tab !== "support");
-        const catInput = document.getElementById("postCategory");
-        if (catInput) {
-          catInput.value = tab === "electronics" ? "ئەمەزۆن و ئەلیکترۆنی" : "کاڵاکان";
-        }
-      });
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = (document.getElementById("loginEmail")?.value || "").trim().toLowerCase();
+      const password = document.getElementById("loginPassword")?.value || "";
+      const found = getUsers().find((u) => u.email === email && u.password === password);
+      if (!found) {
+        setStatus("ئیمەیڵ یان پاسۆرد هەڵەیە.", "err");
+        return;
+      }
+      const sessionUser = { name: found.name, email: found.email };
+      setSession(sessionUser);
+      enterMainApp(sessionUser);
     });
+  }
 
-    document.getElementById("addPostForm")?.addEventListener("submit", (e) => {
+  if (registerForm) {
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = (document.getElementById("regName")?.value || "").trim();
+      const email = (document.getElementById("regEmail")?.value || "").trim().toLowerCase();
+      const password = document.getElementById("regPassword")?.value || "";
+      if (getUsers().some((u) => u.email === email)) {
+        setStatus("ئەم ئیمەیڵە پێشتر تۆمار کراوە.", "err");
+        return;
+      }
+      await triggerOtp(email, "register", { name, email, password }, document.getElementById("regBtn"));
+    });
+  }
+
+  if (forgotForm) {
+    forgotForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = (document.getElementById("forgotEmail")?.value || "").trim().toLowerCase();
+      if (!getUsers().some((u) => u.email === email)) {
+        setStatus("هیچ هەژمارێک بەم ئیمەیڵە نەدۆزرایەوە.", "err");
+        return;
+      }
+      await triggerOtp(email, "reset", { email }, document.getElementById("forgotBtn"));
+    });
+  }
+
+  if (resendBtn) {
+    resendBtn.addEventListener("click", async () => {
+      if (resendBtn.disabled || !pendingPayload) return;
+      await triggerOtp(pendingPayload.email, pendingFlow, pendingPayload, resendBtn);
+    });
+  }
+
+  const addPostForm = document.getElementById("addPostForm");
+  if (addPostForm) {
+    addPostForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const titleEl = document.getElementById("postTitle");
       const descEl = document.getElementById("postDesc");
@@ -194,155 +321,36 @@
       if (!title) return;
 
       const list = getPosts();
-      list.unshift({ title, desc, category, at: Date.now() });
+      list.unshift({ title: title, desc: desc, category: category, at: Date.now() });
       savePosts(list);
       if (titleEl) titleEl.value = "";
       if (descEl) descEl.value = "";
       renderPosts();
     });
+  }
 
-    // ٥. ناردنی کۆدی OTP لە ڕێگەی EmailJS
-    function getExpiryString(mins = 15) {
-      const d = new Date(Date.now() + mins * 60000);
-      return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    }
-
-    async function sendOtpEmail(email, code) {
-      const payload = {
-        service_id: EMAILJS_SERVICE_ID,
-        template_id: EMAILJS_TEMPLATE_ID,
-        user_id: EMAILJS_PUBLIC_KEY,
-        template_params: {
-          email: email,
-          passcode: code,
-          time: getExpiryString(15)
-        }
-      };
-
-      const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`EmailJS (${res.status}): ${errText}`);
-      }
-    }
-
-    function run30sCountdown() {
-      clearInterval(timerId);
-      let left = 30;
-      if (resendBtn) {
-        resendBtn.disabled = true;
-        resendBtn.textContent = `دووبارە ناردنەوە (${left}s)`;
-      }
-
-      timerId = setInterval(() => {
-        left -= 1;
-        if (!resendBtn) return;
-        if (left > 0) {
-          resendBtn.textContent = `دووبارە ناردنەوە (${left}s)`;
-        } else {
-          clearInterval(timerId);
-          resendBtn.disabled = false;
-          resendBtn.textContent = "دووبارە ناردنەوەی کۆد";
-        }
-      }, 1000);
-    }
-
-    async function triggerOtp(email, flow, payload, btn = null) {
-      if (btn) btn.disabled = true;
-      setStatus("خەریکی ناردنی کۆدی OTP بۆ ئیمەیڵ...", "");
-      const code = String(Math.floor(100000 + Math.random() * 900000));
-
-      try {
-        await sendOtpEmail(email, code);
-        pendingFlow = flow;
-        pendingPayload = payload;
-        currentOtp = code;
-
-        if (resetFields) resetFields.classList.toggle("hidden", flow !== "reset");
-        if (otpText) otpText.textContent = `کۆدی 6 خانەیی بۆ ${email} نێردرا`;
-        openScreen("otp");
-        otpInputs.forEach((i) => (i.value = ""));
-        if (otpInputs[0]) otpInputs[0].focus();
-        run30sCountdown();
-        setStatus("کۆدەکە نێردرا؛ سەیری Inbox یان Spam بکە.", "ok");
-      } catch (e) {
-        console.error(e);
-        setStatus(e?.message || "هەڵەیەک لە ناردنی ئیمەیڵدا ڕوویدا.", "err");
-      } finally {
-        if (btn) btn.disabled = false;
-      }
-    }
-
-    // ٦. فۆڕمەکانی Login / Register / Forgot
-    loginForm?.addEventListener("submit", (e) => {
+  otpInputs.forEach((inp, i) => {
+    inp.addEventListener("input", () => {
+      inp.value = inp.value.replace(/\D/g, "").slice(0, 1);
+      if (inp.value && i < otpInputs.length - 1) otpInputs[i + 1].focus();
+    });
+    inp.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && !inp.value && i > 0) otpInputs[i - 1].focus();
+    });
+    inp.addEventListener("paste", (e) => {
       e.preventDefault();
-      const email = document.getElementById("loginEmail")?.value.trim().toLowerCase() || "";
-      const password = document.getElementById("loginPassword")?.value || "";
-      const found = getUsers().find((u) => u.email === email && u.password === password);
-
-      if (!found) {
-        setStatus("ئیمەیڵ یان پاسۆرد هەڵەیە.", "err");
-        return;
-      }
-      const sessionUser = { name: found.name, email: found.email };
-      setSession(sessionUser);
-      enterMainApp(sessionUser);
-    });
-
-    registerForm?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("regName")?.value.trim() || "";
-      const email = document.getElementById("regEmail")?.value.trim().toLowerCase() || "";
-      const password = document.getElementById("regPassword")?.value || "";
-
-      if (getUsers().some((u) => u.email === email)) {
-        setStatus("ئەم ئیمەیڵە پێشتر تۆمار کراوە.", "err");
-        return;
-      }
-      await triggerOtp(email, "register", { name, email, password }, document.getElementById("regBtn"));
-    });
-
-    forgotForm?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("forgotEmail")?.value.trim().toLowerCase() || "";
-      if (!getUsers().some((u) => u.email === email)) {
-        setStatus("هیچ هەژمارێک بەم ئیمەیڵە نەدۆزرایەوە.", "err");
-        return;
-      }
-      await triggerOtp(email, "reset", { email }, document.getElementById("forgotBtn"));
-    });
-
-    resendBtn?.addEventListener("click", async () => {
-      if (resendBtn.disabled || !pendingPayload) return;
-      await triggerOtp(pendingPayload.email, pendingFlow, pendingPayload, resendBtn);
-    });
-
-    // ٧. 6 خانەی OTP و پشتڕاستکردنەوە
-    otpInputs.forEach((inp, i) => {
-      inp.addEventListener("input", () => {
-        inp.value = inp.value.replace(/\D/g, "").slice(0, 1);
-        if (inp.value && i < otpInputs.length - 1) otpInputs[i + 1].focus();
+      const digits = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6);
+      if (!digits) return;
+      digits.split("").forEach((ch, idx) => {
+        if (otpInputs[idx]) otpInputs[idx].value = ch;
       });
-      inp.addEventListener("keydown", (e) => {
-        if (e.key === "Backspace" && !inp.value && i > 0) otpInputs[i - 1].focus();
-      });
-      inp.addEventListener("paste", (e) => {
-        e.preventDefault();
-        const digits = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6);
-        if (!digits) return;
-        digits.split("").forEach((ch, idx) => {
-          if (otpInputs[idx]) otpInputs[idx].value = ch;
-        });
-        otpInputs[Math.min(digits.length, otpInputs.length - 1)].focus();
-      });
+      otpInputs[Math.min(digits.length, otpInputs.length - 1)].focus();
     });
+  });
 
-    document.getElementById("verifyOtpBtn")?.addEventListener("click", () => {
+  const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+  if (verifyOtpBtn) {
+    verifyOtpBtn.addEventListener("click", () => {
       const code = otpInputs.map((i) => i.value).join("");
       if (code.length < 6 || code !== currentOtp) {
         if (otpBox) {
@@ -383,12 +391,13 @@
         setTimeout(() => openScreen("login"), 1200);
       }
     });
+  }
 
-    // ٨. پشکنینی سێشن لە کاتی کردنەوە
-    const existingSession = getSession();
-    if (existingSession && existingSession.email) {
-      enterMainApp(existingSession);
-    } else {
-      enterAuthScreen();
-    }
-  </script>
+  const existingSession = getSession();
+  if (existingSession && existingSession.email) {
+    enterMainApp(existingSession);
+  } else {
+    enterAuthScreen();
+  }
+})();
+</script>
