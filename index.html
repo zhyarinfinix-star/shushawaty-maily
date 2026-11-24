@@ -479,13 +479,30 @@
     }
 
     async function sendOtpEmail(email, code) {
-      if (!window.emailjs) throw new Error("EmailJS not loaded");
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        email,
-        passcode: code,
-        time: getExpiryString(15)
+          async function sendOtpEmail(email, code) {
+      const payload = {
+        service_id: EMAILJS_SERVICE_ID,
+        template_id: EMAILJS_TEMPLATE_ID,
+        user_id: EMAILJS_PUBLIC_KEY,
+        template_params: {
+          email: email,
+          passcode: code,
+          time: getExpiryString(15)
+        }
+      };
+
+      const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       });
-    }
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`EmailJS (${res.status}): ${errText}`);
+      }
+          }
+      
 
     function run30sCountdown() {
       clearInterval(timerId);
@@ -523,10 +540,11 @@
         otpInputs[0].focus();
         run30sCountdown();
         setStatus("کۆدەکە نێردرا؛ سەیری Inbox یان Spam بکە.", "ok");
-      } catch (e) {
+    }  catch (e) {
         console.error(e);
-        setStatus("ناردنی ئیمەیڵ سەرکەوتوو نەبوو؛ ئینتەرنێت بپشکنە.", "err");
-      } finally {
+        setStatus(e?.message || "هەڵەیەک لە ناردنی ئیمەیڵدا ڕوویدا.", "err");
+      
+    } finally {
         if (btn) btn.disabled = false;
       }
     }
