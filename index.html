@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Shushawaty Maily</title>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     :root {
       --bg: #050608;
@@ -196,6 +195,20 @@
       color: var(--muted);
       text-decoration: none;
       cursor: not-allowed;
+    }
+
+    .code-badge {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 6px 14px;
+      border-radius: 10px;
+      background: var(--gold-soft);
+      border: 1px solid rgba(229, 184, 92, 0.45);
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: 4px;
+      direction: ltr;
     }
 
     .otp-box {
@@ -438,7 +451,7 @@
           <input id="regPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="لانیکەم 6 پیت یان ژمارە" />
         </div>
 
-        <button type="submit" class="btn-submit" id="regBtn">ناردنی کۆدی OTP</button>
+        <button type="submit" class="btn-submit" id="regBtn">دروستکردنی کۆدی پشتڕاستکردنەوە</button>
 
         <div class="switch-line">
           پێشتر هەژمارت هەیە؟
@@ -454,7 +467,7 @@
           <input id="forgotEmail" type="email" required autocomplete="email" placeholder="example@gmail.com" />
         </div>
 
-        <button type="submit" class="btn-submit" id="forgotBtn">ناردنی کۆدی OTP</button>
+        <button type="submit" class="btn-submit" id="forgotBtn">ناردنی کۆدی پشتڕاستکردنەوە</button>
 
         <div class="switch-line">
           <button type="button" class="inline-link" id="goLoginFromForgotBtn">گەڕانەوە بۆ چوونەژوورەوە</button>
@@ -463,7 +476,7 @@
 
       <div id="otpView" class="hidden">
         <h1 class="auth-title">کۆدی پشتڕاستکردنەوە</h1>
-        <p id="otpText" class="switch-line" style="margin-top:-8px;"></p>
+        <div id="otpText" class="switch-line" style="margin-top:-8px;"></div>
 
         <div class="otp-box" id="otpBox">
           <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
@@ -485,10 +498,11 @@
           </div>
         </div>
 
-        <button type="button" class="btn-submit" id="verifyOtpBtn">پشتڕاستکردنەوە</button>
+        <button type="button" class="btn-submit" id="verifyOtpBtn">پشتڕاستکردنەوە و چوونەژوورەوە</button>
 
         <div class="otp-footer">
-          <button type="button" class="inline-link" id="resendBtn" disabled>دووبارە ناردنەوە (30s)</button>
+          <button type="button" class="inline-link" id="autoFillOtpBtn">پڕکردنەوەی خۆکار</button>
+          <button type="button" class="inline-link" id="resendBtn" disabled>کۆدی نوێ (30s)</button>
           <button type="button" class="inline-link" id="cancelOtpBtn">پاشگەزبوونەوە</button>
         </div>
       </div>
@@ -544,7 +558,7 @@
         <div class="glass-card">
           <h2>زانیاری و سەپۆرت</h2>
           <p class="item-desc">
-            بەخێربێیت بۆ Shushawaty Maily. هەژمارەکەت بە ئیمەیڵ و پاسۆرد پارێزراوە و پشتگیری لە پشتڕاستکردنەوەی 6 خانەیی OTP دەکات.
+            بەخێربێیت بۆ Shushawaty Maily. هەژمارەکەت بە شێوەی خۆکارانە لەسەر ئامێرەکەت پاشەکەوت دەکرێت و دەتوانیت کاڵا و پۆستەکانت بەڕێوە ببەیت.
           </p>
         </div>
       </section>
@@ -606,10 +620,6 @@
       window.addEventListener("resize", resize);
       requestAnimationFrame(tick);
     })();
-
-    var EMAILJS_PUBLIC_KEY = "2MMVlqbe3ak0ENMry";
-    var EMAILJS_SERVICE_ID = "service_ackleif";
-    var EMAILJS_TEMPLATE_ID = "template_hj6esyr";
 
     var USERS_KEY = "sm_users_v1";
     var SESSION_KEY = "sm_active_user";
@@ -774,87 +784,49 @@
       });
     }
 
-    function getExpiryString(mins) {
-      var d = new Date(Date.now() + (mins || 15) * 60000);
-      return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    }
-
-    async function sendOtpEmail(email, code) {
-      if (window.emailjs && typeof window.emailjs.send === "function") {
-        window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-        return await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-          email: email,
-          passcode: code,
-          time: getExpiryString(15)
-        });
-      }
-
-      var res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          service_id: EMAILJS_SERVICE_ID,
-          template_id: EMAILJS_TEMPLATE_ID,
-          user_id: EMAILJS_PUBLIC_KEY,
-          template_params: {
-            email: email,
-            passcode: code,
-            time: getExpiryString(15)
-          }
-        })
-      });
-
-      if (!res.ok) {
-        var errText = await res.text();
-        throw new Error("EmailJS (" + res.status + "): " + errText);
-      }
-    }
-
     function run30sCountdown() {
       clearInterval(timerId);
       var left = 30;
       if (resendBtn) {
         resendBtn.disabled = true;
-        resendBtn.textContent = "دووبارە ناردنەوە (" + left + "s)";
+        resendBtn.textContent = "کۆدی نوێ (" + left + "s)";
       }
 
       timerId = setInterval(function () {
         left -= 1;
         if (!resendBtn) return;
         if (left > 0) {
-          resendBtn.textContent = "دووبارە ناردنەوە (" + left + "s)";
+          resendBtn.textContent = "کۆدی نوێ (" + left + "s)";
         } else {
           clearInterval(timerId);
           resendBtn.disabled = false;
-          resendBtn.textContent = "دووبارە ناردنەوەی کۆد";
+          resendBtn.textContent = "کۆدی نوێ";
         }
       }, 1000);
     }
 
-    async function triggerOtp(email, flow, payload, btn) {
-      if (btn) btn.disabled = true;
-      setStatus("خەریکی ناردنی کۆدی OTP بۆ ئیمەیڵ...", "");
-      var code = String(Math.floor(100000 + Math.random() * 900000));
-
-      try {
-        await sendOtpEmail(email, code);
-        pendingFlow = flow;
-        pendingPayload = payload;
-        currentOtp = code;
-
-        if (resetFields) resetFields.classList.toggle("hidden", flow !== "reset");
-        if (otpText) otpText.textContent = "کۆدی 6 خانەیی بۆ " + email + " نێردرا";
-        openScreen("otp");
-        for (var i = 0; i < otpInputs.length; i++) otpInputs[i].value = "";
-        if (otpInputs[0]) otpInputs[0].focus();
-        run30sCountdown();
-        setStatus("کۆدەکە نێردرا؛ سەیری Inbox یان Spam بکە.", "ok");
-      } catch (e) {
-        var detail = (e && (e.text || e.message)) ? (e.text || e.message) : "ناردنی ئیمەیڵ سەرکەوتوو نەبوو؛ ئینتەرنێت بپشکنە.";
-        setStatus(detail, "err");
-      } finally {
-        if (btn) btn.disabled = false;
+    function fillOtpCode(codeStr) {
+      for (var i = 0; i < otpInputs.length; i++) {
+        otpInputs[i].value = codeStr.charAt(i) || "";
       }
+    }
+
+    function startInstantVerification(email, flow, payload) {
+      var code = String(Math.floor(100000 + Math.random() * 900000));
+      pendingFlow = flow;
+      pendingPayload = payload;
+      currentOtp = code;
+
+      if (resetFields) resetFields.classList.toggle("hidden", flow !== "reset");
+      if (otpText) {
+        otpText.innerHTML =
+          "بۆ <b>" + email + "</b><br>" +
+          '<span class="code-badge">' + code + "</span>";
+      }
+      openScreen("otp");
+      fillOtpCode(code);
+      run30sCountdown();
+      setStatus("کۆدی پشتڕاستکردنەوە ئامادەیە؛ پشتڕاستکردنەوە دابگرە.", "ok");
     }
 
     if (loginForm) {
@@ -883,7 +855,7 @@
     }
 
     if (registerForm) {
-      registerForm.addEventListener("submit", async function (e) {
+      registerForm.addEventListener("submit", function (e) {
         e.preventDefault();
         var nameEl = document.getElementById("regName");
         var emailEl = document.getElementById("regEmail");
@@ -897,12 +869,12 @@
           setStatus("ئەم ئیمەیڵە پێشتر تۆمار کراوە.", "err");
           return;
         }
-        await triggerOtp(email, "register", { name: name, email: email, password: password }, document.getElementById("regBtn"));
+        startInstantVerification(email, "register", { name: name, email: email, password: password });
       });
     }
 
     if (forgotForm) {
-      forgotForm.addEventListener("submit", async function (e) {
+      forgotForm.addEventListener("submit", function (e) {
         e.preventDefault();
         var emailEl = document.getElementById("forgotEmail");
         var email = (emailEl ? emailEl.value : "").trim().toLowerCase();
@@ -911,14 +883,23 @@
           setStatus("هیچ هەژمارێک بەم ئیمەیڵە نەدۆزرایەوە.", "err");
           return;
         }
-        await triggerOtp(email, "reset", { email: email }, document.getElementById("forgotBtn"));
+        startInstantVerification(email, "reset", { email: email });
+      });
+    }
+
+    var autoFillOtpBtn = document.getElementById("autoFillOtpBtn");
+    if (autoFillOtpBtn) {
+      autoFillOtpBtn.addEventListener("click", function () {
+        if (!currentOtp) return;
+        fillOtpCode(currentOtp);
+        setStatus("کۆدەکە بە شێوەی خۆکار پڕکرایەوە.", "ok");
       });
     }
 
     if (resendBtn) {
-      resendBtn.addEventListener("click", async function () {
+      resendBtn.addEventListener("click", function () {
         if (resendBtn.disabled || !pendingPayload) return;
-        await triggerOtp(pendingPayload.email, pendingFlow, pendingPayload, resendBtn);
+        startInstantVerification(pendingPayload.email, pendingFlow, pendingPayload);
       });
     }
 
@@ -951,7 +932,7 @@
             void otpBox.offsetWidth;
             otpBox.classList.add("shake");
           }
-          setStatus("کۆدی OTP هەڵەیە یان تەواو نییە.", "err");
+          setStatus("کۆدی 6 خانەیی هەڵەیە یان تەواو نییە.", "err");
           return;
         }
 
