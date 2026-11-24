@@ -252,6 +252,7 @@
       text-align: center;
       font-size: 0.86rem;
       line-height: 1.45;
+      word-break: break-word;
     }
 
     .status.err { color: var(--danger); }
@@ -567,6 +568,7 @@
   <script>
     (function initRain() {
       const canvas = document.getElementById("rainCanvas");
+      if (!canvas || !canvas.getContext) return;
       const ctx = canvas.getContext("2d");
       let w = 0, h = 0, drops = [];
 
@@ -613,21 +615,34 @@
     const EMAILJS_SERVICE_ID = "service_ackleif";
     const EMAILJS_TEMPLATE_ID = "template_hj6esyr";
 
-    if (window.emailjs) {
-      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-    }
-
     const USERS_KEY = "sm_users_v1";
     const SESSION_KEY = "sm_active_user";
     const POSTS_KEY = "sm_posts_v1";
 
-    const getUsers = () => JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
-    const saveUsers = (list) => localStorage.setItem(USERS_KEY, JSON.stringify(list));
-    const getSession = () => JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
-    const setSession = (u) => localStorage.setItem(SESSION_KEY, JSON.stringify(u));
-    const clearSession = () => localStorage.removeItem(SESSION_KEY);
-    const getPosts = () => JSON.parse(localStorage.getItem(POSTS_KEY) || "[]");
-    const savePosts = (list) => localStorage.setItem(POSTS_KEY, JSON.stringify(list));
+    const getUsers = () => {
+      try { return JSON.parse(localStorage.getItem(USERS_KEY) || "[]"); }
+      catch (_) { return []; }
+    };
+    const saveUsers = (list) => {
+      try { localStorage.setItem(USERS_KEY, JSON.stringify(list)); } catch (_) {}
+    };
+    const getSession = () => {
+      try { return JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); }
+      catch (_) { return null; }
+    };
+    const setSession = (u) => {
+      try { localStorage.setItem(SESSION_KEY, JSON.stringify(u)); } catch (_) {}
+    };
+    const clearSession = () => {
+      try { localStorage.removeItem(SESSION_KEY); } catch (_) {}
+    };
+    const getPosts = () => {
+      try { return JSON.parse(localStorage.getItem(POSTS_KEY) || "[]"); }
+      catch (_) { return []; }
+    };
+    const savePosts = (list) => {
+      try { localStorage.setItem(POSTS_KEY, JSON.stringify(list)); } catch (_) {}
+    };
 
     const authShell = document.getElementById("authShell");
     const mainAppShell = document.getElementById("mainAppShell");
@@ -657,77 +672,100 @@
       const goods = posts.filter((p) => p.category !== "ئەمەزۆن و ئەلیکترۆنی");
       const elec = posts.filter((p) => p.category === "ئەمەزۆن و ئەلیکترۆنی");
 
-      goodsEl.innerHTML = goods.length
-        ? goods.map((g) => `<div class="item-card"><div class="item-title">${g.title}</div><div class="item-desc">${g.desc || ""}</div></div>`).join("")
-        : `<div class="item-desc">هێشتا هیچ کاڵایەک زیاد نەکراوە.</div>`;
+      if (goodsEl) {
+        goodsEl.innerHTML = goods.length
+          ? goods.map((g) => `<div class="item-card"><div class="item-title">${g.title}</div><div class="item-desc">${g.desc || ""}</div></div>`).join("")
+          : `<div class="item-desc">هێشتا هیچ کاڵایەک زیاد نەکراوە.</div>`;
+      }
 
-      elecEl.innerHTML = elec.length
-        ? elec.map((e) => `<div class="item-card"><div class="item-title">${e.title}</div><div class="item-desc">${e.desc || ""}</div></div>`).join("")
-        : `<div class="item-desc">هێشتا هیچ بابەتێک لەم بەشەدا نییە.</div>`;
+      if (elecEl) {
+        elecEl.innerHTML = elec.length
+          ? elec.map((e) => `<div class="item-card"><div class="item-title">${e.title}</div><div class="item-desc">${e.desc || ""}</div></div>`).join("")
+          : `<div class="item-desc">هێشتا هیچ بابەتێک لەم بەشەدا نییە.</div>`;
+      }
     }
 
     function enterMainApp(user) {
-      activeUserLabel.textContent = `${user.name} • ${user.email}`;
-      authShell.classList.add("hidden");
-      mainAppShell.classList.remove("hidden");
+      if (activeUserLabel) activeUserLabel.textContent = `${user.name} • ${user.email}`;
+      if (authShell) authShell.classList.add("hidden");
+      if (mainAppShell) mainAppShell.classList.remove("hidden");
       renderPosts();
     }
 
     function enterAuthScreen() {
-      mainAppShell.classList.add("hidden");
-      authShell.classList.remove("hidden");
+      if (mainAppShell) mainAppShell.classList.add("hidden");
+      if (authShell) authShell.classList.remove("hidden");
       openScreen("login");
     }
 
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      clearSession();
-      enterAuthScreen();
-    });
-
-    document.querySelectorAll(".nav-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        const tab = btn.dataset.tab;
-        document.getElementById("tab-goods").classList.toggle("hidden", tab !== "goods");
-        document.getElementById("tab-electronics").classList.toggle("hidden", tab !== "electronics");
-        document.getElementById("tab-support").classList.toggle("hidden", tab !== "support");
-        document.getElementById("postCategory").value = tab === "electronics" ? "ئەمەزۆن و ئەلیکترۆنی" : "کاڵاکان";
-      });
-    });
-
-    document.getElementById("addPostForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const title = document.getElementById("postTitle").value.trim();
-      const desc = document.getElementById("postDesc").value.trim();
-      const category = document.getElementById("postCategory").value;
-      if (!title) return;
-
-      const list = getPosts();
-      list.unshift({ title, desc, category, at: Date.now() });
-      savePosts(list);
-      document.getElementById("postTitle").value = "";
-      document.getElementById("postDesc").value = "";
-      renderPosts();
-    });
-
     function setStatus(msg, type = "") {
+      if (!statusMsg) return;
       statusMsg.textContent = msg;
       statusMsg.className = "status " + type;
     }
 
     function openScreen(name) {
       setStatus("");
-      loginForm.classList.toggle("hidden", name !== "login");
-      registerForm.classList.toggle("hidden", name !== "register");
-      forgotForm.classList.toggle("hidden", name !== "forgot");
-      otpView.classList.toggle("hidden", name !== "otp");
+      if (loginForm) loginForm.classList.toggle("hidden", name !== "login");
+      if (registerForm) registerForm.classList.toggle("hidden", name !== "register");
+      if (forgotForm) forgotForm.classList.toggle("hidden", name !== "forgot");
+      if (otpView) otpView.classList.toggle("hidden", name !== "otp");
     }
 
-    document.getElementById("goRegisterBtn").addEventListener("click", () => openScreen("register"));
-    document.getElementById("goForgotBtn").addEventListener("click", () => openScreen("forgot"));
-    document.getElementById("goLoginFromRegBtn").addEventListener("click", () => openScreen("login"));
-    document.getElementById("goLoginFromForgotBtn").addEventListener("click", () => openScreen("login"));
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+
+      if (btn.id === "goRegisterBtn") {
+        e.preventDefault();
+        openScreen("register");
+      } else if (btn.id === "goForgotBtn") {
+        e.preventDefault();
+        openScreen("forgot");
+      } else if (btn.id === "goLoginFromRegBtn" || btn.id === "goLoginFromForgotBtn") {
+        e.preventDefault();
+        openScreen("login");
+      } else if (btn.id === "cancelOtpBtn") {
+        e.preventDefault();
+        clearInterval(timerId);
+        pendingFlow = null;
+        pendingPayload = null;
+        openScreen("login");
+      } else if (btn.id === "logoutBtn") {
+        e.preventDefault();
+        clearSession();
+        enterAuthScreen();
+      } else if (btn.classList.contains("nav-btn")) {
+        document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const tab = btn.dataset.tab;
+        document.getElementById("tab-goods").classList.toggle("hidden", tab !== "goods");
+        document.getElementById("tab-electronics").classList.toggle("hidden", tab !== "electronics");
+        document.getElementById("tab-support").classList.toggle("hidden", tab !== "support");
+        const catEl = document.getElementById("postCategory");
+        if (catEl) {
+          catEl.value = tab === "electronics" ? "ئەمەزۆن و ئەلیکترۆنی" : "کاڵاکان";
+        }
+      }
+    });
+
+    document.getElementById("addPostForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const titleEl = document.getElementById("postTitle");
+      const descEl = document.getElementById("postDesc");
+      const catEl = document.getElementById("postCategory");
+      const title = titleEl.value.trim();
+      const desc = descEl.value.trim();
+      const category = catEl.value;
+      if (!title) return;
+
+      const list = getPosts();
+      list.unshift({ title, desc, category, at: Date.now() });
+      savePosts(list);
+      titleEl.value = "";
+      descEl.value = "";
+      renderPosts();
+    });
 
     function getExpiryString(mins = 15) {
       const d = new Date(Date.now() + mins * 60000);
@@ -735,12 +773,27 @@
     }
 
     async function sendOtpEmail(email, code) {
-      if (!window.emailjs) throw new Error("EmailJS not loaded");
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        email,
-        passcode: code,
-        time: getExpiryString(15)
+      const payload = {
+        service_id: EMAILJS_SERVICE_ID,
+        template_id: EMAILJS_TEMPLATE_ID,
+        user_id: EMAILJS_PUBLIC_KEY,
+        template_params: {
+          email: email,
+          passcode: code,
+          time: getExpiryString(15)
+        }
+      };
+
+      const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`EmailJS (${res.status}): ${errText}`);
+      }
     }
 
     function run30sCountdown() {
@@ -781,7 +834,7 @@
         setStatus("کۆدەکە نێردرا؛ سەیری Inbox یان Spam بکە.", "ok");
       } catch (e) {
         console.error(e);
-        setStatus("ناردنی ئیمەیڵ سەرکەوتوو نەبوو؛ ئینتەرنێت بپشکنە.", "err");
+        setStatus((e && e.message) ? e.message : "هەڵەیەک لە ناردنی ئیمەیڵدا ڕوویدا.", "err");
       } finally {
         if (btn) btn.disabled = false;
       }
@@ -828,13 +881,6 @@
     resendBtn.addEventListener("click", async () => {
       if (resendBtn.disabled || !pendingPayload) return;
       await triggerOtp(pendingPayload.email, pendingFlow, pendingPayload, resendBtn);
-    });
-
-    document.getElementById("cancelOtpBtn").addEventListener("click", () => {
-      clearInterval(timerId);
-      pendingFlow = null;
-      pendingPayload = null;
-      openScreen("login");
     });
 
     otpInputs.forEach((inp, i) => {
