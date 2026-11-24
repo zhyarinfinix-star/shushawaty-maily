@@ -1,389 +1,8 @@
-<!DOCTYPE html>
-<html lang="ckb" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Shushawaty Maily — چوونەژوورەوە</title>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <style>
-    :root {
-      --bg: #050608;
-      --panel: rgba(10, 12, 16, 0.76);
-      --line: rgba(255, 255, 255, 0.22);
-      --line-focus: rgba(255, 255, 255, 0.85);
-      --white: #ffffff;
-      --muted: rgba(255, 255, 255, 0.62);
-      --danger: #ff5c77;
-      --success: #34d399;
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      min-height: 100dvh;
-      width: 100%;
-      overflow-x: hidden;
-      background: var(--bg);
-      color: var(--white);
-    }
-
-    /* باکگراوندی تاریکی وێنە + باران */
-    .bg-layer {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      background: #050608;
-    }
-
-    .bg-photo {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      filter: grayscale(100%) contrast(1.22) brightness(0.42);
-      transform: scale(1.03);
-    }
-
-    .bg-vignette {
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(180deg, rgba(5, 6, 8, 0.55) 0%, rgba(5, 6, 8, 0.78) 65%, rgba(5, 6, 8, 0.92) 100%),
-        radial-gradient(circle at 75% 35%, transparent 15%, rgba(0, 0, 0, 0.72) 85%);
-    }
-
-    #rainCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    /* کۆنتێنەری سەرەکی بۆ مۆبایل */
-    .viewport {
-      position: relative;
-      z-index: 1;
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px 16px;
-    }
-
-    .auth-box {
-      width: 100%;
-      max-width: 390px;
-      background: var(--panel);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 20px;
-      padding: 26px 20px;
-      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.8);
-    }
-
-    .brand-tag {
-      font-size: 0.75rem;
-      letter-spacing: 0.6px;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .auth-title {
-      margin: 0 0 20px;
-      font-size: 1.75rem;
-      font-weight: 800;
-      letter-spacing: 0.3px;
-      color: var(--white);
-    }
-
-    .field {
-      margin-bottom: 16px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 0.84rem;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    /* ستایلی هێڵی ژێرەوەی شیک وەک ڤیدیۆکە بەڵام گونجاو بۆ مۆبایل */
-    .field input {
-      width: 100%;
-      padding: 10px 4px;
-      background: transparent;
-      border: 0;
-      border-bottom: 1.5px solid var(--line);
-      color: var(--white);
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.2s ease;
-    }
-
-    .field input::placeholder {
-      color: rgba(255, 255, 255, 0.32);
-      font-size: 0.86rem;
-    }
-
-    .field input:focus {
-      border-bottom-color: var(--line-focus);
-    }
-
-    .forgot-row {
-      display: flex;
-      justify-content: flex-end;
-      margin: -4px 0 16px;
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 13px 16px;
-      margin-top: 4px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--white);
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.12s ease;
-    }
-
-    .btn-submit:hover {
-      background: rgba(255, 255, 255, 0.16);
-    }
-
-    .btn-submit:active {
-      transform: scale(0.98);
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-
-    .switch-line {
-      margin-top: 16px;
-      text-align: center;
-      font-size: 0.88rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .inline-link {
-      background: none;
-      border: 0;
-      padding: 0 3px;
-      color: var(--white);
-      font-weight: 700;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-      font-size: 0.88rem;
-      cursor: pointer;
-    }
-
-    .inline-link:disabled {
-      color: var(--muted);
-      text-decoration: none;
-      cursor: not-allowed;
-    }
-
-    .otp-box {
-      display: flex;
-      gap: 7px;
-      justify-content: center;
-      direction: ltr;
-      margin: 18px 0 14px;
-    }
-
-    .otp-input {
-      width: 44px;
-      height: 52px;
-      text-align: center;
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--white);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1.5px solid var(--line);
-      border-radius: 10px;
-      outline: none;
-    }
-
-    .otp-input:focus {
-      border-color: var(--line-focus);
-      background: rgba(255, 255, 255, 0.12);
-    }
-
-    .otp-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 14px;
-      font-size: 0.85rem;
-    }
-
-    .shake {
-      animation: shakeAnim 0.35s ease;
-    }
-
-    @keyframes shakeAnim {
-      0%, 100% { transform: translateX(0); }
-      20% { transform: translateX(-7px); }
-      40% { transform: translateX(7px); }
-      60% { transform: translateX(-5px); }
-      80% { transform: translateX(5px); }
-    }
-
-    .status {
-      margin-top: 14px;
-      min-height: 20px;
-      text-align: center;
-      font-size: 0.86rem;
-      line-height: 1.45;
-    }
-
-    .status.err { color: var(--danger); }
-    .status.ok { color: var(--success); }
-
-    .hidden { display: none !important; }
-  </style>
-</head>
-<body>
-  <div class="bg-layer" aria-hidden="true">
-    <img
-      class="bg-photo"
-      src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1080&q=75"
-      alt=""
-    />
-    <div class="bg-vignette"></div>
-    <canvas id="rainCanvas"></canvas>
-  </div>
-
-  <main class="viewport">
-    <section class="auth-box">
-      <div class="brand-tag">SHUSHAWATY MAILY</div>
-
-      <!-- فۆڕمی چوونەژوورەوە -->
-      <form id="loginForm">
-        <h1 class="auth-title">چوونەژوورەوە</h1>
-
-        <div class="field">
-          <label for="loginEmail">ئیمەیڵ *</label>
-          <input id="loginEmail" type="email" required autocomplete="email" placeholder="example@gmail.com" />
-        </div>
-
-        <div class="field">
-          <label for="loginPassword">پاسۆرد *</label>
-          <input id="loginPassword" type="password" required autocomplete="current-password" placeholder="••••••••" />
-        </div>
-
-        <div class="forgot-row">
-          <button type="button" class="inline-link" id="goForgotBtn">پاسۆردم بیرچوو؟</button>
-        </div>
-
-        <button type="submit" class="btn-submit">چوونەژوورەوە</button>
-
-        <div class="switch-line">
-          ئەگەر بەکارهێنەری نوێیت
-          <button type="button" class="inline-link" id="goRegisterBtn">کلیک لێرە بکە</button>
-        </div>
-      </form>
-
-      <!-- فۆڕمی دروستکردنی هەژماری نوێ -->
-      <form id="registerForm" class="hidden">
-        <h1 class="auth-title">تۆمارکردن</h1>
-
-        <div class="field">
-          <label for="regName">ناوی تەواو *</label>
-          <input id="regName" type="text" required placeholder="ناوت بنووسە" />
-        </div>
-
-        <div class="field">
-          <label for="regEmail">ئیمەیڵ *</label>
-          <input id="regEmail" type="email" required autocomplete="email" placeholder="example@gmail.com" />
-        </div>
-
-        <div class="field">
-          <label for="regPassword">پاسۆرد *</label>
-          <input id="regPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="لانیکەم 6 پیت یان ژمارە" />
-        </div>
-
-        <button type="submit" class="btn-submit" id="regBtn">ناردنی کۆدی OTP</button>
-
-        <div class="switch-line">
-          پێشتر هەژمارت هەیە؟
-          <button type="button" class="inline-link" id="goLoginFromRegBtn">چوونەژوورەوە</button>
-        </div>
-      </form>
-
-      <!-- فۆڕمی بیرچوونەوەی پاسۆرد -->
-      <form id="forgotForm" class="hidden">
-        <h1 class="auth-title">گۆڕینی پاسۆرد</h1>
-
-        <div class="field">
-          <label for="forgotEmail">ئیمەیڵی هەژمارەکەت *</label>
-          <input id="forgotEmail" type="email" required autocomplete="email" placeholder="example@gmail.com" />
-        </div>
-
-        <button type="submit" class="btn-submit" id="forgotBtn">ناردنی کۆدی OTP</button>
-
-        <div class="switch-line">
-          <button type="button" class="inline-link" id="goLoginFromForgotBtn">گەڕانەوە بۆ چوونەژوورەوە</button>
-        </div>
-      </form>
-
-      <!-- بەشی 6 خانەی OTP + 30 چرکە -->
-      <div id="otpView" class="hidden">
-        <h1 class="auth-title">کۆدی پشتڕاستکردنەوە</h1>
-        <p id="otpText" class="switch-line" style="margin-top:-8px;"></p>
-
-        <div class="otp-box" id="otpBox">
-          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
-          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
-          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
-          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
-          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
-          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
-        </div>
-
-        <div id="resetFields" class="hidden">
-          <div class="field">
-            <label for="newPass">پاسۆردی نوێ *</label>
-            <input id="newPass" type="password" minlength="6" placeholder="پاسۆردی نوێ بنووسە" />
-          </div>
-          <div class="field">
-            <label for="confirmPass">دووبارەکردنەوەی پاسۆرد *</label>
-            <input id="confirmPass" type="password" minlength="6" placeholder="پاسۆردەکە دووبارە بنووسە" />
-          </div>
-        </div>
-
-        <button type="button" class="btn-submit" id="verifyOtpBtn">پشتڕاستکردنەوە</button>
-
-        <div class="otp-footer">
-          <button type="button" class="inline-link" id="resendBtn" disabled>دووبارە ناردنەوە (30s)</button>
-          <button type="button" class="inline-link" id="cancelOtpBtn">پاشگەزبوونەوە</button>
-        </div>
-      </div>
-
-      <div id="statusMsg" class="status"></div>
-    </section>
-  </main>
-
-  <script>
-    // ئەنیمەیشنی بارانی تاریک بە سووکی بۆ مۆبایل
+<script>
+    // ١. ئەنیمەیشنی بارانی تاریک بۆ مۆبایل
     (function initRain() {
       const canvas = document.getElementById("rainCanvas");
+      if (!canvas) return;
       const ctx = canvas.getContext("2d");
       let w = 0, h = 0, drops = [];
 
@@ -426,18 +45,35 @@
       requestAnimationFrame(tick);
     })();
 
-    // ڕێکخستنی EmailJS
+    // ٢. زانیارییەکانی EmailJS
     const EMAILJS_PUBLIC_KEY = "2MMVlqbe3ak0ENMry";
     const EMAILJS_SERVICE_ID = "service_ackleif";
     const EMAILJS_TEMPLATE_ID = "template_hj6esyr";
 
-    if (window.emailjs) {
-      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-    }
-
     const USERS_KEY = "sm_users_v1";
-    const getUsers = () => JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+    const SESSION_KEY = "sm_active_user";
+    const POSTS_KEY = "sm_posts_v1";
+
+    const getUsers = () => {
+      try { return JSON.parse(localStorage.getItem(USERS_KEY) || "[]"); }
+      catch { return []; }
+    };
     const saveUsers = (list) => localStorage.setItem(USERS_KEY, JSON.stringify(list));
+    const getSession = () => {
+      try { return JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); }
+      catch { return null; }
+    };
+    const setSession = (u) => localStorage.setItem(SESSION_KEY, JSON.stringify(u));
+    const clearSession = () => localStorage.removeItem(SESSION_KEY);
+    const getPosts = () => {
+      try { return JSON.parse(localStorage.getItem(POSTS_KEY) || "[]"); }
+      catch { return []; }
+    };
+    const savePosts = (list) => localStorage.setItem(POSTS_KEY, JSON.stringify(list));
+
+    const authShell = document.getElementById("authShell");
+    const mainAppShell = document.getElementById("mainAppShell");
+    const activeUserLabel = document.getElementById("activeUserLabel");
 
     const loginForm = document.getElementById("loginForm");
     const registerForm = document.getElementById("registerForm");
@@ -456,30 +92,122 @@
     let timerId = null;
 
     function setStatus(msg, type = "") {
+      if (!statusMsg) return;
       statusMsg.textContent = msg;
       statusMsg.className = "status " + type;
     }
 
     function openScreen(name) {
       setStatus("");
-      loginForm.classList.toggle("hidden", name !== "login");
-      registerForm.classList.toggle("hidden", name !== "register");
-      forgotForm.classList.toggle("hidden", name !== "forgot");
-      otpView.classList.toggle("hidden", name !== "otp");
+      if (loginForm) loginForm.classList.toggle("hidden", name !== "login");
+      if (registerForm) registerForm.classList.toggle("hidden", name !== "register");
+      if (forgotForm) forgotForm.classList.toggle("hidden", name !== "forgot");
+      if (otpView) otpView.classList.toggle("hidden", name !== "otp");
     }
 
-    document.getElementById("goRegisterBtn").addEventListener("click", () => openScreen("register"));
-    document.getElementById("goForgotBtn").addEventListener("click", () => openScreen("forgot"));
-    document.getElementById("goLoginFromRegBtn").addEventListener("click", () => openScreen("login"));
-    document.getElementById("goLoginFromForgotBtn").addEventListener("click", () => openScreen("login"));
+    // ٣. بەڕێوەبردنی کلیکەکان بۆ گۆڕینی فۆڕمەکان بە شێوەی جێگیر
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
 
+      if (btn.id === "goRegisterBtn") {
+        e.preventDefault();
+        openScreen("register");
+      } else if (btn.id === "goForgotBtn") {
+        e.preventDefault();
+        openScreen("forgot");
+      } else if (btn.id === "goLoginFromRegBtn" || btn.id === "goLoginFromForgotBtn") {
+        e.preventDefault();
+        openScreen("login");
+      } else if (btn.id === "cancelOtpBtn") {
+        e.preventDefault();
+        clearInterval(timerId);
+        pendingFlow = null;
+        pendingPayload = null;
+        openScreen("login");
+      }
+    });
+
+    // ٤. داشبۆرد و پۆستەکان
+    function renderPosts() {
+      const posts = getPosts();
+      const goodsEl = document.getElementById("goodsList");
+      const elecEl = document.getElementById("electronicsList");
+
+      const goods = posts.filter((p) => p.category !== "ئەمەزۆن و ئەلیکترۆنی");
+      const elec = posts.filter((p) => p.category === "ئەمەزۆن و ئەلیکترۆنی");
+
+      if (goodsEl) {
+        goodsEl.innerHTML = goods.length
+          ? goods.map((g) => `<div class="item-card"><div class="item-title">${g.title}</div><div class="item-desc">${g.desc || ""}</div></div>`).join("")
+          : `<div class="item-desc">هێشتا هیچ کاڵایەک زیاد نەکراوە.</div>`;
+      }
+
+      if (elecEl) {
+        elecEl.innerHTML = elec.length
+          ? elec.map((e) => `<div class="item-card"><div class="item-title">${e.title}</div><div class="item-desc">${e.desc || ""}</div></div>`).join("")
+          : `<div class="item-desc">هێشتا هیچ بابەتێک لەم بەشەدا نییە.</div>`;
+      }
+    }
+
+    function enterMainApp(user) {
+      if (activeUserLabel) activeUserLabel.textContent = `${user.name} • ${user.email}`;
+      if (authShell) authShell.classList.add("hidden");
+      if (mainAppShell) mainAppShell.classList.remove("hidden");
+      renderPosts();
+    }
+
+    function enterAuthScreen() {
+      if (mainAppShell) mainAppShell.classList.add("hidden");
+      if (authShell) authShell.classList.remove("hidden");
+      openScreen("login");
+    }
+
+    document.getElementById("logoutBtn")?.addEventListener("click", () => {
+      clearSession();
+      enterAuthScreen();
+    });
+
+    document.querySelectorAll(".nav-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const tab = btn.dataset.tab;
+        document.getElementById("tab-goods")?.classList.toggle("hidden", tab !== "goods");
+        document.getElementById("tab-electronics")?.classList.toggle("hidden", tab !== "electronics");
+        document.getElementById("tab-support")?.classList.toggle("hidden", tab !== "support");
+        const catInput = document.getElementById("postCategory");
+        if (catInput) {
+          catInput.value = tab === "electronics" ? "ئەمەزۆن و ئەلیکترۆنی" : "کاڵاکان";
+        }
+      });
+    });
+
+    document.getElementById("addPostForm")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const titleEl = document.getElementById("postTitle");
+      const descEl = document.getElementById("postDesc");
+      const catEl = document.getElementById("postCategory");
+      const title = titleEl ? titleEl.value.trim() : "";
+      const desc = descEl ? descEl.value.trim() : "";
+      const category = catEl ? catEl.value : "کاڵاکان";
+      if (!title) return;
+
+      const list = getPosts();
+      list.unshift({ title, desc, category, at: Date.now() });
+      savePosts(list);
+      if (titleEl) titleEl.value = "";
+      if (descEl) descEl.value = "";
+      renderPosts();
+    });
+
+    // ٥. ناردنی کۆدی OTP لە ڕێگەی EmailJS
     function getExpiryString(mins = 15) {
       const d = new Date(Date.now() + mins * 60000);
       return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
     async function sendOtpEmail(email, code) {
-          async function sendOtpEmail(email, code) {
       const payload = {
         service_id: EMAILJS_SERVICE_ID,
         template_id: EMAILJS_TEMPLATE_ID,
@@ -501,17 +229,19 @@
         const errText = await res.text();
         throw new Error(`EmailJS (${res.status}): ${errText}`);
       }
-          }
-      
+    }
 
     function run30sCountdown() {
       clearInterval(timerId);
       let left = 30;
-      resendBtn.disabled = true;
-      resendBtn.textContent = `دووبارە ناردنەوە (${left}s)`;
+      if (resendBtn) {
+        resendBtn.disabled = true;
+        resendBtn.textContent = `دووبارە ناردنەوە (${left}s)`;
+      }
 
       timerId = setInterval(() => {
         left -= 1;
+        if (!resendBtn) return;
         if (left > 0) {
           resendBtn.textContent = `دووبارە ناردنەوە (${left}s)`;
         } else {
@@ -533,41 +263,42 @@
         pendingPayload = payload;
         currentOtp = code;
 
-        resetFields.classList.toggle("hidden", flow !== "reset");
-        otpText.textContent = `کۆدی 6 خانەیی بۆ ${email} نێردرا`;
+        if (resetFields) resetFields.classList.toggle("hidden", flow !== "reset");
+        if (otpText) otpText.textContent = `کۆدی 6 خانەیی بۆ ${email} نێردرا`;
         openScreen("otp");
         otpInputs.forEach((i) => (i.value = ""));
-        otpInputs[0].focus();
+        if (otpInputs[0]) otpInputs[0].focus();
         run30sCountdown();
         setStatus("کۆدەکە نێردرا؛ سەیری Inbox یان Spam بکە.", "ok");
-    }  catch (e) {
+      } catch (e) {
         console.error(e);
         setStatus(e?.message || "هەڵەیەک لە ناردنی ئیمەیڵدا ڕوویدا.", "err");
-      
-    } finally {
+      } finally {
         if (btn) btn.disabled = false;
       }
     }
 
-    loginForm.addEventListener("submit", (e) => {
+    // ٦. فۆڕمەکانی Login / Register / Forgot
+    loginForm?.addEventListener("submit", (e) => {
       e.preventDefault();
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      const password = document.getElementById("loginPassword").value;
+      const email = document.getElementById("loginEmail")?.value.trim().toLowerCase() || "";
+      const password = document.getElementById("loginPassword")?.value || "";
       const found = getUsers().find((u) => u.email === email && u.password === password);
 
       if (!found) {
         setStatus("ئیمەیڵ یان پاسۆرد هەڵەیە.", "err");
         return;
       }
-      localStorage.setItem("sm_active_user", JSON.stringify({ name: found.name, email: found.email }));
-      setStatus(`بەخێربێیتەوە ${found.name}!`, "ok");
+      const sessionUser = { name: found.name, email: found.email };
+      setSession(sessionUser);
+      enterMainApp(sessionUser);
     });
 
-    registerForm.addEventListener("submit", async (e) => {
+    registerForm?.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const name = document.getElementById("regName").value.trim();
-      const email = document.getElementById("regEmail").value.trim().toLowerCase();
-      const password = document.getElementById("regPassword").value;
+      const name = document.getElementById("regName")?.value.trim() || "";
+      const email = document.getElementById("regEmail")?.value.trim().toLowerCase() || "";
+      const password = document.getElementById("regPassword")?.value || "";
 
       if (getUsers().some((u) => u.email === email)) {
         setStatus("ئەم ئیمەیڵە پێشتر تۆمار کراوە.", "err");
@@ -576,9 +307,9 @@
       await triggerOtp(email, "register", { name, email, password }, document.getElementById("regBtn"));
     });
 
-    forgotForm.addEventListener("submit", async (e) => {
+    forgotForm?.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const email = document.getElementById("forgotEmail").value.trim().toLowerCase();
+      const email = document.getElementById("forgotEmail")?.value.trim().toLowerCase() || "";
       if (!getUsers().some((u) => u.email === email)) {
         setStatus("هیچ هەژمارێک بەم ئیمەیڵە نەدۆزرایەوە.", "err");
         return;
@@ -586,18 +317,12 @@
       await triggerOtp(email, "reset", { email }, document.getElementById("forgotBtn"));
     });
 
-    resendBtn.addEventListener("click", async () => {
+    resendBtn?.addEventListener("click", async () => {
       if (resendBtn.disabled || !pendingPayload) return;
       await triggerOtp(pendingPayload.email, pendingFlow, pendingPayload, resendBtn);
     });
 
-    document.getElementById("cancelOtpBtn").addEventListener("click", () => {
-      clearInterval(timerId);
-      pendingFlow = null;
-      pendingPayload = null;
-      openScreen("login");
-    });
-
+    // ٧. 6 خانەی OTP و پشتڕاستکردنەوە
     otpInputs.forEach((inp, i) => {
       inp.addEventListener("input", () => {
         inp.value = inp.value.replace(/\D/g, "").slice(0, 1);
@@ -617,12 +342,14 @@
       });
     });
 
-    document.getElementById("verifyOtpBtn").addEventListener("click", () => {
+    document.getElementById("verifyOtpBtn")?.addEventListener("click", () => {
       const code = otpInputs.map((i) => i.value).join("");
       if (code.length < 6 || code !== currentOtp) {
-        otpBox.classList.remove("shake");
-        void otpBox.offsetWidth;
-        otpBox.classList.add("shake");
+        if (otpBox) {
+          otpBox.classList.remove("shake");
+          void otpBox.offsetWidth;
+          otpBox.classList.add("shake");
+        }
         setStatus("کۆدی OTP هەڵەیە یان تەواو نییە.", "err");
         return;
       }
@@ -631,15 +358,13 @@
       if (pendingFlow === "register") {
         users.push(pendingPayload);
         saveUsers(users);
-        localStorage.setItem("sm_active_user", JSON.stringify({
-          name: pendingPayload.name,
-          email: pendingPayload.email
-        }));
+        const sessionUser = { name: pendingPayload.name, email: pendingPayload.email };
+        setSession(sessionUser);
         clearInterval(timerId);
-        setStatus("هەژمارەکەت دروست کرا و چوویتە ژوورەوە!", "ok");
+        enterMainApp(sessionUser);
       } else if (pendingFlow === "reset") {
-        const p1 = document.getElementById("newPass").value;
-        const p2 = document.getElementById("confirmPass").value;
+        const p1 = document.getElementById("newPass")?.value || "";
+        const p2 = document.getElementById("confirmPass")?.value || "";
         if (p1.length < 6) {
           setStatus("پاسۆردی نوێ دەبێت لانیکەم 6 پیت یان ژمارە بێت.", "err");
           return;
@@ -658,6 +383,12 @@
         setTimeout(() => openScreen("login"), 1200);
       }
     });
+
+    // ٨. پشکنینی سێشن لە کاتی کردنەوە
+    const existingSession = getSession();
+    if (existingSession && existingSession.email) {
+      enterMainApp(existingSession);
+    } else {
+      enterAuthScreen();
+    }
   </script>
-</body>
-</html>
