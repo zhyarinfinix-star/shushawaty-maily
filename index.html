@@ -456,4 +456,185 @@
         };
         var base = DB + '/' + dataMap[sec].path;
         var url = editKey ? (base + '/' + editKey + '.json') : (base + '.json');
-    
+              var url = editKey ? (base + '/' + editKey + '.json') : (base + '.json');
+      var method = editKey ? 'PUT' : 'POST';
+
+      fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+        .then(function () {
+          btn.disabled = false;
+          resetSection(sec);
+          loadSection(sec);
+        })
+        .catch(function () {
+          btn.disabled = false;
+          btn.textContent = prevTxt;
+        });
+    }
+
+    if (fl && fl.length > 0) shrinkMany(fl, pushData);
+    else pushData(old ? getImgs(old) : [FALLBACK_IMG]);
+  }
+
+  function delSec(sec, k) {
+    if (mail !== ADMIN || !k) return;
+    if (dataMap[sec].editKey === k) resetSection(sec);
+    fetch(DB + '/' + dataMap[sec].path + '/' + k + '.json', { method: 'DELETE' })
+      .then(function () { loadSection(sec); });
+  }
+
+  function loadSection(sec) {
+    var areaId = (sec === 'shop') ? 'areaShop' : 'areaTech';
+    document.getElementById(areaId).innerHTML = '<div class="box" style="text-align:center;">چاوەڕێ بکە...</div>';
+    fetch(DB + '/' + dataMap[sec].path + '.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var arr = [];
+        if (d && typeof d === 'object') {
+          var ks = Object.keys(d);
+          for (var i = 0; i < ks.length; i++) {
+            if (d[ks[i]]) {
+              var item = d[ks[i]];
+              item._k = ks[i];
+              arr.push(item);
+            }
+          }
+        }
+        arr.sort(function (a, b) { return (b.id || 0) - (a.id || 0); });
+        dataMap[sec].posts = arr;
+        drawSection(sec);
+      })
+      .catch(function () {
+        dataMap[sec].posts = [];
+        drawSection(sec);
+      });
+  }
+
+  function pickThumbSec(sec, k, idx) {
+    var list = dataMap[sec].posts;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i]._k === k) {
+        var imgs = getImgs(list[i]);
+        var main = document.getElementById('img-' + sec + '-' + k);
+        if (main && imgs[idx]) {
+          main.src = imgs[idx];
+          main.setAttribute('data-i', idx);
+        }
+        for (var j = 0; j < imgs.length; j++) {
+          var th = document.getElementById('th-' + sec + '-' + k + '-' + j);
+          if (th) th.className = (j === idx) ? 'thumb on' : 'thumb';
+        }
+        return;
+      }
+    }
+  }
+
+  function openLbSec(sec, k) {
+    var list = dataMap[sec].posts;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i]._k === k) {
+        lbList = getImgs(list[i]);
+        var main = document.getElementById('img-' + sec + '-' + k);
+        lbIdx = main ? (parseInt(main.getAttribute('data-i') || '0', 10) || 0) : 0;
+        showLb();
+        document.getElementById('lbBox').className = 'lb';
+        return;
+      }
+    }
+  }
+
+  function showLb() {
+    document.getElementById('lbPic').src = lbList[lbIdx] || '';
+    document.getElementById('lbNum').textContent = (lbIdx + 1) + ' / ' + lbList.length;
+    document.getElementById('lbNav').style.display = lbList.length > 1 ? 'flex' : 'none';
+  }
+
+  function drawSection(sec) {
+    var isShop = (sec === 'shop');
+    var q = (document.getElementById(isShop ? 'srchShop' : 'srchTech').value || '').trim().toLowerCase();
+    var list = dataMap[sec].posts;
+    var html = '';
+
+    for (var i = 0; i < list.length; i++) {
+      var p = list[i];
+      var s = ((p.name || '') + ' ' + (p.desc || '') + ' ' + (p.price || '')).toLowerCase();
+      if (q && s.indexOf(q) === -1) continue;
+
+      var imgs = getImgs(p);
+      var thHtml = '';
+      if (imgs.length > 1) {
+        thHtml = '<div class="thumbs">';
+        for (var j = 0; j < imgs.length; j++) {
+          thHtml += '<img id="th-' + sec + '-' + p._k + '-' + j + '" class="thumb ' + (j === 0 ? 'on' : '') + '" src="' + imgs[j] + '" onclick="pickThumbSec(\'' + sec + '\',\'' + p._k + '\',' + j + ')" alt="" />';
+        }
+        thHtml += '</div>';
+      }
+
+      html += '<div class="box">' +
+        '<span class="badge">' + (isShop ? 'کاڵا' : 'ئەمەزۆن و ئەلیکترۆنی') + '</span>' +
+        '<img id="img-' + sec + '-' + p._k + '" data-i="0" class="img" src="' + imgs[0] + '" onclick="openLbSec(\'' + sec + '\',\'' + p._k + '\')" alt="" />' +
+        thHtml +
+        '<h4 style="margin:4px 0 6px;">' + (p.name || '') + '</h4>' +
+        '<div class="price-tag">نرخ: ' + (p.price || '') + '</div>' +
+        '<div style="color:#334155;line-height:1.5;">' + (p.desc || '') + '</div>' +
+        (mail === ADMIN ? (
+          '<div class="row-btn">' +
+            '<button type="button" class="edt" onclick="startEditSec(\'' + sec + '\',\'' + p._k + '\')">ئیدیت</button>' +
+            '<button type="button" class="del" onclick="delSec(\'' + sec + '\',\'' + p._k + '\')">سڕینەوە</button>' +
+          '</div>'
+        ) : '') +
+        '</div>';
+    }
+
+    var areaId = isShop ? 'areaShop' : 'areaTech';
+    var emptyMsg = isShop ? 'هیچ کاڵایەک نییە' : 'هیچ بابەتێکی ئەمەزۆن و ئەلیکترۆنی نییە';
+    document.getElementById(areaId).innerHTML = html || ('<div class="box" style="text-align:center;">' + emptyMsg + '</div>');
+  }
+
+  document.addEventListener('click', function (ev) {
+    var target = ev.target || ev.srcElement;
+    if (!target) return;
+    if (target.id === 'sendBtn' || (target.closest && target.closest('#sendBtn'))) {
+      sendCode();
+    } else if (target.id === 'verifyBtn' || (target.closest && target.closest('#verifyBtn'))) {
+      checkCode();
+    }
+  });
+
+  if (document.getElementById('sendBtn')) document.getElementById('sendBtn').onclick = sendCode;
+  if (document.getElementById('verifyBtn')) document.getElementById('verifyBtn').onclick = checkCode;
+  if (document.getElementById('backBtn')) document.getElementById('backBtn').onclick = backMail;
+  if (document.getElementById('outBtn')) document.getElementById('outBtn').onclick = logOut;
+
+  if (document.getElementById('pubShop')) document.getElementById('pubShop').onclick = function () { saveSec('shop'); };
+  if (document.getElementById('canShop')) document.getElementById('canShop').onclick = function () { resetSection('shop'); };
+  if (document.getElementById('srchShop')) document.getElementById('srchShop').oninput = function () { drawSection('shop'); };
+
+  if (document.getElementById('pubTech')) document.getElementById('pubTech').onclick = function () { saveSec('tech'); };
+  if (document.getElementById('canTech')) document.getElementById('canTech').onclick = function () { resetSection('tech'); };
+  if (document.getElementById('srchTech')) document.getElementById('srchTech').oninput = function () { drawSection('tech'); };
+
+  if (document.getElementById('nShop')) document.getElementById('nShop').onclick = function () { goTab('shop'); };
+  if (document.getElementById('nTech')) document.getElementById('nTech').onclick = function () { goTab('tech'); };
+  if (document.getElementById('nSupport')) document.getElementById('nSupport').onclick = function () { goTab('support'); };
+
+  if (document.getElementById('lbClose')) document.getElementById('lbClose').onclick = function () { document.getElementById('lbBox').className = 'lb hide'; };
+  if (document.getElementById('lbPrev')) document.getElementById('lbPrev').onclick = function () { lbIdx = (lbIdx - 1 + lbList.length) % lbList.length; showLb(); };
+  if (document.getElementById('lbNext')) document.getElementById('lbNext').onclick = function () { lbIdx = (lbIdx + 1) % lbList.length; showLb(); };
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('./sw.js').catch(function () {});
+    });
+  }
+
+  try {
+    var saved = localStorage.getItem(SKEY);
+    if (saved && saved.indexOf('@') > 0) openApp(saved);
+  } catch (e) {}
+  </script>
+</body>
+</html>
