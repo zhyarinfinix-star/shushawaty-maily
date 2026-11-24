@@ -2,569 +2,644 @@
 <html lang="ckb" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shushawaty Maily</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0b0f17" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Shushawaty Maily — چوونەژوورەوە</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     :root {
-      --gold: #f5c451;
-      --gold-soft: rgba(245, 196, 81, 0.24);
-      --gold-border: rgba(245, 196, 81, 0.55);
-      --glass-light: rgba(255, 255, 255, 0.9);
-      --ink-light: #f8fafc;
-      --ink-dark: #0f172a;
-      --ok: #22c55e;
-      --bad: #ef4444;
+      --bg: #050608;
+      --panel: rgba(10, 12, 16, 0.76);
+      --line: rgba(255, 255, 255, 0.22);
+      --line-focus: rgba(255, 255, 255, 0.85);
+      --white: #ffffff;
+      --muted: rgba(255, 255, 255, 0.62);
+      --danger: #ff5c77;
+      --success: #34d399;
     }
-    * { box-sizing: border-box; font-family: Tahoma, Arial, sans-serif; }
-    body {
-      margin: 0; min-height: 100vh; color: var(--ink-dark); padding: 16px 14px 108px;
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100dvh;
+      width: 100%;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--white);
+    }
+
+    /* باکگراوندی تاریکی وێنە + باران */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      background: #050608;
+    }
+
+    .bg-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: grayscale(100%) contrast(1.22) brightness(0.42);
+      transform: scale(1.03);
+    }
+
+    .bg-vignette {
+      position: absolute;
+      inset: 0;
       background:
-        radial-gradient(circle at 15% 12%, rgba(245, 196, 81, 0.25), transparent 42%),
-        radial-gradient(circle at 86% 16%, rgba(255, 255, 255, 0.12), transparent 44%),
-        linear-gradient(155deg, #07090e 0%, #111726 52%, #090c14 100%);
-      background-attachment: fixed;
+        linear-gradient(180deg, rgba(5, 6, 8, 0.55) 0%, rgba(5, 6, 8, 0.78) 65%, rgba(5, 6, 8, 0.92) 100%),
+        radial-gradient(circle at 75% 35%, transparent 15%, rgba(0, 0, 0, 0.72) 85%);
     }
-    @keyframes cardEnter {
-      from { opacity: 0; transform: translateY(12px) scale(0.99); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+
+    #rainCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
-    @keyframes shakeOtp {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-6px); }
-      50% { transform: translateX(6px); }
-      75% { transform: translateX(-4px); }
+
+    /* کۆنتێنەری سەرەکی بۆ مۆبایل */
+    .viewport {
+      position: relative;
+      z-index: 1;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
     }
-    .box {
-      max-width: 640px; margin: 0 auto 14px; border-radius: 24px; padding: 16px;
-      background: var(--glass-light); backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
-      animation: cardEnter 0.28s ease both;
+
+    .auth-box {
+      width: 100%;
+      max-width: 390px;
+      background: var(--panel);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 20px;
+      padding: 26px 20px;
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.8);
     }
-    .hero {
-      text-align: center; color: var(--ink-light); padding: 20px 16px;
-      background: linear-gradient(145deg, rgba(20, 26, 40, 0.9), rgba(10, 13, 22, 0.95));
-      border: 1px solid var(--gold-border);
+
+    .brand-tag {
+      font-size: 0.75rem;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+      margin-bottom: 4px;
     }
-    .gold-title {
-      margin: 0 0 5px;
-      background: linear-gradient(135deg, #fff3c4, #f5c451, #c98a12);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+
+    .auth-title {
+      margin: 0 0 20px;
+      font-size: 1.75rem;
       font-weight: 800;
+      letter-spacing: 0.3px;
+      color: var(--white);
     }
-    .badge {
-      display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: bold;
-      background: var(--gold-soft); color: #5c3d00; border: 1px solid var(--gold-border); margin-bottom: 8px;
+
+    .field {
+      margin-bottom: 16px;
     }
-    input, textarea {
-      width: 100%; padding: 12px 14px; margin-bottom: 10px;
-      border-radius: 14px; border: 1px solid #cbd5e1;
-      background: #fff; color: #0f172a; font-size: 14px; outline: none;
+
+    .field label {
+      display: block;
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-bottom: 6px;
     }
-    button {
-      width: 100%; padding: 12px; border: none; border-radius: 14px;
-      font-weight: bold; font-size: 14px; cursor: pointer;
+
+    /* ستایلی هێڵی ژێرەوەی شیک وەک ڤیدیۆکە بەڵام گونجاو بۆ مۆبایل */
+    .field input {
+      width: 100%;
+      padding: 10px 4px;
+      background: transparent;
+      border: 0;
+      border-bottom: 1.5px solid var(--line);
+      color: var(--white);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s ease;
     }
-    .b-dark { background: #111827; color: var(--gold); border: 1px solid var(--gold-border); }
-    .b-gold { background: linear-gradient(135deg, #ffe599, #d49b1a); color: #0b0f17; }
-    .b-ghost { background: rgba(15, 23, 42, 0.08); color: #0f172a; margin-top: 8px; }
-    .del { background: #fee2e2; color: #991b1b; width: auto; padding: 7px 14px; border-radius: 12px; font-size: 12px; }
-    .edt { background: #fef3c7; color: #78350f; width: auto; padding: 7px 14px; border-radius: 12px; font-size: 12px; }
-    .row-btn { display: flex; gap: 8px; margin-top: 10px; }
-    .otp-panel { background: #101522; color: #f8fafc; border: 1px solid var(--gold-border); }
-    .otp-banner {
-      background: rgba(245, 196, 81, 0.16); border: 1px solid var(--gold-border);
-      color: var(--gold); padding: 10px; border-radius: 12px; text-align: center;
-      font-weight: bold; margin-bottom: 12px;
+
+    .field input::placeholder {
+      color: rgba(255, 255, 255, 0.32);
+      font-size: 0.86rem;
     }
-    .otp-grid { display: flex; align-items: center; justify-content: center; gap: 6px; direction: ltr; margin: 10px 0 12px; }
+
+    .field input:focus {
+      border-bottom-color: var(--line-focus);
+    }
+
+    .forgot-row {
+      display: flex;
+      justify-content: flex-end;
+      margin: -4px 0 16px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 13px 16px;
+      margin-top: 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.12s ease;
+    }
+
+    .btn-submit:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .switch-line {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .inline-link {
+      background: none;
+      border: 0;
+      padding: 0 3px;
+      color: var(--white);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    .inline-link:disabled {
+      color: var(--muted);
+      text-decoration: none;
+      cursor: not-allowed;
+    }
+
     .otp-box {
-      width: 44px; height: 52px; margin: 0; padding: 0; text-align: center;
-      font-size: 21px; font-weight: 800; border-radius: 12px;
-      background: rgba(255, 255, 255, 0.08); color: #fff; border: 1.5px solid rgba(255, 255, 255, 0.22);
+      display: flex;
+      gap: 7px;
+      justify-content: center;
+      direction: ltr;
+      margin: 18px 0 14px;
     }
-    .otp-dash { color: #94a3b8; font-size: 18px; font-weight: bold; }
-    .otp-grid.is-ok .otp-box { border-color: var(--ok); color: #86efac; }
-    .otp-grid.is-bad .otp-box { border-color: var(--bad); color: #fca5a5; }
-    .otp-grid.shake { animation: shakeOtp 0.32s ease; }
-    .otp-status { text-align: center; font-size: 13px; font-weight: bold; min-height: 20px; margin-bottom: 10px; }
-    .st-ok { color: #4ade80; }
-    .st-bad { color: #f87171; }
-    .st-hint { color: #cbd5e1; font-weight: normal; }
-    .err { color: #b91c1c; font-weight: bold; font-size: 13px; margin-bottom: 8px; }
-    .img { width: 100%; height: 220px; object-fit: cover; border-radius: 16px; margin-bottom: 8px; cursor: zoom-in; }
-    .thumbs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 8px; }
-    .thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; border: 2px solid transparent; cursor: pointer; flex-shrink: 0; }
-    .thumb.on { border-color: #d49b1a; }
-    .price-tag { display: inline-block; font-weight: bold; color: #78350f; background: #fef3c7; padding: 4px 10px; border-radius: 10px; margin-bottom: 6px; font-size: 13px; }
-    .soc-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
-    .soc { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px; border-radius: 14px; text-decoration: none; color: #0f172a; font-weight: bold; font-size: 13px; background: rgba(255, 255, 255, 0.8); }
-    .nav {
-      position: fixed; bottom: 12px; left: 12px; right: 12px; max-width: 640px; margin: 0 auto;
-      background: #0e1320; border: 1px solid var(--gold-border); border-radius: 20px; padding: 6px;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; z-index: 30;
+
+    .otp-input {
+      width: 44px;
+      height: 52px;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      outline: none;
     }
-    .nav button { background: transparent; color: #e2e8f0; padding: 10px 6px; font-size: 12px; border-radius: 14px; }
-    .nav button.on { background: linear-gradient(135deg, #ffe599, #d49b1a); color: #0b0f17; }
-    .lb { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.94); z-index: 99; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; }
-    .lb img { max-width: 100%; max-height: 70vh; border-radius: 14px; }
-    .hide { display: none !important; }
+
+    .otp-input:focus {
+      border-color: var(--line-focus);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .otp-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      font-size: 0.85rem;
+    }
+
+    .shake {
+      animation: shakeAnim 0.35s ease;
+    }
+
+    @keyframes shakeAnim {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-7px); }
+      40% { transform: translateX(7px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+
+    .status {
+      margin-top: 14px;
+      min-height: 20px;
+      text-align: center;
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    .status.err { color: var(--danger); }
+    .status.ok { color: var(--success); }
+
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
-
-  <div id="loginBox">
-    <div class="box hero">
-      <div class="badge">LIQUID GLASS EDITION</div>
-      <h2 class="gold-title">Shushawaty Maily</h2>
-      <div style="font-size:13px;color:#e2e8f0;">شووشەواتی مەیلی — جیهانی شووشە و کریستاڵ و ئەلیکترۆنی</div>
-    </div>
-
-    <div id="step1" class="box">
-      <h3 style="margin-top:0;">چوونەژوورەوە بە ئیمەیڵ</h3>
-      <input id="mailInp" type="email" value="zhyarinfinix@gmail.com" placeholder="ئیمەیڵ / Gmail بنووسە" />
-      <div id="err1" class="err hide"></div>
-      <button id="sendBtn" type="button" class="b-dark">ناردنی کۆدی OTP</button>
-    </div>
-
-    <div id="step2" class="box otp-panel hide">
-      <h3 style="margin:0 0 6px;text-align:center;color:#fff;">کۆدی پشتڕاستکردنەوە بنووسە</h3>
-      <div id="whoMail" style="font-size:12px;color:#cbd5e1;text-align:center;margin-bottom:8px;"></div>
-      <div id="codeShow" class="otp-banner"></div>
-      <div id="otpGrid" class="otp-grid">
-        <input class="otp-box" type="text" inputmode="numeric" maxlength="6" />
-        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" />
-        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" />
-        <span class="otp-dash">-</span>
-        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" />
-        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" />
-        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" />
-      </div>
-      <div id="otpStatus" class="otp-status st-hint">کۆدە ٦ ژمارەییەکە بنووسە یان پەیستی بکە</div>
-      <button id="verifyBtn" type="button" class="b-gold">پشتڕاستکردنەوە و چوونەژوورەوە</button>
-      <button id="backBtn" type="button" class="b-ghost" style="background:rgba(255,255,255,0.12);color:#fff;">گۆڕینی ئیمەیڵ</button>
-    </div>
+  <div class="bg-layer" aria-hidden="true">
+    <img
+      class="bg-photo"
+      src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1080&q=75"
+      alt=""
+    />
+    <div class="bg-vignette"></div>
+    <canvas id="rainCanvas"></canvas>
   </div>
 
-  <div id="mainBox" class="hide">
-    <div class="box hero">
-      <h3 class="gold-title">Shushawaty Maily</h3>
-      <div id="userShow" style="font-size:12px;color:#cbd5e1;"></div>
-      <button id="outBtn" type="button" class="del" style="margin-top:10px;">چوونەدەرەوە</button>
-    </div>
+  <main class="viewport">
+    <section class="auth-box">
+      <div class="brand-tag">SHUSHAWATY MAILY</div>
 
-    <div id="tabShop">
-      <div class="box" style="padding:12px;">
-        <span class="badge">بەشی کاڵاکان</span>
-        <input id="srchShop" type="text" placeholder="گەڕان لە کاڵاکاندا..." style="margin-bottom:0;" />
-      </div>
-      <div id="adminShop" class="box hide">
-        <h4 id="fTitleShop" style="margin-top:0;">زیادکردنی پۆست لە کاڵاکان</h4>
-        <input id="sName" type="text" placeholder="ناوی کاڵا" />
-        <textarea id="sDesc" rows="2" placeholder="زانیاری کاڵا"></textarea>
-        <input id="sPrice" type="text" placeholder="نرخ" />
-        <input id="sImg" type="file" accept="image/*" multiple />
-        <button id="pubShop" type="button" class="b-gold">بڵاوکردنەوە لە کاڵاکان</button>
-        <button id="canShop" type="button" class="b-ghost hide">هەڵوەشاندنەوە</button>
-      </div>
-      <div id="areaShop"></div>
-    </div>
+      <!-- فۆڕمی چوونەژوورەوە -->
+      <form id="loginForm">
+        <h1 class="auth-title">چوونەژوورەوە</h1>
 
-    <div id="tabTech" class="hide">
-      <div class="box hero" style="padding:16px;">
-        <div class="badge">AMAZON & ELECTRONICS</div>
-        <h3 class="gold-title" style="margin:0;">بەشی ئەمەزۆن و ئامێرە ئەلیکترۆنییەکان</h3>
-        <div style="font-size:12px;color:#cbd5e1;">تایبەت بە بابەتەکانی ئەمەزۆن و ئەلیکترۆنی — جیاواز لە کاڵاکان</div>
-      </div>
-      <div class="box" style="padding:12px;">
-        <input id="srchTech" type="text" placeholder="گەڕان لە ئەمەزۆن و ئامێرەکاندا..." style="margin-bottom:0;" />
-      </div>
-      <div id="adminTech" class="box hide">
-        <h4 id="fTitleTech" style="margin-top:0;">زیادکردنی بابەتی ئەمەزۆن / ئەلیکترۆنی</h4>
-        <input id="tName" type="text" placeholder="ناوی بابەت یان ئامێر" />
-        <textarea id="tDesc" rows="2" placeholder="وردەکاری و تایبەتمەندی"></textarea>
-        <input id="tPrice" type="text" placeholder="نرخ" />
-        <input id="tImg" type="file" accept="image/*" multiple />
-        <button id="pubTech" type="button" class="b-gold">بڵاوکردنەوە لە ئەمەزۆن و ئەلیکترۆنی</button>
-        <button id="canTech" type="button" class="b-ghost hide">هەڵوەشاندنەوە</button>
-      </div>
-      <div id="areaTech"></div>
-    </div>
+        <div class="field">
+          <label for="loginEmail">ئیمەیڵ *</label>
+          <input id="loginEmail" type="email" required autocomplete="email" placeholder="example@gmail.com" />
+        </div>
 
-    <div id="tabSupport" class="box hide">
-      <span class="badge">زانیاری و سەپۆرت</span>
-      <h3 style="margin-top:0;">زانیاری و سەپۆرت</h3>
-      <p><b>ناونیشان:</b> سۆران ڕواندز تەنیشت پیزای مییر</p>
-      <p><b>پەیوەندی و سەپۆرت:</b> <bdi dir="ltr">07824463372</bdi> / <bdi dir="ltr">07504619938</bdi></p>
-      <div class="soc-row">
-        <a class="soc" href="https://www.snapchat.com/add/shushawat_mayle?share_id=55QsI_mJz5s&locale=en-US" target="_blank">Snapchat</a>
-        <a class="soc" href="https://www.facebook.com/share/19sUWyg8bB/" target="_blank">Facebook</a>
-        <a class="soc" href="https://www.tiktok.com/" target="_blank">TikTok</a>
+        <div class="field">
+          <label for="loginPassword">پاسۆرد *</label>
+          <input id="loginPassword" type="password" required autocomplete="current-password" placeholder="••••••••" />
+        </div>
+
+        <div class="forgot-row">
+          <button type="button" class="inline-link" id="goForgotBtn">پاسۆردم بیرچوو؟</button>
+        </div>
+
+        <button type="submit" class="btn-submit">چوونەژوورەوە</button>
+
+        <div class="switch-line">
+          ئەگەر بەکارهێنەری نوێیت
+          <button type="button" class="inline-link" id="goRegisterBtn">کلیک لێرە بکە</button>
+        </div>
+      </form>
+
+      <!-- فۆڕمی دروستکردنی هەژماری نوێ -->
+      <form id="registerForm" class="hidden">
+        <h1 class="auth-title">تۆمارکردن</h1>
+
+        <div class="field">
+          <label for="regName">ناوی تەواو *</label>
+          <input id="regName" type="text" required placeholder="ناوت بنووسە" />
+        </div>
+
+        <div class="field">
+          <label for="regEmail">ئیمەیڵ *</label>
+          <input id="regEmail" type="email" required autocomplete="email" placeholder="example@gmail.com" />
+        </div>
+
+        <div class="field">
+          <label for="regPassword">پاسۆرد *</label>
+          <input id="regPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="لانیکەم 6 پیت یان ژمارە" />
+        </div>
+
+        <button type="submit" class="btn-submit" id="regBtn">ناردنی کۆدی OTP</button>
+
+        <div class="switch-line">
+          پێشتر هەژمارت هەیە؟
+          <button type="button" class="inline-link" id="goLoginFromRegBtn">چوونەژوورەوە</button>
+        </div>
+      </form>
+
+      <!-- فۆڕمی بیرچوونەوەی پاسۆرد -->
+      <form id="forgotForm" class="hidden">
+        <h1 class="auth-title">گۆڕینی پاسۆرد</h1>
+
+        <div class="field">
+          <label for="forgotEmail">ئیمەیڵی هەژمارەکەت *</label>
+          <input id="forgotEmail" type="email" required autocomplete="email" placeholder="example@gmail.com" />
+        </div>
+
+        <button type="submit" class="btn-submit" id="forgotBtn">ناردنی کۆدی OTP</button>
+
+        <div class="switch-line">
+          <button type="button" class="inline-link" id="goLoginFromForgotBtn">گەڕانەوە بۆ چوونەژوورەوە</button>
+        </div>
+      </form>
+
+      <!-- بەشی 6 خانەی OTP + 30 چرکە -->
+      <div id="otpView" class="hidden">
+        <h1 class="auth-title">کۆدی پشتڕاستکردنەوە</h1>
+        <p id="otpText" class="switch-line" style="margin-top:-8px;"></p>
+
+        <div class="otp-box" id="otpBox">
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" />
+        </div>
+
+        <div id="resetFields" class="hidden">
+          <div class="field">
+            <label for="newPass">پاسۆردی نوێ *</label>
+            <input id="newPass" type="password" minlength="6" placeholder="پاسۆردی نوێ بنووسە" />
+          </div>
+          <div class="field">
+            <label for="confirmPass">دووبارەکردنەوەی پاسۆرد *</label>
+            <input id="confirmPass" type="password" minlength="6" placeholder="پاسۆردەکە دووبارە بنووسە" />
+          </div>
+        </div>
+
+        <button type="button" class="btn-submit" id="verifyOtpBtn">پشتڕاستکردنەوە</button>
+
+        <div class="otp-footer">
+          <button type="button" class="inline-link" id="resendBtn" disabled>دووبارە ناردنەوە (30s)</button>
+          <button type="button" class="inline-link" id="cancelOtpBtn">پاشگەزبوونەوە</button>
+        </div>
       </div>
-    </div>
 
-    <div class="nav">
-      <button id="nShop" type="button" class="on">کاڵاکان</button>
-      <button id="nTech" type="button">ئەمەزۆن و ئەلیکترۆنی</button>
-      <button id="nSupport" type="button">زانیاری و سەپۆرت</button>
-    </div>
-  </div>
-
-  <div id="lbBox" class="lb hide">
-    <div style="width:100%;max-width:620px;display:flex;justify-content:space-between;color:#fff;margin-bottom:8px;">
-      <span id="lbNum">1 / 1</span>
-      <button id="lbClose" type="button" class="del" style="background:#fff;color:#000;">داخستن</button>
-    </div>
-    <img id="lbPic" src="" alt="" />
-    <div id="lbNav" style="display:flex;gap:10px;margin-top:12px;width:240px;">
-      <button id="lbPrev" type="button" class="b-gold">پێشوو</button>
-      <button id="lbNext" type="button" class="b-gold">دواتر</button>
-    </div>
-  </div>
+      <div id="statusMsg" class="status"></div>
+    </section>
+  </main>
 
   <script>
-    var DB = 'https://shushawaty-maily-default-rtdb.firebaseio.com';
-    var ADMIN = 'zhyarinfinix@gmail.com';
-    var SKEY = 'sm_session_v6';
-    var FALLBACK_IMG = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600';
-    var otp = '', mail = '', lbList = [], lbIdx = 0;
-    var dataMap = {
-      shop: { path: 'products', posts: [], editKey: null },
-      tech: { path: 'amazon_tech', posts: [], editKey: null }
-    };
+    // ئەنیمەیشنی بارانی تاریک بە سووکی بۆ مۆبایل
+    (function initRain() {
+      const canvas = document.getElementById("rainCanvas");
+      const ctx = canvas.getContext("2d");
+      let w = 0, h = 0, drops = [];
 
-    function getOtpBoxes() {
-      return Array.prototype.slice.call(document.querySelectorAll('#otpGrid .otp-box'));
-    }
-    function setOtpState(state, msg) {
-      var g = document.getElementById('otpGrid'), s = document.getElementById('otpStatus');
-      g.classList.remove('is-ok', 'is-bad', 'shake');
-      s.classList.remove('st-ok', 'st-bad', 'st-hint');
-      if (state === 'ok') { g.classList.add('is-ok'); s.classList.add('st-ok'); s.textContent = msg || 'دروستە'; }
-      else if (state === 'bad') { void g.offsetWidth; g.classList.add('is-bad', 'shake'); s.classList.add('st-bad'); s.textContent = msg || 'هەڵەیە'; }
-      else { s.classList.add('st-hint'); s.textContent = msg || 'کۆدە ٦ ژمارەییەکە بنووسە یان پەیستی بکە'; }
-    }
-    function readOtp() {
-      return getOtpBoxes().map(function (b) { return (b.value || '').replace(/\D/g, ''); }).join('');
-    }
-    function fillOtp(str) {
-      var clean = String(str || '').replace(/\D/g, '').slice(0, 6);
-      var bs = getOtpBoxes();
-      for (var i = 0; i < bs.length; i++) bs[i].value = clean[i] || '';
-      if (bs[Math.min(clean.length, bs.length - 1)]) bs[Math.min(clean.length, bs.length - 1)].focus();
-      setOtpState('hint');
-    }
-    function initOtp() {
-      var bs = getOtpBoxes();
-      bs.forEach(function (box, idx) {
-        box.addEventListener('input', function () {
-          var raw = (box.value || '').replace(/\D/g, '');
-          if (raw.length > 1) {
-            fillOtp(bs.map(function (b, k) { return k === idx ? raw : (b.value || '').replace(/\D/g, ''); }).join('').slice(0, 6));
-            return;
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = canvas.width = Math.floor(window.innerWidth * dpr);
+        h = canvas.height = Math.floor(window.innerHeight * dpr);
+        const count = Math.min(95, Math.max(40, Math.floor(window.innerWidth / 7)));
+        drops = Array.from({ length: count }, () => ({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          len: (10 + Math.random() * 16) * dpr,
+          speed: (9 + Math.random() * 11) * dpr,
+          alpha: 0.14 + Math.random() * 0.28,
+          lw: Math.max(1, 1.15 * dpr)
+        }));
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, w, h);
+        for (const d of drops) {
+          ctx.strokeStyle = `rgba(255, 255, 255, ${d.alpha})`;
+          ctx.lineWidth = d.lw;
+          ctx.beginPath();
+          ctx.moveTo(d.x, d.y);
+          ctx.lineTo(d.x, d.y + d.len);
+          ctx.stroke();
+
+          d.y += d.speed;
+          if (d.y > h) {
+            d.y = -d.len;
+            d.x = Math.random() * w;
           }
-          box.value = raw;
-          setOtpState('hint');
-          if (raw && idx < bs.length - 1) bs[idx + 1].focus();
-        });
-        box.addEventListener('keydown', function (ev) {
-          if (ev.key === 'Backspace' && !box.value && idx > 0) { bs[idx - 1].value = ''; bs[idx - 1].focus(); }
-          else if (ev.key === 'Enter') checkCode();
-        });
-        box.addEventListener('paste', function (ev) {
-          ev.preventDefault();
-          fillOtp((ev.clipboardData && ev.clipboardData.getData('text')) || '');
-        });
+        }
+        requestAnimationFrame(tick);
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
+      requestAnimationFrame(tick);
+    })();
+
+    // ڕێکخستنی EmailJS
+    const EMAILJS_PUBLIC_KEY = "2MMVlqbe3ak0ENMry";
+    const EMAILJS_SERVICE_ID = "service_ackleif";
+    const EMAILJS_TEMPLATE_ID = "template_hj6esyr";
+
+    if (window.emailjs) {
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+    }
+
+    const USERS_KEY = "sm_users_v1";
+    const getUsers = () => JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+    const saveUsers = (list) => localStorage.setItem(USERS_KEY, JSON.stringify(list));
+
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const forgotForm = document.getElementById("forgotForm");
+    const otpView = document.getElementById("otpView");
+    const resetFields = document.getElementById("resetFields");
+    const statusMsg = document.getElementById("statusMsg");
+    const otpText = document.getElementById("otpText");
+    const otpBox = document.getElementById("otpBox");
+    const otpInputs = [...document.querySelectorAll(".otp-input")];
+    const resendBtn = document.getElementById("resendBtn");
+
+    let pendingFlow = null;
+    let pendingPayload = null;
+    let currentOtp = "";
+    let timerId = null;
+
+    function setStatus(msg, type = "") {
+      statusMsg.textContent = msg;
+      statusMsg.className = "status " + type;
+    }
+
+    function openScreen(name) {
+      setStatus("");
+      loginForm.classList.toggle("hidden", name !== "login");
+      registerForm.classList.toggle("hidden", name !== "register");
+      forgotForm.classList.toggle("hidden", name !== "forgot");
+      otpView.classList.toggle("hidden", name !== "otp");
+    }
+
+    document.getElementById("goRegisterBtn").addEventListener("click", () => openScreen("register"));
+    document.getElementById("goForgotBtn").addEventListener("click", () => openScreen("forgot"));
+    document.getElementById("goLoginFromRegBtn").addEventListener("click", () => openScreen("login"));
+    document.getElementById("goLoginFromForgotBtn").addEventListener("click", () => openScreen("login"));
+
+    function getExpiryString(mins = 15) {
+      const d = new Date(Date.now() + mins * 60000);
+      return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    async function sendOtpEmail(email, code) {
+      if (!window.emailjs) throw new Error("EmailJS not loaded");
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        email,
+        passcode: code,
+        time: getExpiryString(15)
       });
     }
 
-    function getImgs(p) {
-      if (p && p.imgs && p.imgs.length) return p.imgs;
-      if (p && p.img) return [p.img];
-      return [FALLBACK_IMG];
+    function run30sCountdown() {
+      clearInterval(timerId);
+      let left = 30;
+      resendBtn.disabled = true;
+      resendBtn.textContent = `دووبارە ناردنەوە (${left}s)`;
+
+      timerId = setInterval(() => {
+        left -= 1;
+        if (left > 0) {
+          resendBtn.textContent = `دووبارە ناردنەوە (${left}s)`;
+        } else {
+          clearInterval(timerId);
+          resendBtn.disabled = false;
+          resendBtn.textContent = "دووبارە ناردنەوەی کۆد";
+        }
+      }, 1000);
     }
 
-    function goTab(t) {
-      document.getElementById('tabShop').className = (t === 'shop') ? '' : 'hide';
-      document.getElementById('tabTech').className = (t === 'tech') ? '' : 'hide';
-      document.getElementById('tabSupport').className = (t === 'support') ? 'box' : 'box hide';
-      document.getElementById('nShop').className = (t === 'shop') ? 'on' : '';
-      document.getElementById('nTech').className = (t === 'tech') ? 'on' : '';
-      document.getElementById('nSupport').className = (t === 'support') ? 'on' : '';
-      if (t === 'shop') loadSection('shop');
-      if (t === 'tech') loadSection('tech');
+    async function triggerOtp(email, flow, payload, btn = null) {
+      if (btn) btn.disabled = true;
+      setStatus("خەریکی ناردنی کۆدی OTP بۆ ئیمەیڵ...", "");
+      const code = String(Math.floor(100000 + Math.random() * 900000));
+
+      try {
+        await sendOtpEmail(email, code);
+        pendingFlow = flow;
+        pendingPayload = payload;
+        currentOtp = code;
+
+        resetFields.classList.toggle("hidden", flow !== "reset");
+        otpText.textContent = `کۆدی 6 خانەیی بۆ ${email} نێردرا`;
+        openScreen("otp");
+        otpInputs.forEach((i) => (i.value = ""));
+        otpInputs[0].focus();
+        run30sCountdown();
+        setStatus("کۆدەکە نێردرا؛ سەیری Inbox یان Spam بکە.", "ok");
+      } catch (e) {
+        console.error(e);
+        setStatus("ناردنی ئیمەیڵ سەرکەوتوو نەبوو؛ ئینتەرنێت بپشکنە.", "err");
+      } finally {
+        if (btn) btn.disabled = false;
+      }
     }
 
-    function openApp(m) {
-      mail = String(m || '').trim().toLowerCase();
-      if (!mail) return;
-      try { localStorage.setItem(SKEY, mail); } catch (e) {}
-      document.getElementById('loginBox').className = 'hide';
-      document.getElementById('mainBox').className = '';
-      document.getElementById('userShow').textContent = 'هەژمار: ' + mail;
-      var isAdm = (mail === ADMIN);
-      document.getElementById('adminShop').className = isAdm ? 'box' : 'box hide';
-      document.getElementById('adminTech').className = isAdm ? 'box' : 'box hide';
-      goTab('shop');
-      loadSection('tech');
-    }
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const password = document.getElementById("loginPassword").value;
+      const found = getUsers().find((u) => u.email === email && u.password === password);
 
-    function sendCode() {
-      var m = (document.getElementById('mailInp').value || '').trim().toLowerCase();
-      var e1 = document.getElementById('err1');
-      if (!m || m.indexOf('@') < 1) {
-        e1.textContent = 'ئیمەیڵێکی دروست بنووسە';
-        e1.className = 'err';
+      if (!found) {
+        setStatus("ئیمەیڵ یان پاسۆرد هەڵەیە.", "err");
         return;
       }
-      e1.className = 'err hide';
-      mail = m;
-      otp = String(Math.floor(100000 + Math.random() * 900000));
-      document.getElementById('whoMail').textContent = 'ئیمەیڵ: ' + mail;
-      document.getElementById('codeShow').textContent = 'کۆدی OTP: ' + otp.slice(0, 3) + ' - ' + otp.slice(3);
-      fillOtp('');
-      document.getElementById('step1').className = 'box hide';
-      document.getElementById('step2').className = 'box otp-panel';
-      var bs = getOtpBoxes();
-      if (bs[0]) setTimeout(function () { bs[0].focus(); }, 50);
-    }
-
-    function checkCode() {
-      var c = readOtp();
-      if (c.length < 6 || (otp && c !== otp)) {
-        setOtpState('bad', 'کۆدەکە هەڵەیە، دووبارە هەوڵ بدەرەوە');
-        return;
-      }
-      setOtpState('ok', 'پشتڕاست کرایەوە...');
-      setTimeout(function () { openApp(mail || ADMIN); }, 280);
-    }
-
-    function backMail() {
-      document.getElementById('step2').className = 'box otp-panel hide';
-      document.getElementById('step1').className = 'box';
-    }
-
-    function logOut() {
-      try { localStorage.removeItem(SKEY); } catch (e) {}
-      resetSection('shop'); resetSection('tech');
-      mail = ''; otp = ''; fillOtp('');
-      document.getElementById('mainBox').className = 'hide';
-      document.getElementById('step2').className = 'box otp-panel hide';
-      document.getElementById('step1').className = 'box';
-      document.getElementById('loginBox').className = '';
-    }
-
-    function resetSection(sec) {
-      dataMap[sec].editKey = null;
-      var isS = (sec === 'shop');
-      document.getElementById(isS ? 'fTitleShop' : 'fTitleTech').textContent = isS ? 'زیادکردنی پۆست لە کاڵاکان' : 'زیادکردنی بابەتی ئەمەزۆن / ئەلیکترۆنی';
-      document.getElementById(isS ? 'sName' : 'tName').value = '';
-      document.getElementById(isS ? 'sDesc' : 'tDesc').value = '';
-      document.getElementById(isS ? 'sPrice' : 'tPrice').value = '';
-      document.getElementById(isS ? 'sImg' : 'tImg').value = '';
-      document.getElementById(isS ? 'pubShop' : 'pubTech').textContent = isS ? 'بڵاوکردنەوە لە کاڵاکان' : 'بڵاوکردنەوە لە ئەمەزۆن و ئەلیکترۆنی';
-      document.getElementById(isS ? 'canShop' : 'canTech').className = 'b-ghost hide';
-    }
-
-    function startEditSec(sec, k) {
-      if (mail !== ADMIN) return;
-      var list = dataMap[sec].posts;
-      for (var i = 0; i < list.length; i++) {
-        if (list[i]._k === k) {
-          dataMap[sec].editKey = k;
-          var isS = (sec === 'shop');
-          document.getElementById(isS ? 'fTitleShop' : 'fTitleTech').textContent = 'دەستکاریی بابەت';
-          document.getElementById(isS ? 'sName' : 'tName').value = list[i].name || '';
-          document.getElementById(isS ? 'sDesc' : 'tDesc').value = list[i].desc || '';
-          document.getElementById(isS ? 'sPrice' : 'tPrice').value = list[i].price || '';
-          document.getElementById(isS ? 'sImg' : 'tImg').value = '';
-          document.getElementById(isS ? 'pubShop' : 'pubTech').textContent = 'پاشەکەوتکردن';
-          document.getElementById(isS ? 'canShop' : 'canTech').className = 'b-ghost';
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          return;
-        }
-      }
-    }
-
-    function shrinkImg(file, cb) {
-      var r = new FileReader();
-      r.onload = function (ev) {
-        var im = new Image();
-        im.onload = function () {
-          var w = im.width > 640 ? 640 : im.width;
-          var h = Math.round(im.height * (w / im.width));
-          var cv = document.createElement('canvas');
-          cv.width = w; cv.height = h;
-          cv.getContext('2d').drawImage(im, 0, 0, w, h);
-          cb(cv.toDataURL('image/jpeg', 0.65));
-        };
-        im.onerror = function () { cb(FALLBACK_IMG); };
-        im.src = ev.target.result;
-      };
-      r.readAsDataURL(file);
-    }
-
-    function shrinkMany(files, cb) {
-      var arr = [], n = Math.min(files.length, 6);
-      function step(i) {
-        if (i >= n) return cb(arr);
-        shrinkImg(files[i], function (u) { arr.push(u); step(i + 1); });
-      }
-      step(0);
-    }
-
-    function saveSec(sec) {
-      if (mail !== ADMIN) return;
-      var isS = (sec === 'shop');
-      var name = (document.getElementById(isS ? 'sName' : 'tName').value || '').trim();
-      var desc = (document.getElementById(isS ? 'sDesc' : 'tDesc').value || '').trim();
-      var price = (document.getElementById(isS ? 'sPrice' : 'tPrice').value || '').trim();
-      var fl = document.getElementById(isS ? 'sImg' : 'tImg').files;
-      var btn = document.getElementById(isS ? 'pubShop' : 'pubTech');
-      if (!name || !price) return;
-      btn.disabled = true; var prev = btn.textContent; btn.textContent = 'چاوەڕێ بکە...';
-
-      var editKey = dataMap[sec].editKey, old = null;
-      if (editKey) {
-        for (var i = 0; i < dataMap[sec].posts.length; i++) {
-          if (dataMap[sec].posts[i]._k === editKey) { old = dataMap[sec].posts[i]; break; }
-        }
-      }
-
-      function pushData(imgList) {
-        var body = { id: old ? old.id : (Date.now() + Math.floor(Math.random() * 1000)), name: name, desc: desc, price: price, img: imgList[0], imgs: imgList };
-        var base = DB + '/' + dataMap[sec].path;
-        var url = editKey ? (base + '/' + editKey + '.json') : (base + '.json');
-        fetch(url, { method: editKey ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-          .then(function () { btn.disabled = false; resetSection(sec); loadSection(sec); })
-          .catch(function () { btn.disabled = false; btn.textContent = prev; });
-      }
-
-      if (fl && fl.length > 0) shrinkMany(fl, pushData);
-      else pushData(old ? getImgs(old) : [FALLBACK_IMG]);
-    }
-
-    function delSec(sec, k) {
-      if (mail !== ADMIN || !k) return;
-      if (dataMap[sec].editKey === k) resetSection(sec);
-      fetch(DB + '/' + dataMap[sec].path + '/' + k + '.json', { method: 'DELETE' }).then(function () { loadSection(sec); });
-    }
-
-    function loadSection(sec) {
-      var areaId = (sec === 'shop') ? 'areaShop' : 'areaTech';
-      document.getElementById(areaId).innerHTML = '<div class="box" style="text-align:center;">چاوەڕێ بکە...</div>';
-      fetch(DB + '/' + dataMap[sec].path + '.json')
-        .then(function (r) { return r.json(); })
-        .then(function (d) {
-          var arr = [];
-          if (d && typeof d === 'object') {
-            var ks = Object.keys(d);
-            for (var i = 0; i < ks.length; i++) {
-              if (d[ks[i]]) { var item = d[ks[i]]; item._k = ks[i]; arr.push(item); }
-            }
-          }
-          arr.sort(function (a, b) { return (b.id || 0) - (a.id || 0); });
-          dataMap[sec].posts = arr;
-          drawSection(sec);
-        })
-        .catch(function () { dataMap[sec].posts = []; drawSection(sec); });
-    }
-
-    function pickThumbSec(sec, k, idx) {
-      var list = dataMap[sec].posts;
-      for (var i = 0; i < list.length; i++) {
-        if (list[i]._k === k) {
-          var imgs = getImgs(list[i]);
-          var main = document.getElementById('img-' + sec + '-' + k);
-          if (main && imgs[idx]) { main.src = imgs[idx]; main.setAttribute('data-i', idx); }
-          for (var j = 0; j < imgs.length; j++) {
-            var th = document.getElementById('th-' + sec + '-' + k + '-' + j);
-            if (th) th.className = (j === idx) ? 'thumb on' : 'thumb';
-          }
-          return;
-        }
-      }
-    }
-
-    function openLbSec(sec, k) {
-      var list = dataMap[sec].posts;
-      for (var i = 0; i < list.length; i++) {
-        if (list[i]._k === k) {
-          lbList = getImgs(list[i]);
-          var main = document.getElementById('img-' + sec + '-' + k);
-          lbIdx = main ? (parseInt(main.getAttribute('data-i') || '0', 10) || 0) : 0;
-          showLb();
-          document.getElementById('lbBox').className = 'lb';
-          return;
-        }
-      }
-    }
-
-    function showLb() {
-      document.getElementById('lbPic').src = lbList[lbIdx] || '';
-      document.getElementById('lbNum').textContent = (lbIdx + 1) + ' / ' + lbList.length;
-      document.getElementById('lbNav').style.display = lbList.length > 1 ? 'flex' : 'none';
-    }
-
-    function drawSection(sec) {
-      var isS = (sec === 'shop');
-      var q = (document.getElementById(isS ? 'srchShop' : 'srchTech').value || '').trim().toLowerCase();
-      var list = dataMap[sec].posts, html = '';
-      for (var i = 0; i < list.length; i++) {
-        var p = list[i];
-        var s = ((p.name || '') + ' ' + (p.desc || '') + ' ' + (p.price || '')).toLowerCase();
-        if (q && s.indexOf(q) === -1) continue;
-        var imgs = getImgs(p), thHtml = '';
-        if (imgs.length > 1) {
-          thHtml = '<div class="thumbs">';
-          for (var j = 0; j < imgs.length; j++) {
-            thHtml += '<img id="th-' + sec + '-' + p._k + '-' + j + '" class="thumb ' + (j === 0 ? 'on' : '') + '" src="' + imgs[j] + '" onclick="pickThumbSec(\'' + sec + '\',\'' + p._k + '\',' + j + ')" alt="" />';
-          }
-          thHtml += '</div>';
-        }
-        html += '<div class="box">' +
-          '<span class="badge">' + (isS ? 'کاڵا' : 'ئەمەزۆن و ئەلیکترۆنی') + '</span>' +
-          '<img id="img-' + sec + '-' + p._k + '" data-i="0" class="img" src="' + imgs[0] + '" onclick="openLbSec(\'' + sec + '\',\'' + p._k + '\')" alt="" />' +
-          thHtml +
-          '<h4 style="margin:4px 0 6px;">' + (p.name || '') + '</h4>' +
-          '<div class="price-tag">نرخ: ' + (p.price || '') + '</div>' +
-          '<div style="color:#334155;">' + (p.desc || '') + '</div>' +
-          (mail === ADMIN ? ('<div class="row-btn"><button type="button" class="edt" onclick="startEditSec(\'' + sec + '\',\'' + p._k + '\')">ئیدیت</button><button type="button" class="del" onclick="delSec(\'' + sec + '\',\'' + p._k + '\')">سڕینەوە</button></div>') : '') +
-          '</div>';
-      }
-      document.getElementById(isS ? 'areaShop' : 'areaTech').innerHTML = html || ('<div class="box" style="text-align:center;">' + (isS ? 'هیچ کاڵایەک نییە' : 'هیچ بابەتێکی ئەمەزۆن و ئەلیکترۆنی نییە') + '</div>');
-    }
-
-    initOtp();
-    document.addEventListener('click', function (ev) {
-      var t = ev.target || ev.srcElement;
-      if (!t) return;
-      if (t.id === 'sendBtn' || (t.closest && t.closest('#sendBtn'))) sendCode();
-      else if (t.id === 'verifyBtn' || (t.closest && t.closest('#verifyBtn'))) checkCode();
+      localStorage.setItem("sm_active_user", JSON.stringify({ name: found.name, email: found.email }));
+      setStatus(`بەخێربێیتەوە ${found.name}!`, "ok");
     });
-    document.getElementById('sendBtn').onclick = sendCode;
-    document.getElementById('verifyBtn').onclick = checkCode;
-    document.getElementById('backBtn').onclick = backMail;
-    document.getElementById('outBtn').onclick = logOut;
-    document.getElementById('pubShop').onclick = function () { saveSec('shop'); };
-    document.getElementById('canShop').onclick = function () { resetSection('shop'); };
-    document.getElementById('srchShop').oninput = function () { drawSection('shop'); };
-    document.getElementById('pubTech').onclick = function () { saveSec('tech'); };
-    document.getElementById('canTech').onclick = function () { resetSection('tech'); };
-    document.getElementById('srchTech').oninput = function () { drawSection('tech'); };
-    document.getElementById('nShop').onclick = function () { goTab('shop'); };
-    document.getElementById('nTech').onclick = function () { goTab('tech'); };
-    document.getElementById('nSupport').onclick = function () { goTab('support'); };
-    document.getElementById('lbClose').onclick = function () { document.getElementById('lbBox').className = 'lb hide'; };
-    document.getElementById('lbPrev').onclick = function () { lbIdx = (lbIdx - 1 + lbList.length) % lbList.length; showLb(); };
-    document.getElementById('lbNext').onclick = function () { lbIdx = (lbIdx + 1) % lbList.length; showLb(); };
 
-    try {
-      var saved = localStorage.getItem(SKEY);
-      if (saved && saved.indexOf('@') > 0) openApp(saved);
-    } catch (e) {}
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim().toLowerCase();
+      const password = document.getElementById("regPassword").value;
+
+      if (getUsers().some((u) => u.email === email)) {
+        setStatus("ئەم ئیمەیڵە پێشتر تۆمار کراوە.", "err");
+        return;
+      }
+      await triggerOtp(email, "register", { name, email, password }, document.getElementById("regBtn"));
+    });
+
+    forgotForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("forgotEmail").value.trim().toLowerCase();
+      if (!getUsers().some((u) => u.email === email)) {
+        setStatus("هیچ هەژمارێک بەم ئیمەیڵە نەدۆزرایەوە.", "err");
+        return;
+      }
+      await triggerOtp(email, "reset", { email }, document.getElementById("forgotBtn"));
+    });
+
+    resendBtn.addEventListener("click", async () => {
+      if (resendBtn.disabled || !pendingPayload) return;
+      await triggerOtp(pendingPayload.email, pendingFlow, pendingPayload, resendBtn);
+    });
+
+    document.getElementById("cancelOtpBtn").addEventListener("click", () => {
+      clearInterval(timerId);
+      pendingFlow = null;
+      pendingPayload = null;
+      openScreen("login");
+    });
+
+    otpInputs.forEach((inp, i) => {
+      inp.addEventListener("input", () => {
+        inp.value = inp.value.replace(/\D/g, "").slice(0, 1);
+        if (inp.value && i < otpInputs.length - 1) otpInputs[i + 1].focus();
+      });
+      inp.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !inp.value && i > 0) otpInputs[i - 1].focus();
+      });
+      inp.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const digits = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6);
+        if (!digits) return;
+        digits.split("").forEach((ch, idx) => {
+          if (otpInputs[idx]) otpInputs[idx].value = ch;
+        });
+        otpInputs[Math.min(digits.length, otpInputs.length - 1)].focus();
+      });
+    });
+
+    document.getElementById("verifyOtpBtn").addEventListener("click", () => {
+      const code = otpInputs.map((i) => i.value).join("");
+      if (code.length < 6 || code !== currentOtp) {
+        otpBox.classList.remove("shake");
+        void otpBox.offsetWidth;
+        otpBox.classList.add("shake");
+        setStatus("کۆدی OTP هەڵەیە یان تەواو نییە.", "err");
+        return;
+      }
+
+      const users = getUsers();
+      if (pendingFlow === "register") {
+        users.push(pendingPayload);
+        saveUsers(users);
+        localStorage.setItem("sm_active_user", JSON.stringify({
+          name: pendingPayload.name,
+          email: pendingPayload.email
+        }));
+        clearInterval(timerId);
+        setStatus("هەژمارەکەت دروست کرا و چوویتە ژوورەوە!", "ok");
+      } else if (pendingFlow === "reset") {
+        const p1 = document.getElementById("newPass").value;
+        const p2 = document.getElementById("confirmPass").value;
+        if (p1.length < 6) {
+          setStatus("پاسۆردی نوێ دەبێت لانیکەم 6 پیت یان ژمارە بێت.", "err");
+          return;
+        }
+        if (p1 !== p2) {
+          setStatus("هەردوو پاسۆردە نوێیەکە وەک یەک نین.", "err");
+          return;
+        }
+        const idx = users.findIndex((u) => u.email === pendingPayload.email);
+        if (idx !== -1) {
+          users[idx].password = p1;
+          saveUsers(users);
+        }
+        clearInterval(timerId);
+        setStatus("پاسۆردەکەت گۆڕدرا؛ ئێستا دەتوانیت بچیتە ژوورەوە.", "ok");
+        setTimeout(() => openScreen("login"), 1200);
+      }
+    });
   </script>
 </body>
 </html>
