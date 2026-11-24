@@ -91,7 +91,6 @@
       pointer-events: none;
     }
 
-    /* بەشی سەرەوەی Stickman + دوگمەی Night / Light */
     .top-portal-bar {
       position: relative;
       z-index: 12;
@@ -471,6 +470,61 @@
       line-height: 1.5;
     }
 
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 12px;
+      margin-bottom: 9px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      font-size: 0.88rem;
+    }
+
+    body.night-mode .info-row {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .info-label {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .info-val {
+      color: var(--white);
+      font-weight: 700;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+      margin-top: 8px;
+    }
+
+    .social-chip {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      padding: 10px 8px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    body.night-mode .social-chip {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -517,7 +571,6 @@
     <canvas id="rainCanvas"></canvas>
   </div>
 
-  <!-- بەشی سەرەوەی Stickman + دوگمەی Night / Light -->
   <div class="top-portal-bar">
     <div class="button-wrapper" id="portalToggleBtn" title="گۆڕینی نایت مۆد و وایت مۆد">
       <div class="canvas-holder">
@@ -677,10 +730,29 @@
 
       <section id="tab-support" class="hidden">
         <div class="glass-card">
-          <h2>زانیاری و سەپۆرت</h2>
-          <p class="item-desc">
-            بەخێربێیت بۆ Shushawaty Maily. هەژمارەکەت بە شێوەی خۆکارانە لەسەر ئامێرەکەت پاشەکەوت دەکرێت و دەتوانیت کاڵا و پۆستەکانت بەڕێوە ببەیت.
-          </p>
+          <h2>زانیاری و پەیوەندی</h2>
+          <div class="info-row">
+            <span class="info-label">ژمارە مۆبایل</span>
+            <a class="info-val" href="tel:+9647500000000" style="text-decoration:none;">+964 750 000 0000</a>
+          </div>
+          <div class="info-row">
+            <span class="info-label">شوێن / ناونیشان</span>
+            <span class="info-val" style="direction:rtl;">هەولێر، کوردستان</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">ئیمەیڵی سەپۆرت</span>
+            <span class="info-val">support@shushawatymaily.com</span>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <h2>سۆشیاڵ میدیاکان</h2>
+          <div class="social-grid">
+            <a class="social-chip" href="https://tiktok.com" target="_blank" rel="noopener">TikTok</a>
+            <a class="social-chip" href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+            <a class="social-chip" href="https://youtube.com" target="_blank" rel="noopener">YouTube</a>
+            <a class="social-chip" href="https://t.me" target="_blank" rel="noopener">Telegram</a>
+          </div>
         </div>
       </section>
     </div>
@@ -693,7 +765,7 @@
   </div>
 
   <script>
-    // Stickman + Instant Night/Light Toggle (matches video behavior)
+    // Stickman stays inside hole after falling until theme is toggled again
     (function initStickmanPortal() {
       var wrapper = document.getElementById("portalToggleBtn");
       var canvas = document.getElementById("stage");
@@ -705,14 +777,15 @@
       var h = 64;
       var dpr = 1;
 
+      // states: "walking", "falling", "inside"
       var stick = {
-        x: 165,
+        x: 155,
         y: 47,
         vx: 1.35,
         vy: 0,
         dir: 1,
         stepPhase: 0,
-        falling: false,
+        state: "walking",
         scale: 1
       };
 
@@ -732,7 +805,12 @@
         canvas.height = Math.floor(h * dpr);
         hole.x = w * 0.78;
         hole.y = h * 0.77;
-        if (stick.x > w - 35) stick.x = w * 0.52;
+        if (stick.state === "inside") {
+          stick.x = hole.x;
+          stick.y = hole.y + 8;
+        } else if (stick.x > w - 35) {
+          stick.x = w * 0.52;
+        }
       }
 
       function syncThemeClass() {
@@ -743,15 +821,30 @@
         }
       }
 
+      function startFallIntoHole() {
+        stick.state = "falling";
+        stick.vy = 1.2;
+      }
+
       function toggleModeInstant() {
         isNight = !isNight;
         syncThemeClass();
-        stick.falling = true;
-        stick.vy = 1.4;
+
+        if (stick.state === "inside") {
+          // Emerge out to walk again until falling into the hole once more
+          stick.state = "walking";
+          stick.vy = 0;
+          stick.scale = 1;
+          stick.x = w * 0.44;
+          stick.y = h * 0.73;
+          stick.dir = 1;
+        } else {
+          startFallIntoHole();
+        }
       }
 
       function updatePhysics() {
-        if (!stick.falling) {
+        if (stick.state === "walking") {
           stick.stepPhase += 0.18;
           stick.x += stick.vx * stick.dir;
 
@@ -768,22 +861,19 @@
           var dx = Math.abs(stick.x - hole.x);
           var dy = Math.abs(stick.y - hole.y);
           if (dx < hole.rx * 0.65 && dy < 10) {
-            stick.falling = true;
-            stick.vy = 1.1;
+            startFallIntoHole();
           }
-        } else {
-          stick.vy += 0.26;
+        } else if (stick.state === "falling") {
+          stick.vy += 0.25;
           stick.y += stick.vy;
           stick.x += (hole.x - stick.x) * 0.16;
-          stick.scale = Math.max(0.05, stick.scale - 0.085);
+          stick.scale = Math.max(0, stick.scale - 0.085);
 
-          if (stick.scale <= 0.08 || stick.y > h + 22) {
-            stick.falling = false;
-            stick.vy = 0;
-            stick.scale = 1;
-            stick.x = w * 0.46;
-            stick.y = h * 0.73;
-            stick.dir = 1;
+          if (stick.scale <= 0.04 || stick.y > hole.y + 10) {
+            stick.state = "inside";
+            stick.scale = 0;
+            stick.x = hole.x;
+            stick.y = hole.y + 10;
           }
         }
       }
@@ -819,7 +909,6 @@
         ctx.shadowColor = "transparent";
 
         if (isNight) {
-          // Blue crescent moon
           ctx.fillStyle = "#2b90ff";
           ctx.beginPath();
           ctx.arc(kx - 1, ky, 7.6, 0, Math.PI * 2);
@@ -829,7 +918,6 @@
           ctx.arc(kx + 3.4, ky - 2.3, 6.6, 0, Math.PI * 2);
           ctx.fill();
         } else {
-          // Orange sun
           ctx.strokeStyle = "#f97316";
           ctx.fillStyle = "#f97316";
           ctx.lineWidth = 2;
@@ -848,6 +936,7 @@
       }
 
       function drawStickman() {
+        if (stick.state === "inside" || stick.scale <= 0.04) return;
         ctx.save();
         ctx.translate(stick.x, stick.y);
         ctx.scale(stick.scale * stick.dir, stick.scale);
@@ -858,18 +947,15 @@
         ctx.lineWidth = 2.2;
         ctx.lineCap = "round";
 
-        // Head
         ctx.beginPath();
         ctx.arc(0, -25, 4.4, 0, Math.PI * 2);
         ctx.fill();
 
-        // Body
         ctx.beginPath();
         ctx.moveTo(0, -20.5);
         ctx.lineTo(0, -10);
         ctx.stroke();
 
-        // Arms swing
         var armSwing = Math.sin(stick.stepPhase) * 6;
         ctx.beginPath();
         ctx.moveTo(0, -17.5);
@@ -878,7 +964,6 @@
         ctx.lineTo(-armSwing, -11.5);
         ctx.stroke();
 
-        // Legs walk
         var legSwing = Math.sin(stick.stepPhase) * 6.5;
         ctx.beginPath();
         ctx.moveTo(0, -10);
