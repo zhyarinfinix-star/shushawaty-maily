@@ -487,6 +487,12 @@
       margin-bottom: 6px;
     }
 
+    .item-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
     .item-title {
       font-weight: 800;
       font-size: 1rem;
@@ -534,6 +540,17 @@
       border: 1px solid rgba(255, 255, 255, 0.4);
     }
 
+    .btn-edit {
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(243, 198, 105, 0.55);
+      background: var(--gold-soft);
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     .btn-del {
       padding: 6px 10px;
       border-radius: 10px;
@@ -543,7 +560,19 @@
       font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
-      flex-shrink: 0;
+    }
+
+    .btn-cancel-edit {
+      width: 100%;
+      padding: 10px 14px;
+      margin-top: 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .info-row {
@@ -747,8 +776,8 @@
 
     <div class="app-content">
       <section id="tab-goods">
-        <div class="glass-card">
-          <h2>زیادکردنی کاڵا</h2>
+        <div class="glass-card admin-only-panel" id="goodsAdminPanel">
+          <h2 id="goodsFormHeading">زیادکردنی کاڵا</h2>
           <form id="addGoodsForm">
             <div class="field">
               <label for="goodsTitle">ناوی کاڵا *</label>
@@ -776,7 +805,8 @@
               <div class="preview-strip" id="goodsPreview"></div>
             </div>
 
-            <button type="submit" class="btn-submit">بڵاوکردنەوەی کاڵا</button>
+            <button type="submit" class="btn-submit" id="goodsSubmitBtn">بڵاوکردنەوەی کاڵا</button>
+            <button type="button" class="btn-cancel-edit hidden" id="cancelGoodsEditBtn">پاشگەزبوونەوە لە دەستکاری</button>
           </form>
         </div>
 
@@ -787,8 +817,8 @@
       </section>
 
       <section id="tab-electronics" class="hidden">
-        <div class="glass-card">
-          <h2>زیادکردنی بابەتی ئەمەزۆن و ئامێری کارەبایی</h2>
+        <div class="glass-card admin-only-panel" id="elecAdminPanel">
+          <h2 id="elecFormHeading">زیادکردنی بابەتی ئەمەزۆن و ئامێری کارەبایی</h2>
           <form id="addElecForm">
             <div class="field">
               <label for="elecTitle">ناوی ئامێر / بابەت *</label>
@@ -816,7 +846,8 @@
               <div class="preview-strip" id="elecPreview"></div>
             </div>
 
-            <button type="submit" class="btn-submit">بڵاوکردنەوە لە ئەمەزۆن و کارەبایی</button>
+            <button type="submit" class="btn-submit" id="elecSubmitBtn">بڵاوکردنەوە لە ئەمەزۆن و کارەبایی</button>
+            <button type="button" class="btn-cancel-edit hidden" id="cancelElecEditBtn">پاشگەزبوونەوە لە دەستکاری</button>
           </form>
         </div>
 
@@ -853,31 +884,19 @@
   </div>
 
   <script>
-    var ONLY_ADMIN_EMAIL = "zhyarinfinix@gmail.com";
+    var ADMIN_EMAIL = "zhyarinfinix@gmail.com";
 
-    // تەنها ئیمەیڵی zhyarinfinix@gmail.com ئەدمینە
-    function isStrictAdmin(userOrEmail) {
-      var raw = "";
-      if (typeof userOrEmail === "string") {
-        raw = userOrEmail;
-      } else if (userOrEmail && typeof userOrEmail.email === "string") {
-        raw = userOrEmail.email;
-      }
-      return raw.trim().toLowerCase() === ONLY_ADMIN_EMAIL;
+    function normalizeEmail(email) {
+      return String(email || "").trim().toLowerCase();
     }
 
-    function normalizeSessionUser(rawUser) {
-      if (!rawUser || !rawUser.email) return null;
-      var cleanEmail = String(rawUser.email).trim().toLowerCase();
-      var admin = isStrictAdmin(cleanEmail);
-      var cleanName = String(rawUser.name || "").trim();
-      if (!admin && (!cleanName || cleanName === "ئەدمین")) {
-        cleanName = cleanEmail.split("@")[0] || "بەکارهێنەر";
-      }
-      return {
-        name: admin ? "ئەدمین" : cleanName,
-        email: cleanEmail
-      };
+    function isOwnerAdminEmail(email) {
+      return normalizeEmail(email) === ADMIN_EMAIL;
+    }
+
+    function isCurrentUserAdmin() {
+      var s = getSession();
+      return !!(s && isOwnerAdminEmail(s.email));
     }
 
     (function initStickmanPortal() {
@@ -1157,24 +1176,24 @@
       requestAnimationFrame(tick);
     })();
 
-    var USERS_KEY = "sm_users_v1";
-    var SESSION_KEY = "sm_active_user";
-    var GOODS_KEY = "sm_goods_posts_v1";
-    var ELEC_KEY = "sm_elec_posts_v1";
+    var USERS_KEY = "sm_users_v2";
+    var SESSION_KEY = "sm_active_user_v2";
+    var GOODS_KEY = "sm_goods_posts_v2";
+    var ELEC_KEY = "sm_elec_posts_v2";
 
     function getUsers() {
       try {
         var raw = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
         if (!Array.isArray(raw)) return [];
         return raw.map(function (u) {
-          var email = String(u && u.email ? u.email : "").trim().toLowerCase();
-          var admin = isStrictAdmin(email);
-          var name = String(u && u.name ? u.name : "").trim();
-          if (!admin && (!name || name === "ئەدمین")) {
-            name = email.split("@")[0] || "بەکارهێنەر";
-          }
+          var email = normalizeEmail(u && u.email);
+          var isAdmin = isOwnerAdminEmail(email);
+          var rawName = String(u && u.name ? u.name : "").trim();
+          var safeName = isAdmin
+            ? "ئەدمین"
+            : (rawName && rawName !== "ئەدمین" ? rawName : (email.split("@")[0] || "بینەر"));
           return {
-            name: admin ? "ئەدمین" : name,
+            name: safeName,
             email: email,
             password: String(u && u.password ? u.password : "")
           };
@@ -1188,15 +1207,37 @@
 
     function getSession() {
       try {
-        var parsed = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
-        return normalizeSessionUser(parsed);
+        var u = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+        if (!u || !u.email) return null;
+        var email = normalizeEmail(u.email);
+        var isAdmin = isOwnerAdminEmail(email);
+        var rawName = String(u.name || "").trim();
+        var safeName = isAdmin
+          ? "ئەدمین"
+          : (rawName && rawName !== "ئەدمین" ? rawName : (email.split("@")[0] || "بینەر"));
+        return {
+          name: safeName,
+          email: email,
+          role: isAdmin ? "admin" : "viewer"
+        };
       } catch (e) { return null; }
     }
 
     function setSession(u) {
-      var clean = normalizeSessionUser(u);
-      if (!clean) return;
-      try { localStorage.setItem(SESSION_KEY, JSON.stringify(clean)); } catch (e) {}
+      if (!u || !u.email) return;
+      var email = normalizeEmail(u.email);
+      var isAdmin = isOwnerAdminEmail(email);
+      var rawName = String(u.name || "").trim();
+      var safeName = isAdmin
+        ? "ئەدمین"
+        : (rawName && rawName !== "ئەدمین" ? rawName : (email.split("@")[0] || "بینەر"));
+      try {
+        localStorage.setItem(SESSION_KEY, JSON.stringify({
+          name: safeName,
+          email: email,
+          role: isAdmin ? "admin" : "viewer"
+        }));
+      } catch (e) {}
     }
 
     function clearSession() {
@@ -1208,6 +1249,7 @@
       catch (e) { return []; }
     }
     function saveGoodsPosts(list) {
+      if (!isCurrentUserAdmin()) return;
       try { localStorage.setItem(GOODS_KEY, JSON.stringify(list)); } catch (e) {}
     }
     function getElecPosts() {
@@ -1215,14 +1257,26 @@
       catch (e) { return []; }
     }
     function saveElecPosts(list) {
+      if (!isCurrentUserAdmin()) return;
       try { localStorage.setItem(ELEC_KEY, JSON.stringify(list)); } catch (e) {}
+    }
+
+    function renderPreviewStrip(container, imgs) {
+      if (!container) return;
+      container.innerHTML = "";
+      (imgs || []).slice(0, 6).forEach(function (src) {
+        var img = document.createElement("img");
+        img.src = src;
+        img.className = "preview-thumb";
+        img.alt = "";
+        container.appendChild(img);
+      });
     }
 
     function readFilesMaxSix(fileInput, previewEl, cb) {
       var files = fileInput && fileInput.files ? Array.prototype.slice.call(fileInput.files, 0, 6) : [];
-      if (previewEl) previewEl.innerHTML = "";
       if (!files.length) {
-        cb([]);
+        cb(null);
         return;
       }
 
@@ -1233,22 +1287,19 @@
         var reader = new FileReader();
         reader.onload = function (ev) {
           result[idx] = ev.target && ev.target.result ? ev.target.result : "";
-          if (previewEl && result[idx]) {
-            var img = document.createElement("img");
-            img.src = result[idx];
-            img.className = "preview-thumb";
-            img.alt = "";
-            previewEl.appendChild(img);
-          }
           doneCount += 1;
           if (doneCount === files.length) {
-            cb(result.filter(function (x) { return !!x; }));
+            var cleanImgs = result.filter(function (x) { return !!x; });
+            renderPreviewStrip(previewEl, cleanImgs);
+            cb(cleanImgs);
           }
         };
         reader.onerror = function () {
           doneCount += 1;
           if (doneCount === files.length) {
-            cb(result.filter(function (x) { return !!x; }));
+            var cleanImgs = result.filter(function (x) { return !!x; });
+            renderPreviewStrip(previewEl, cleanImgs);
+            cb(cleanImgs);
           }
         };
         reader.readAsDataURL(file);
@@ -1258,14 +1309,16 @@
     var goodsImagesInput = document.getElementById("goodsImages");
     var goodsPreviewEl = document.getElementById("goodsPreview");
     var selectedGoodsPhotos = [];
+    var editingGoodsId = null;
 
     if (goodsImagesInput) {
       goodsImagesInput.addEventListener("change", function () {
+        if (!isCurrentUserAdmin()) return;
         if (goodsImagesInput.files && goodsImagesInput.files.length > 6) {
           alert("تەنها تا ٦ وێنە دەتوانیت هەڵبژێریت؛ ٦ وێنەی یەکەم وەردەگیرێن.");
         }
         readFilesMaxSix(goodsImagesInput, goodsPreviewEl, function (imgs) {
-          selectedGoodsPhotos = imgs;
+          if (imgs !== null) selectedGoodsPhotos = imgs;
         });
       });
     }
@@ -1273,16 +1326,46 @@
     var elecImagesInput = document.getElementById("elecImages");
     var elecPreviewEl = document.getElementById("elecPreview");
     var selectedElecPhotos = [];
+    var editingElecId = null;
 
     if (elecImagesInput) {
       elecImagesInput.addEventListener("change", function () {
+        if (!isCurrentUserAdmin()) return;
         if (elecImagesInput.files && elecImagesInput.files.length > 6) {
           alert("تەنها تا ٦ وێنە دەتوانیت هەڵبژێریت؛ ٦ وێنەی یەکەم وەردەگیرێن.");
         }
         readFilesMaxSix(elecImagesInput, elecPreviewEl, function (imgs) {
-          selectedElecPhotos = imgs;
+          if (imgs !== null) selectedElecPhotos = imgs;
         });
       });
+    }
+
+    function resetGoodsFormMode() {
+      editingGoodsId = null;
+      selectedGoodsPhotos = [];
+      var form = document.getElementById("addGoodsForm");
+      if (form) form.reset();
+      if (goodsPreviewEl) goodsPreviewEl.innerHTML = "";
+      var h2 = document.getElementById("goodsFormHeading");
+      var subBtn = document.getElementById("goodsSubmitBtn");
+      var cancelBtn = document.getElementById("cancelGoodsEditBtn");
+      if (h2) h2.textContent = "زیادکردنی کاڵا";
+      if (subBtn) subBtn.textContent = "بڵاوکردنەوەی کاڵا";
+      if (cancelBtn) cancelBtn.classList.add("hidden");
+    }
+
+    function resetElecFormMode() {
+      editingElecId = null;
+      selectedElecPhotos = [];
+      var form = document.getElementById("addElecForm");
+      if (form) form.reset();
+      if (elecPreviewEl) elecPreviewEl.innerHTML = "";
+      var h2 = document.getElementById("elecFormHeading");
+      var subBtn = document.getElementById("elecSubmitBtn");
+      var cancelBtn = document.getElementById("cancelElecEditBtn");
+      if (h2) h2.textContent = "زیادکردنی بابەتی ئەمەزۆن و ئامێری کارەبایی";
+      if (subBtn) subBtn.textContent = "بڵاوکردنەوە لە ئەمەزۆن و کارەبایی";
+      if (cancelBtn) cancelBtn.classList.add("hidden");
     }
 
     var authShell = document.getElementById("authShell");
@@ -1340,17 +1423,59 @@
         openScreen("login");
       } else if (btn.id === "logoutBtn") {
         e.preventDefault();
+        resetGoodsFormMode();
+        resetElecFormMode();
         clearSession();
         enterAuthScreen();
+      } else if (btn.id === "cancelGoodsEditBtn") {
+        e.preventDefault();
+        resetGoodsFormMode();
+      } else if (btn.id === "cancelElecEditBtn") {
+        e.preventDefault();
+        resetElecFormMode();
+      } else if (btn.classList && btn.classList.contains("btn-edit")) {
+        if (!isCurrentUserAdmin()) return;
+        var editId = btn.getAttribute("data-id");
+        var editSec = btn.getAttribute("data-sec");
+        if (editSec === "goods") {
+          var gItem = getGoodsPosts().find(function (p) { return String(p.id) === String(editId); });
+          if (!gItem) return;
+          editingGoodsId = gItem.id;
+          document.getElementById("goodsTitle").value = gItem.title || "";
+          document.getElementById("goodsPrice").value = gItem.price || "";
+          document.getElementById("goodsInfo").value = gItem.info || "";
+          document.getElementById("goodsMore").value = gItem.more || "";
+          selectedGoodsPhotos = Array.isArray(gItem.images) ? gItem.images.slice(0, 6) : [];
+          renderPreviewStrip(goodsPreviewEl, selectedGoodsPhotos);
+          document.getElementById("goodsFormHeading").textContent = "دەستکاری کاڵا";
+          document.getElementById("goodsSubmitBtn").textContent = "پاشەکەوتکردنی گۆڕانکاری";
+          document.getElementById("cancelGoodsEditBtn").classList.remove("hidden");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else if (editSec === "elec") {
+          var eItem = getElecPosts().find(function (p) { return String(p.id) === String(editId); });
+          if (!eItem) return;
+          editingElecId = eItem.id;
+          document.getElementById("elecTitle").value = eItem.title || "";
+          document.getElementById("elecPrice").value = eItem.price || "";
+          document.getElementById("elecInfo").value = eItem.info || "";
+          document.getElementById("elecMore").value = eItem.more || "";
+          selectedElecPhotos = Array.isArray(eItem.images) ? eItem.images.slice(0, 6) : [];
+          renderPreviewStrip(elecPreviewEl, selectedElecPhotos);
+          document.getElementById("elecFormHeading").textContent = "دەستکاری بابەتی ئەمەزۆن و کارەبایی";
+          document.getElementById("elecSubmitBtn").textContent = "پاشەکەوتکردنی گۆڕانکاری";
+          document.getElementById("cancelElecEditBtn").classList.remove("hidden");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
       } else if (btn.classList && btn.classList.contains("btn-del")) {
-        var session = getSession();
-        if (!session || !isStrictAdmin(session.email)) return;
+        if (!isCurrentUserAdmin()) return;
         var postId = btn.getAttribute("data-id");
         var sec = btn.getAttribute("data-sec");
         if (sec === "goods") {
           saveGoodsPosts(getGoodsPosts().filter(function (p) { return String(p.id) !== String(postId); }));
+          if (String(editingGoodsId) === String(postId)) resetGoodsFormMode();
         } else if (sec === "elec") {
           saveElecPosts(getElecPosts().filter(function (p) { return String(p.id) !== String(postId); }));
+          if (String(editingElecId) === String(postId)) resetElecFormMode();
         }
         renderAllSections();
       } else if (btn.classList && btn.classList.contains("nav-btn")) {
@@ -1367,10 +1492,14 @@
       }
     });
 
-    function buildPostCard(item, secName, adminMode) {
-      var delBtn = adminMode
-        ? '<button type="button" class="btn-del" data-sec="' + secName + '" data-id="' + item.id + '">سڕینەوە</button>'
+    function buildPostCard(item, secName, canManage) {
+      var actionsHtml = canManage
+        ? '<div class="item-actions">' +
+            '<button type="button" class="btn-edit" data-sec="' + secName + '" data-id="' + item.id + '">ئیدیت</button>' +
+            '<button type="button" class="btn-del" data-sec="' + secName + '" data-id="' + item.id + '">سڕینەوە</button>' +
+          "</div>"
         : "";
+
       var moreHtml = item.more
         ? '<div class="item-more"><b>زیاتر دەربارەی:</b> ' + item.more + "</div>"
         : "";
@@ -1391,7 +1520,7 @@
               '<div class="item-title">' + item.title + "</div>" +
               '<div class="item-price">نرخ: ' + item.price + "</div>" +
             "</div>" +
-            delBtn +
+            actionsHtml +
           "</div>" +
           '<div class="item-desc"><b>زانیاری:</b> ' + (item.info || "") + "</div>" +
           moreHtml +
@@ -1400,9 +1529,21 @@
       );
     }
 
+    function syncAdminVisibility() {
+      var adminOk = isCurrentUserAdmin();
+      var gPanel = document.getElementById("goodsAdminPanel");
+      var ePanel = document.getElementById("elecAdminPanel");
+      if (gPanel) gPanel.classList.toggle("hidden", !adminOk);
+      if (ePanel) ePanel.classList.toggle("hidden", !adminOk);
+      if (!adminOk) {
+        resetGoodsFormMode();
+        resetElecFormMode();
+      }
+    }
+
     function renderAllSections() {
-      var session = getSession();
-      var adminMode = !!(session && isStrictAdmin(session.email));
+      syncAdminVisibility();
+      var canManage = isCurrentUserAdmin();
 
       var goodsListEl = document.getElementById("goodsList");
       var elecListEl = document.getElementById("electronicsList");
@@ -1412,25 +1553,29 @@
 
       if (goodsListEl) {
         goodsListEl.innerHTML = goods.length
-          ? goods.map(function (g) { return buildPostCard(g, "goods", adminMode); }).join("")
+          ? goods.map(function (g) { return buildPostCard(g, "goods", canManage); }).join("")
           : '<div class="item-desc">هێشتا هیچ کاڵایەک زیاد نەکراوە.</div>';
       }
 
       if (elecListEl) {
         elecListEl.innerHTML = elec.length
-          ? elec.map(function (e) { return buildPostCard(e, "elec", adminMode); }).join("")
+          ? elec.map(function (e) { return buildPostCard(e, "elec", canManage); }).join("")
           : '<div class="item-desc">هێشتا هیچ بابەتێک لە بەشی ئەمەزۆن و ئامێری کارەباییدا نییە.</div>';
       }
     }
 
     function enterMainApp(user) {
-      var clean = normalizeSessionUser(user);
-      if (!clean) {
+      var session = getSession();
+      if (!session && user && user.email) {
+        setSession(user);
+        session = getSession();
+      }
+      if (!session) {
         enterAuthScreen();
         return;
       }
       if (activeUserLabel) {
-        activeUserLabel.textContent = clean.name;
+        activeUserLabel.textContent = session.role === "admin" ? "ئەدمین" : ("بینەر: " + session.name);
       }
       if (authShell) authShell.classList.add("hidden");
       if (mainAppShell) mainAppShell.classList.remove("hidden");
@@ -1447,32 +1592,42 @@
     if (addGoodsForm) {
       addGoodsForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        var titleEl = document.getElementById("goodsTitle");
-        var priceEl = document.getElementById("goodsPrice");
-        var infoEl = document.getElementById("goodsInfo");
-        var moreEl = document.getElementById("goodsMore");
+        if (!isCurrentUserAdmin()) return;
 
-        var title = titleEl ? titleEl.value.trim() : "";
-        var price = priceEl ? priceEl.value.trim() : "";
-        var info = infoEl ? infoEl.value.trim() : "";
-        var more = moreEl ? moreEl.value.trim() : "";
+        var title = document.getElementById("goodsTitle").value.trim();
+        var price = document.getElementById("goodsPrice").value.trim();
+        var info = document.getElementById("goodsInfo").value.trim();
+        var more = document.getElementById("goodsMore").value.trim();
         if (!title || !price || !info) return;
 
         var list = getGoodsPosts();
-        list.unshift({
-          id: "g_" + String(Date.now()) + "_" + String(Math.floor(Math.random() * 1000)),
-          title: title,
-          price: price,
-          info: info,
-          more: more,
-          images: selectedGoodsPhotos.slice(0, 6),
-          at: Date.now()
-        });
-        saveGoodsPosts(list);
+        if (editingGoodsId !== null) {
+          list = list.map(function (item) {
+            if (String(item.id) !== String(editingGoodsId)) return item;
+            return {
+              id: item.id,
+              title: title,
+              price: price,
+              info: info,
+              more: more,
+              images: selectedGoodsPhotos.slice(0, 6),
+              at: item.at || Date.now()
+            };
+          });
+        } else {
+          list.unshift({
+            id: "g_" + String(Date.now()) + "_" + String(Math.floor(Math.random() * 1000)),
+            title: title,
+            price: price,
+            info: info,
+            more: more,
+            images: selectedGoodsPhotos.slice(0, 6),
+            at: Date.now()
+          });
+        }
 
-        addGoodsForm.reset();
-        selectedGoodsPhotos = [];
-        if (goodsPreviewEl) goodsPreviewEl.innerHTML = "";
+        saveGoodsPosts(list);
+        resetGoodsFormMode();
         renderAllSections();
       });
     }
@@ -1481,32 +1636,42 @@
     if (addElecForm) {
       addElecForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        var titleEl = document.getElementById("elecTitle");
-        var priceEl = document.getElementById("elecPrice");
-        var infoEl = document.getElementById("elecInfo");
-        var moreEl = document.getElementById("elecMore");
+        if (!isCurrentUserAdmin()) return;
 
-        var title = titleEl ? titleEl.value.trim() : "";
-        var price = priceEl ? priceEl.value.trim() : "";
-        var info = infoEl ? infoEl.value.trim() : "";
-        var more = moreEl ? moreEl.value.trim() : "";
+        var title = document.getElementById("elecTitle").value.trim();
+        var price = document.getElementById("elecPrice").value.trim();
+        var info = document.getElementById("elecInfo").value.trim();
+        var more = document.getElementById("elecMore").value.trim();
         if (!title || !price || !info) return;
 
         var list = getElecPosts();
-        list.unshift({
-          id: "e_" + String(Date.now()) + "_" + String(Math.floor(Math.random() * 1000)),
-          title: title,
-          price: price,
-          info: info,
-          more: more,
-          images: selectedElecPhotos.slice(0, 6),
-          at: Date.now()
-        });
-        saveElecPosts(list);
+        if (editingElecId !== null) {
+          list = list.map(function (item) {
+            if (String(item.id) !== String(editingElecId)) return item;
+            return {
+              id: item.id,
+              title: title,
+              price: price,
+              info: info,
+              more: more,
+              images: selectedElecPhotos.slice(0, 6),
+              at: item.at || Date.now()
+            };
+          });
+        } else {
+          list.unshift({
+            id: "e_" + String(Date.now()) + "_" + String(Math.floor(Math.random() * 1000)),
+            title: title,
+            price: price,
+            info: info,
+            more: more,
+            images: selectedElecPhotos.slice(0, 6),
+            at: Date.now()
+          });
+        }
 
-        addElecForm.reset();
-        selectedElecPhotos = [];
-        if (elecPreviewEl) elecPreviewEl.innerHTML = "";
+        saveElecPosts(list);
+        resetElecFormMode();
         renderAllSections();
       });
     }
@@ -1561,61 +1726,73 @@
     if (loginForm) {
       loginForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        var emailEl = document.getElementById("loginEmail");
-        var passEl = document.getElementById("loginPassword");
-        var email = (emailEl ? emailEl.value : "").trim().toLowerCase();
-        var password = passEl ? passEl.value : "";
+        var email = normalizeEmail(document.getElementById("loginEmail").value);
+        var password = document.getElementById("loginPassword").value;
         var users = getUsers();
-        var found = null;
-        var adminAlreadyExists = false;
+        var adminAccount = null;
+        var matchingUser = null;
 
         for (var i = 0; i < users.length; i++) {
-          if (isStrictAdmin(users[i].email)) adminAlreadyExists = true;
-          if (users[i].email === email && users[i].password === password) {
-            found = users[i];
-            break;
+          if (isOwnerAdminEmail(users[i].email)) {
+            adminAccount = users[i];
+          }
+          if (normalizeEmail(users[i].email) === email && users[i].password === password) {
+            matchingUser = users[i];
           }
         }
 
-        if (!found && isStrictAdmin(email) && !adminAlreadyExists && password.length >= 6) {
-          found = { name: "ئەدمین", email: ONLY_ADMIN_EMAIL, password: password };
-          users.push(found);
-          saveUsers(users);
+        // ئەگەر داوای چوونەژوورەوە بە ئیمەیڵی ئەدمین کرا
+        if (isOwnerAdminEmail(email)) {
+          if (adminAccount) {
+            if (adminAccount.password !== password) {
+              setStatus("پاسۆردی ئەدمین هەڵەیە.", "err");
+              return;
+            }
+            setSession({ name: "ئەدمین", email: ADMIN_EMAIL });
+            enterMainApp({ name: "ئەدمین", email: ADMIN_EMAIL });
+            return;
+          } else {
+            if (password.length < 6) {
+              setStatus("پاسۆردی ئەدمین دەبێت لانیکەم 6 پیت یان ژمارە بێت.", "err");
+              return;
+            }
+            var newAdmin = { name: "ئەدمین", email: ADMIN_EMAIL, password: password };
+            users.push(newAdmin);
+            saveUsers(users);
+            setSession({ name: "ئەدمین", email: ADMIN_EMAIL });
+            enterMainApp({ name: "ئەدمین", email: ADMIN_EMAIL });
+            return;
+          }
         }
 
-        if (!found) {
+        // هەر ئیمەیڵێکی تر تەنها بەکارهێنەری ئاسایی / بینەرە
+        if (!matchingUser) {
           setStatus("ئیمەیڵ یان پاسۆرد هەڵەیە.", "err");
           return;
         }
 
-        var sessionUser = {
-          name: isStrictAdmin(found.email) ? "ئەدمین" : found.name,
-          email: found.email
-        };
-        setSession(sessionUser);
-        enterMainApp(sessionUser);
+        var viewerName = (matchingUser.name && matchingUser.name !== "ئەدمین")
+          ? matchingUser.name
+          : (email.split("@")[0] || "بینەر");
+        setSession({ name: viewerName, email: email });
+        enterMainApp({ name: viewerName, email: email });
       });
     }
 
     if (registerForm) {
       registerForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        var nameEl = document.getElementById("regName");
-        var emailEl = document.getElementById("regEmail");
-        var passEl = document.getElementById("regPassword");
-        var rawName = (nameEl ? nameEl.value : "").trim();
-        var email = (emailEl ? emailEl.value : "").trim().toLowerCase();
-        var password = passEl ? passEl.value : "";
+        var rawName = document.getElementById("regName").value.trim();
+        var email = normalizeEmail(document.getElementById("regEmail").value);
+        var password = document.getElementById("regPassword").value;
 
-        // ڕێگری لە تۆمارکردنی ئەدمین لە فۆڕمی تۆمارکردنی گشتی
-        if (isStrictAdmin(email)) {
-          setStatus("ئەم ئیمەیڵە تایبەتە بە ئەدمین؛ لە بەشی چوونەژوورەوە بڕۆ.", "err");
+        if (isOwnerAdminEmail(email)) {
+          setStatus("ناتوانرێت بەم ئیمەیڵە هەژماری بینەر تۆمار بکرێت.", "err");
           return;
         }
 
-        var safeName = rawName === "ئەدمین" ? (email.split("@")[0] || "بەکارهێنەر") : rawName;
-
-        var exists = getUsers().some(function (u) { return u.email === email; });
+        var safeName = (rawName && rawName !== "ئەدمین") ? rawName : (email.split("@")[0] || "بینەر");
+        var exists = getUsers().some(function (u) { return normalizeEmail(u.email) === email; });
         if (exists) {
           setStatus("ئەم ئیمەیڵە پێشتر تۆمار کراوە.", "err");
           return;
@@ -1627,10 +1804,9 @@
     if (forgotForm) {
       forgotForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        var emailEl = document.getElementById("forgotEmail");
-        var email = (emailEl ? emailEl.value : "").trim().toLowerCase();
-        var exists = getUsers().some(function (u) { return u.email === email; });
-        if (!exists && !isStrictAdmin(email)) {
+        var email = normalizeEmail(document.getElementById("forgotEmail").value);
+        var exists = getUsers().some(function (u) { return normalizeEmail(u.email) === email; });
+        if (!exists && !isOwnerAdminEmail(email)) {
           setStatus("هیچ هەژمارێک بەم ئیمەیڵە نەدۆزرایەوە.", "err");
           return;
         }
@@ -1674,23 +1850,18 @@
 
         var users = getUsers();
         if (pendingFlow === "register") {
-          var regEmail = String(pendingPayload.email || "").trim().toLowerCase();
-          var regAdmin = isStrictAdmin(regEmail);
-          var regName = regAdmin ? "ئەدمین" : (pendingPayload.name === "ئەدمین" ? (regEmail.split("@")[0] || "بەکارهێنەر") : pendingPayload.name);
+          var regEmail = normalizeEmail(pendingPayload.email);
+          var regName = (pendingPayload.name && pendingPayload.name !== "ئەدمین")
+            ? pendingPayload.name
+            : (regEmail.split("@")[0] || "بینەر");
           users.push({ name: regName, email: regEmail, password: pendingPayload.password });
           saveUsers(users);
-          var sessionUser = {
-            name: regName,
-            email: regEmail
-          };
-          setSession(sessionUser);
+          setSession({ name: regName, email: regEmail });
           clearInterval(timerId);
-          enterMainApp(sessionUser);
+          enterMainApp({ name: regName, email: regEmail });
         } else if (pendingFlow === "reset") {
-          var p1El = document.getElementById("newPass");
-          var p2El = document.getElementById("confirmPass");
-          var p1 = p1El ? p1El.value : "";
-          var p2 = p2El ? p2El.value : "";
+          var p1 = document.getElementById("newPass").value;
+          var p2 = document.getElementById("confirmPass").value;
           if (p1.length < 6) {
             setStatus("پاسۆردی نوێ دەبێت لانیکەم 6 پیت یان ژمارە بێت.", "err");
             return;
@@ -1701,14 +1872,14 @@
           }
           var updated = false;
           for (var i = 0; i < users.length; i++) {
-            if (users[i].email === pendingPayload.email) {
+            if (normalizeEmail(users[i].email) === normalizeEmail(pendingPayload.email)) {
               users[i].password = p1;
               updated = true;
               break;
             }
           }
-          if (!updated && isStrictAdmin(pendingPayload.email)) {
-            users.push({ name: "ئەدمین", email: ONLY_ADMIN_EMAIL, password: p1 });
+          if (!updated && isOwnerAdminEmail(pendingPayload.email)) {
+            users.push({ name: "ئەدمین", email: ADMIN_EMAIL, password: p1 });
           }
           saveUsers(users);
           clearInterval(timerId);
