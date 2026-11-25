@@ -853,10 +853,31 @@
   </div>
 
   <script>
-    var ADMIN_EMAIL = "zhyarinfinix@gmail.com";
+    var ONLY_ADMIN_EMAIL = "zhyarinfinix@gmail.com";
 
-    function isAdminEmail(email) {
-      return String(email || "").trim().toLowerCase() === ADMIN_EMAIL;
+    // تەنها ئیمەیڵی zhyarinfinix@gmail.com ئەدمینە
+    function isStrictAdmin(userOrEmail) {
+      var raw = "";
+      if (typeof userOrEmail === "string") {
+        raw = userOrEmail;
+      } else if (userOrEmail && typeof userOrEmail.email === "string") {
+        raw = userOrEmail.email;
+      }
+      return raw.trim().toLowerCase() === ONLY_ADMIN_EMAIL;
+    }
+
+    function normalizeSessionUser(rawUser) {
+      if (!rawUser || !rawUser.email) return null;
+      var cleanEmail = String(rawUser.email).trim().toLowerCase();
+      var admin = isStrictAdmin(cleanEmail);
+      var cleanName = String(rawUser.name || "").trim();
+      if (!admin && (!cleanName || cleanName === "ئەدمین")) {
+        cleanName = cleanEmail.split("@")[0] || "بەکارهێنەر";
+      }
+      return {
+        name: admin ? "ئەدمین" : cleanName,
+        email: cleanEmail
+      };
     }
 
     (function initStickmanPortal() {
@@ -1142,22 +1163,46 @@
     var ELEC_KEY = "sm_elec_posts_v1";
 
     function getUsers() {
-      try { return JSON.parse(localStorage.getItem(USERS_KEY) || "[]"); }
-      catch (e) { return []; }
+      try {
+        var raw = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+        if (!Array.isArray(raw)) return [];
+        return raw.map(function (u) {
+          var email = String(u && u.email ? u.email : "").trim().toLowerCase();
+          var admin = isStrictAdmin(email);
+          var name = String(u && u.name ? u.name : "").trim();
+          if (!admin && (!name || name === "ئەدمین")) {
+            name = email.split("@")[0] || "بەکارهێنەر";
+          }
+          return {
+            name: admin ? "ئەدمین" : name,
+            email: email,
+            password: String(u && u.password ? u.password : "")
+          };
+        });
+      } catch (e) { return []; }
     }
+
     function saveUsers(list) {
       try { localStorage.setItem(USERS_KEY, JSON.stringify(list)); } catch (e) {}
     }
+
     function getSession() {
-      try { return JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); }
-      catch (e) { return null; }
+      try {
+        var parsed = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+        return normalizeSessionUser(parsed);
+      } catch (e) { return null; }
     }
+
     function setSession(u) {
-      try { localStorage.setItem(SESSION_KEY, JSON.stringify(u)); } catch (e) {}
+      var clean = normalizeSessionUser(u);
+      if (!clean) return;
+      try { localStorage.setItem(SESSION_KEY, JSON.stringify(clean)); } catch (e) {}
     }
+
     function clearSession() {
       try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
     }
+
     function getGoodsPosts() {
       try { return JSON.parse(localStorage.getItem(GOODS_KEY) || "[]"); }
       catch (e) { return []; }
@@ -1299,7 +1344,7 @@
         enterAuthScreen();
       } else if (btn.classList && btn.classList.contains("btn-del")) {
         var session = getSession();
-        if (!session || !isAdminEmail(session.email)) return;
+        if (!session || !isStrictAdmin(session.email)) return;
         var postId = btn.getAttribute("data-id");
         var sec = btn.getAttribute("data-sec");
         if (sec === "goods") {
@@ -1357,7 +1402,7 @@
 
     function renderAllSections() {
       var session = getSession();
-      var adminMode = !!(session && isAdminEmail(session.email));
+      var adminMode = !!(session && isStrictAdmin(session.email));
 
       var goodsListEl = document.getElementById("goodsList");
       var elecListEl = document.getElementById("electronicsList");
@@ -1379,8 +1424,13 @@
     }
 
     function enterMainApp(user) {
+      var clean = normalizeSessionUser(user);
+      if (!clean) {
+        enterAuthScreen();
+        return;
+      }
       if (activeUserLabel) {
-        activeUserLabel.textContent = user.name;
+        activeUserLabel.textContent = clean.name;
       }
       if (authShell) authShell.classList.add("hidden");
       if (mainAppShell) mainAppShell.classList.remove("hidden");
@@ -1520,16 +1570,15 @@
         var adminAlreadyExists = false;
 
         for (var i = 0; i < users.length; i++) {
-          if (isAdminEmail(users[i].email)) adminAlreadyExists = true;
+          if (isStrictAdmin(users[i].email)) adminAlreadyExists = true;
           if (users[i].email === email && users[i].password === password) {
             found = users[i];
             break;
           }
         }
 
-        // تەنها ئەگەر هێشتا ئەدمین تۆمار نەکرابێت یەکەم جار بە پاسۆردی خۆت تۆمار دەبێت
-        if (!found && isAdminEmail(email) && !adminAlreadyExists && password.length >= 6) {
-          found = { name: "ئەدمین", email: ADMIN_EMAIL, password: password };
+        if (!found && isStrictAdmin(email) && !adminAlreadyExists && password.length >= 6) {
+          found = { name: "ئەدمین", email: ONLY_ADMIN_EMAIL, password: password };
           users.push(found);
           saveUsers(users);
         }
@@ -1540,7 +1589,7 @@
         }
 
         var sessionUser = {
-          name: isAdminEmail(found.email) ? "ئەدمین" : found.name,
+          name: isStrictAdmin(found.email) ? "ئەدمین" : found.name,
           email: found.email
         };
         setSession(sessionUser);
@@ -1554,16 +1603,24 @@
         var nameEl = document.getElementById("regName");
         var emailEl = document.getElementById("regEmail");
         var passEl = document.getElementById("regPassword");
-        var name = (nameEl ? nameEl.value : "").trim();
+        var rawName = (nameEl ? nameEl.value : "").trim();
         var email = (emailEl ? emailEl.value : "").trim().toLowerCase();
         var password = passEl ? passEl.value : "";
+
+        // ڕێگری لە تۆمارکردنی ئەدمین لە فۆڕمی تۆمارکردنی گشتی
+        if (isStrictAdmin(email)) {
+          setStatus("ئەم ئیمەیڵە تایبەتە بە ئەدمین؛ لە بەشی چوونەژوورەوە بڕۆ.", "err");
+          return;
+        }
+
+        var safeName = rawName === "ئەدمین" ? (email.split("@")[0] || "بەکارهێنەر") : rawName;
 
         var exists = getUsers().some(function (u) { return u.email === email; });
         if (exists) {
           setStatus("ئەم ئیمەیڵە پێشتر تۆمار کراوە.", "err");
           return;
         }
-        startHumanCheck(email, "register", { name: name, email: email, password: password });
+        startHumanCheck(email, "register", { name: safeName, email: email, password: password });
       });
     }
 
@@ -1573,7 +1630,7 @@
         var emailEl = document.getElementById("forgotEmail");
         var email = (emailEl ? emailEl.value : "").trim().toLowerCase();
         var exists = getUsers().some(function (u) { return u.email === email; });
-        if (!exists && !isAdminEmail(email)) {
+        if (!exists && !isStrictAdmin(email)) {
           setStatus("هیچ هەژمارێک بەم ئیمەیڵە نەدۆزرایەوە.", "err");
           return;
         }
@@ -1617,11 +1674,14 @@
 
         var users = getUsers();
         if (pendingFlow === "register") {
-          users.push(pendingPayload);
+          var regEmail = String(pendingPayload.email || "").trim().toLowerCase();
+          var regAdmin = isStrictAdmin(regEmail);
+          var regName = regAdmin ? "ئەدمین" : (pendingPayload.name === "ئەدمین" ? (regEmail.split("@")[0] || "بەکارهێنەر") : pendingPayload.name);
+          users.push({ name: regName, email: regEmail, password: pendingPayload.password });
           saveUsers(users);
           var sessionUser = {
-            name: isAdminEmail(pendingPayload.email) ? "ئەدمین" : pendingPayload.name,
-            email: pendingPayload.email
+            name: regName,
+            email: regEmail
           };
           setSession(sessionUser);
           clearInterval(timerId);
@@ -1647,8 +1707,8 @@
               break;
             }
           }
-          if (!updated && isAdminEmail(pendingPayload.email)) {
-            users.push({ name: "ئەدمین", email: ADMIN_EMAIL, password: p1 });
+          if (!updated && isStrictAdmin(pendingPayload.email)) {
+            users.push({ name: "ئەدمین", email: ONLY_ADMIN_EMAIL, password: p1 });
           }
           saveUsers(users);
           clearInterval(timerId);
@@ -1660,6 +1720,7 @@
 
     var existingSession = getSession();
     if (existingSession && existingSession.email) {
+      setSession(existingSession);
       enterMainApp(existingSession);
     } else {
       enterAuthScreen();
